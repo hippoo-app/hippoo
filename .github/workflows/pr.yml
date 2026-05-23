@@ -1,0 +1,11 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    uses: hippoo-app/devops-templates/.github/workflows/validate-plugin.yml@main
+    with:
+      plugin-slug: hippoo

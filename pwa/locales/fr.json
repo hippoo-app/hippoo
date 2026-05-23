@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Boutique Hippoo"
+  },
+
+  "home": {
+    "title": "Accueil",
+    "searchPlaceholder": "Rechercher tous les produits",
+    "category": "Catégorie",
+    "sortBy": "Trier par :",
+    "inStock": "En stock",
+    "noData": "Aucun produit trouvé"
+  },
+
+  "product": {
+    "title": "Détails du produit",
+    "addToCart": "Ajouter au panier",
+    "outOfStock": "En rupture de stock",
+    "choose": "Choisir",
+    "addToCartSuccess": "Produit ajouté au panier avec succès.",
+    "viewCart": "Voir le panier"
+  },
+
+  "cart": {
+    "title": "Panier",
+    "subtotal": "Sous-total",
+    "discount": "Remise",
+    "total": "Total",
+    "couponDialogTitle": "Entrer le code promo",
+    "couponDescription": "Tapez votre code et cliquez sur appliquer pour voir vos économies.",
+    "couponPlaceholder": "Entrer le code promo",
+    "couponApply": "Appliquer",
+    "couponHave": "J'ai un code promo",
+    "goToCheckout": "Passer à la caisse",
+    "noData": "Aucune donnée trouvée !",
+    "updateSuccess": "Produit mis à jour avec succès."
+  },
+
+  "checkout": {
+    "title": "Paiement",
+    "billingAddress": "Adresse de facturation",
+    "shippingAddress": "Adresse de livraison",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "country": "Pays",
+    "province": "Province",
+    "city": "Ville",
+    "email": "E-mail",
+    "zipCode": "Code postal",
+    "address": "Adresse",
+    "address2": "Adresse 2",
+    "phoneNumber": "Numéro de téléphone",
+    "shippingSameAsBilling": "L'adresse de livraison est la même que l'adresse de facturation",
+    "nextStep": "Étape suivante",
+    "purchase": "Acheter",
+    "phone": "Téléphone",
+    "editDetails": "Modifier les détails",
+    "customerNote": "Note du client",
+    "shippingMethod": "Méthode de livraison",
+    "noShippingMethods": "Aucune méthode de livraison disponible",
+    "paymentMethod": "Méthode de paiement",
+    "noPaymentMethods": "Aucune méthode de paiement disponible",
+    "total": "Total",
+    "termsConditions": "En passant votre commande, vous acceptez nos Conditions Générales.",
+    "noDataForCheckout": "Aucune donnée disponible pour le paiement !",
+    "chooseShippingMethod": "Veuillez choisir une méthode de livraison",
+    "choosePaymentMethod": "Veuillez choisir une méthode de paiement"
+  },
+
+  "payment": {
+    "title": "Résultat du paiement",
+    "successful": "Paiement réussi",
+    "orderId": "Numéro de commande",
+    "redirecting": "Redirection vers la banque ...",
+    "processing": "Votre commande est en cours de traitement.",
+    "backToHome": "Retour à l'accueil"
+  },
+
+  "nav": {
+    "mainMenu": "Menu principal"
+  },
+
+  "component": {
+    "input": {
+      "optional": "facultatif"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Le plus récent d'abord",
+      "2": "Le plus ancien d'abord",
+      "3": "Modifié récemment",
+      "4": "Modifié le plus ancien",
+      "5": "Prix - Du plus bas au plus élevé",
+      "6": "Prix - Du plus élevé au plus bas",
+      "7": "Meilleures ventes - Du plus élevé au plus bas",
+      "8": "Meilleures ventes - Du plus bas au plus élevé",
+      "9": "Évaluation - Du plus élevé au plus bas"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Le modèle n'est pas valide",
+      "401": "Votre jeton de connexion est invalide",
+      "403": "Vous n'êtes pas autorisé à accéder à cette page",
+      "404": "Votre page n'existe pas !",
+      "500": "Oups, quelque chose s'est mal passé !"
+    }
+  },
+
+  "validations": {
+    "between": "La valeur doit être comprise entre {min} et {max}",
+    "digits": "La valeur doit être numérique et contenir exactement {length} chiffres",
+    "email": "La valeur doit être un e-mail valide",
+    "ext": "Le format du fichier n'est pas valide",
+    "integer": "La valeur doit être un nombre entier",
+    "length": "La valeur doit avoir une longueur de {length}",
+    "max_value": "La valeur doit être {max} ou moins",
+    "max": "La valeur ne doit pas dépasser {length} caractères",
+    "min_value": "La valeur doit être {min} ou plus",
+    "min": "La valeur doit comporter au moins {length} caractères",
+    "numeric": "La valeur ne peut contenir que des caractères numériques",
+    "regex": "Le format de la valeur est invalide",
+    "required_if": "La valeur est requise",
+    "required": "La valeur est requise",
+    "size": "La taille du fichier doit être inférieure à {size}KB"
+  }
+}

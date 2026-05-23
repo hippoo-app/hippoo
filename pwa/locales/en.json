@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippoo shop"
+  },
+
+  "home": {
+    "title": "Home",
+    "searchPlaceholder": "Search on all products",
+    "category": "Category",
+    "sortBy": "Sort by:",
+    "inStock": "Instock",
+    "noData": "No products found"
+  },
+
+  "product": {
+    "title": "Product details",
+    "addToCart": "Add to cart",
+    "outOfStock": "Out of stock",
+    "choose": "Choose",
+    "addToCartSuccess": "Product added to cart successfully.",
+    "viewCart": "View cart"
+  },
+
+  "cart": {
+    "title": "Cart",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "couponDialogTitle": "Enter Coupon Code",
+    "couponDescription": "Type your code and hit apply to see your savings.",
+    "couponPlaceholder": "Enter coupon code",
+    "couponApply": "Apply",
+    "couponHave": "I have a coupon code",
+    "goToCheckout": "Go to checkout",
+    "noData": "No data found!",
+    "updateSuccess": "Product updated successfully."
+  },
+
+  "checkout": {
+    "title": "Checkout",
+    "billingAddress": "Billing address",
+    "shippingAddress": "Shipping address",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "country": "Country",
+    "province": "Province",
+    "city": "City",
+    "email": "Email",
+    "zipCode": "Zip code",
+    "address": "Address",
+    "address2": "Address 2",
+    "phoneNumber": "Phone number",
+    "shippingSameAsBilling": "Shipping address is the same as billing",
+    "nextStep": "Next step",
+    "purchase": "Purchase",
+    "phone": "Phone",
+    "editDetails": "Edit details",
+    "customerNote": "Customer note",
+    "shippingMethod": "Shipping method",
+    "noShippingMethods": "No shipping methods available",
+    "paymentMethod": "Payment method",
+    "noPaymentMethods": "No payment methods available",
+    "total": "Total",
+    "termsConditions": "By placing your order, you agree to our Terms & Conditions.",
+    "noDataForCheckout": "No data available for checkout !",
+    "chooseShippingMethod": "Please choose shipping method",
+    "choosePaymentMethod": "Please choose payment method"
+  },
+
+  "payment": {
+    "title": "Payment Result",
+    "successful": "Payment Successful",
+    "orderId": "Order ID",
+    "redirecting": "Redirecting to the bank ...",
+    "processing": "Your order is being processed.",
+    "backToHome": "Back to Home"
+  },
+
+  "nav": {
+    "mainMenu": "Main menu"
+  },
+
+  "component": {
+    "input": {
+      "optional": "optional"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Newest First",
+      "2": "Oldest First",
+      "3": "Recently Modified",
+      "4": "Oldest Modified",
+      "5": "Price - Low to High",
+      "6": "Price - High to Low",
+      "7": "Best Selling - High to Low",
+      "8": "Best Selling - Low to High",
+      "9": "Rating - High to Low"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Model is not valid",
+      "401": "Your login token is invalid",
+      "403": "You are not allowed to access this page",
+      "404": "Your page does not exist!",
+      "500": "Oops, something went wrong!"
+    }
+  },
+
+  "validations": {
+    "between": "Value must be between {min} and {max}",
+    "digits": "Value must be numeric and exactly contain {length} digits",
+    "email": "Value must be a valid email",
+    "ext": "File format is not a valid",
+    "integer": "Value must be an integer",
+    "length": "Value must be {length} long",
+    "max_value": "Value must be {max} or less",
+    "max": "Value may not be greater than {length} characters",
+    "min_value": "Value must be {min} or more",
+    "min": "Value must be at least {length} characters",
+    "numeric": "Value may only contain numeric characters",
+    "regex": "Value format is invalid",
+    "required_if": "Value is required",
+    "required": "Value is required",
+    "size": "File size must be less than {size}KB"
+  }
+}

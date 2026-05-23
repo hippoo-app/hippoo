@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippoo shop"
+  },
+
+  "home": {
+    "title": "首页",
+    "searchPlaceholder": "搜索所有商品",
+    "category": "分类",
+    "sortBy": "排序方式：",
+    "inStock": "有现货",
+    "noData": "未找到任何商品"
+  },
+
+  "product": {
+    "title": "商品详情",
+    "addToCart": "加入购物车",
+    "outOfStock": "缺货",
+    "choose": "选择",
+    "addToCartSuccess": "商品已成功加入购物车。",
+    "viewCart": "查看购物车"
+  },
+
+  "cart": {
+    "title": "购物车",
+    "subtotal": "小计",
+    "discount": "折扣",
+    "total": "总计",
+    "couponDialogTitle": "输入优惠券代码",
+    "couponDescription": "输入您的代码并点击应用以查看您的节省金额。",
+    "couponPlaceholder": "输入优惠券代码",
+    "couponApply": "应用",
+    "couponHave": "我有优惠券代码",
+    "goToCheckout": "去结账",
+    "noData": "未找到数据！",
+    "updateSuccess": "商品已成功更新。"
+  },
+
+  "checkout": {
+    "title": "结账",
+    "billingAddress": "账单地址",
+    "shippingAddress": "收货地址",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "country": "国家/地区",
+    "province": "省份",
+    "city": "城市",
+    "email": "电子邮件",
+    "zipCode": "邮政编码",
+    "address": "地址",
+    "address2": "地址 2",
+    "phoneNumber": "电话号码",
+    "shippingSameAsBilling": "收货地址与账单地址相同",
+    "nextStep": "下一步",
+    "purchase": "购买",
+    "phone": "电话",
+    "editDetails": "编辑详情",
+    "customerNote": "客户备注",
+    "shippingMethod": "配送方式",
+    "noShippingMethods": "暂无可用配送方式",
+    "paymentMethod": "付款方式",
+    "noPaymentMethods": "暂无可用付款方式",
+    "total": "总计",
+    "termsConditions": "提交订单即表示您同意我们的《条款和条件》。",
+    "noDataForCheckout": "暂无可用结账数据！",
+    "chooseShippingMethod": "请选择配送方式",
+    "choosePaymentMethod": "请选择付款方式"
+  },
+
+  "payment": {
+    "title": "支付结果",
+    "successful": "支付成功",
+    "orderId": "订单编号",
+    "redirecting": "正在重定向到银行 ...",
+    "processing": "您的订单正在处理中。",
+    "backToHome": "返回首页"
+  },
+
+  "nav": {
+    "mainMenu": "主菜单"
+  },
+
+  "component": {
+    "input": {
+      "optional": "可选"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "最新优先",
+      "2": "最旧优先",
+      "3": "最近修改",
+      "4": "最旧修改",
+      "5": "价格 - 从低到高",
+      "6": "价格 - 从高到低",
+      "7": "最畅销 - 从高到低",
+      "8": "最畅销 - 从低到高",
+      "9": "评分 - 从高到低"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "模型无效",
+      "401": "您的登录令牌无效",
+      "403": "您无权访问此页面",
+      "404": "您的页面不存在！",
+      "500": "糟糕，出错了！"
+    }
+  },
+
+  "validations": {
+    "between": "值必须在 {min} 和 {max} 之间",
+    "digits": "值必须是数字，且恰好包含 {length} 位数字",
+    "email": "值必须是有效的电子邮件地址",
+    "ext": "文件格式无效",
+    "integer": "值必须是整数",
+    "length": "值长度必须为 {length}",
+    "max_value": "值必须小于或等于 {max}",
+    "max": "值不能超过 {length} 个字符",
+    "min_value": "值必须大于或等于 {min}",
+    "min": "值必须至少包含 {length} 个字符",
+    "numeric": "值只能包含数字字符",
+    "regex": "值格式无效",
+    "required_if": "值是必填项",
+    "required": "值是必填项",
+    "size": "文件大小必须小于 {size}KB"
+  }
+}

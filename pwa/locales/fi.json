@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippoo Kauppa"
+  },
+
+  "home": {
+    "title": "Etusivu",
+    "searchPlaceholder": "Hae kaikista tuotteista",
+    "category": "Kategoria",
+    "sortBy": "Lajitteluperuste:",
+    "inStock": "Varastossa",
+    "noData": "Tuotteita ei löytynyt"
+  },
+
+  "product": {
+    "title": "Tuotetiedot",
+    "addToCart": "Lisää ostoskoriin",
+    "outOfStock": "Loppu varastosta",
+    "choose": "Valitse",
+    "addToCartSuccess": "Tuote lisätty ostoskoriin onnistuneesti.",
+    "viewCart": "Näytä ostoskori"
+  },
+
+  "cart": {
+    "title": "Ostoskori",
+    "subtotal": "Välisumma",
+    "discount": "Alennus",
+    "total": "Yhteensä",
+    "couponDialogTitle": "Syötä kuponkikoodi",
+    "couponDescription": "Kirjoita koodisi ja paina 'käytä' nähdäksesi säästösi.",
+    "couponPlaceholder": "Syötä kuponkikoodi",
+    "couponApply": "Käytä",
+    "couponHave": "Minulla on kuponkikoodi",
+    "goToCheckout": "Siirry kassalle",
+    "noData": "Tietoja ei löytynyt!",
+    "updateSuccess": "Tuote päivitetty onnistuneesti."
+  },
+
+  "checkout": {
+    "title": "Kassa",
+    "billingAddress": "Laskutusosoite",
+    "shippingAddress": "Toimitusosoite",
+    "firstName": "Etunimi",
+    "lastName": "Sukunimi",
+    "country": "Maa",
+    "province": "Lääni",
+    "city": "Kaupunki",
+    "email": "Sähköposti",
+    "zipCode": "Postinumero",
+    "address": "Osoite",
+    "address2": "Osoite 2",
+    "phoneNumber": "Puhelinnumero",
+    "shippingSameAsBilling": "Toimitusosoite on sama kuin laskutusosoite",
+    "nextStep": "Seuraava vaihe",
+    "purchase": "Osta",
+    "phone": "Puhelin",
+    "editDetails": "Muokkaa tietoja",
+    "customerNote": "Asiakkaan huomautus",
+    "shippingMethod": "Toimitustapa",
+    "noShippingMethods": "Toimitustapoja ei ole saatavilla",
+    "paymentMethod": "Maksutapa",
+    "noPaymentMethods": "Maksutapoja ei ole saatavilla",
+    "total": "Yhteensä",
+    "termsConditions": "Tekemällä tilauksen hyväksyt käyttöehdot.",
+    "noDataForCheckout": "Ei saatavilla olevia tietoja kassalle!",
+    "chooseShippingMethod": "Ole hyvä ja valitse toimitustapa",
+    "choosePaymentMethod": "Ole hyvä ja valitse maksutapa"
+  },
+
+  "payment": {
+    "title": "Maksun Tulos",
+    "successful": "Maksu onnistui",
+    "orderId": "Tilausnumero",
+    "redirecting": "Uudelleenohjataan pankkiin ...",
+    "processing": "Tilaustasi käsitellään.",
+    "backToHome": "Takaisin Etusivulle"
+  },
+
+  "nav": {
+    "mainMenu": "Päävalikko"
+  },
+
+  "component": {
+    "input": {
+      "optional": "valinnainen"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Uusimmat ensin",
+      "2": "Vanhimmat ensin",
+      "3": "Äskettäin muutettu",
+      "4": "Vanhiten muutettu",
+      "5": "Hinta - Halvimmasta Kalleimpaan",
+      "6": "Hinta - Kalleimmasta Halvimpaan",
+      "7": "Myydyimmät - Korkeimmasta Matalaan",
+      "8": "Myydyimmät - Matalaasta Korkeimpaan",
+      "9": "Arvostelu - Korkeimmasta Matalaan"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Malli on virheellinen",
+      "401": "Kirjautumistunnuksesi on virheellinen",
+      "403": "Sinulla ei ole lupaa käyttää tätä sivua",
+      "404": "Sivuasi ei ole olemassa!",
+      "500": "Ups, jotain meni pieleen!"
+    }
+  },
+
+  "validations": {
+    "between": "Arvon on oltava {min} ja {max} välillä",
+    "digits": "Arvon on oltava numeerinen ja sisältää tarkalleen {length} numeroa",
+    "email": "Arvon on oltava kelvollinen sähköpostiosoite",
+    "ext": "Tiedostomuoto on virheellinen",
+    "integer": "Arvon on oltava kokonaisluku",
+    "length": "Arvon on oltava {length} pituinen",
+    "max_value": "Arvon on oltava {max} tai vähemmän",
+    "max": "Arvo ei saa olla pidempi kuin {length} merkkiä",
+    "min_value": "Arvon on oltava {min} tai enemmän",
+    "min": "Arvon on oltava vähintään {length} merkkiä pitkä",
+    "numeric": "Arvo saa sisältää vain numeerisia merkkejä",
+    "regex": "Arvon muoto on virheellinen",
+    "required_if": "Arvo on pakollinen",
+    "required": "Arvo on pakollinen",
+    "size": "Tiedostokoon on oltava pienempi kuin {size}KB"
+  }
+}

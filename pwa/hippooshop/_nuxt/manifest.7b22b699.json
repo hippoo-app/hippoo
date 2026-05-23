@@ -1,0 +1,61 @@
+{
+  "name": "Hippoo Shop",
+  "short_name": "Hippoo Shop",
+  "icons": [
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-120.png",
+      "type": "image/png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-152.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-384.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "/wp-content/plugins/hippoo/pwa/img/app-icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/hippooshop?standalone=true",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#32435b",
+  "lang": "en",
+  "dir": "ltr",
+  "gcm_sender_id": "000000000",
+  "version": "1.0.0",
+  "manifest_version": "0.1",
+  "orientation": "portrait",
+  "permissions": [
+    "notifications",
+    "webRequest"
+  ],
+  "author": "Hippoo Co."
+}

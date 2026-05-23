@@ -1,0 +1,135 @@
+{
+  "en": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "pt": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "ja": {
+    "font": "Noto Sans JP",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+  },
+  "zh": {
+    "font": "Noto Sans SC",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
+  },
+  "fr": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "ca": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "ar": {
+    "font": "Cairo",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap"
+  },
+  "lv": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "bn": {
+    "font": "Noto Sans Bengali",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap"
+  },
+  "pl": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "fi": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "es": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "ur": {
+    "font": "Noto Sans Arabic",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap"
+  },
+  "gu": {
+    "font": "Noto Sans Gujarati",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;700&display=swap"
+  },
+  "tr": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "fa": {
+    "font": "Vazirmatn",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap"
+  },
+  "et": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "it": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "ro": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "ru": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "sv": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "id": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "he": {
+    "font": "Heebo",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap"
+  },
+  "nl": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "de": {
+    "font": "Roboto",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+  },
+  "hi": {
+    "font": "Poppins",
+    "fontSrc": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+  },
+
+  "languages": [
+    { "code": "en", "name": "English" },
+    { "code": "pt", "name": "Português" },
+    { "code": "ja", "name": "日本語" },
+    { "code": "zh", "name": "中文" },
+    { "code": "fr", "name": "Français" },
+    { "code": "ca", "name": "Català" },
+    { "code": "ar", "name": "العربية" },
+    { "code": "lv", "name": "Latviešu" },
+    { "code": "bn", "name": "বাংলা" },
+    { "code": "pl", "name": "Polski" },
+    { "code": "fi", "name": "Suomi" },
+    { "code": "es", "name": "Español" },
+    { "code": "ur", "name": "اردو" },
+    { "code": "gu", "name": "ગુજરાતી" },
+    { "code": "tr", "name": "Türkçe" },
+    { "code": "fa", "name": "فارسی" },
+    { "code": "et", "name": "Eesti" },
+    { "code": "it", "name": "Italiano" },
+    { "code": "ro", "name": "Română" },
+    { "code": "ru", "name": "Русский" },
+    { "code": "sv", "name": "Svenska" },
+    { "code": "id", "name": "Bahasa Indonesia" },
+    { "code": "he", "name": "עברית" },
+    { "code": "nl", "name": "Nederlands" },
+    { "code": "de", "name": "Deutsch" },
+    { "code": "hi", "name": "हिन्दी" }
+  ]
+}

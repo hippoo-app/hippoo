@@ -1,0 +1,457 @@
+* {
+    box-sizing: inherit;
+}
+
+#adminmenu #toplevel_page_hippoo_invoice_settings div.wp-menu-image img {
+    width: 30px;
+    height: 30px;
+}
+
+#adminmenu #toplevel_page_hippoo_invoice_settings .wp-menu-image img {
+    padding: 3px 0 0;
+}
+
+#invoice_and_label_meta a {
+    text-decoration: none;
+    color: #000000;
+    display: block;
+    padding: 10px 0;
+}
+
+#invoice_and_label_meta img {
+    vertical-align: bottom;
+}
+
+/* General Settigs */
+
+#hippoo_invoice_settings .form-table th {
+    vertical-align: middle;
+}
+
+#hippoo_invoice_settings .form-table:first-of-type tr:first-child {
+    border-bottom: 1px solid #DFDFDF;
+}
+
+#hippoo_invoice_settings .form-table th {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+#hippoo_invoice_settings h2 {
+    font-size: 25px;
+}
+
+#hippoo_invoice_settings h2:first-of-type {
+    font-size: 36px;
+}
+
+/* Tabs */
+
+#hippoo_invoice_settings .tabs .nav-tab-wrapper {
+    padding: 0 10px;
+}
+
+#hippoo_invoice_settings .tabs .nav-tab {
+    padding: 10px 50px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: none;
+    color: #000000;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#hippoo_invoice_settings .tabs .nav-tab:hover,
+#hippoo_invoice_settings .tabs .nav-tab-active {
+    border: 1px solid #A0A0A0;
+    background-color: #FFFFFF;
+}
+
+#hippoo_invoice_settings .tabs .tab-content {
+    display: none;
+    padding: 20px;
+}
+
+#hippoo_invoice_settings .tabs .tab-content.active {
+    display: block;
+}
+
+/* Form Elements */
+
+#hippoo_invoice_settings select {
+    width: 291px;
+    height: 39px;
+}
+
+#hippoo_invoice_settings textarea {
+    resize: none;
+}
+
+#hippoo_invoice_settings input[type=checkbox].switch {
+    --active: #E8F7FF;
+    --active-inner: #FFFFFF;
+    --border: #BBC1E1;
+    --border-hover: #E8F7FF;
+    --button: #2F80ED;
+    --background: #FFFFFF;
+    --disabled: #F6F8FF;
+    --disabled-inner: #E1E6F9;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 50px;
+    height: 24px;
+    outline: none;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 25px;
+    border: 1px solid var(--bc, var(--border));
+    background: var(--b, var(--background));
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+}
+
+#hippoo_invoice_settings input[type=checkbox].switch:focus {
+    box-shadow: none;
+}
+
+#hippoo_invoice_settings input[type=checkbox].switch:before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background: var(--ab, var(--border));
+    transform: translateX(var(--x, 0));
+    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
+}
+
+#hippoo_invoice_settings input[type=checkbox].switch:checked:before {
+    margin: 0 0 0 8px;
+}
+
+#hippoo_invoice_settings input[type=checkbox].switch:checked {
+    --ab: var(--button);
+    --x: 17px;
+    background: var(--b, var(--active));
+    border: 1px solid var(--bc, var(--button));
+}
+
+/* Media Uploader */
+
+#hippoo_invoice_settings .media_uploader_wrapper .uploader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#hippoo_invoice_settings .media_uploader_wrapper img {
+    display: none;
+}
+
+#hippoo_invoice_settings .media_uploader_wrapper .upload_buttons {
+    max-width: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#hippoo_invoice_settings .media_uploader_wrapper .button {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#hippoo_invoice_settings .media_uploader_wrapper .button.upload {
+    color: #2F80ED;
+}
+
+#hippoo_invoice_settings .media_uploader_wrapper .button.remove {
+    color: #EB5757;
+}
+
+#hippoo_invoice_settings .media_uploader_wrapper .desc {
+    width: 100%;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+/* Woocommerce */
+
+#order_id_barcode,
+.order_id_barcode {
+    text-align: center;
+}
+
+.barcode-tooltip {
+    border: 1px solid #8B8B8B !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1) !important;
+    opacity: 1 !important;
+    text-align: center;
+    justify-items: center;
+    font-size: 18px;
+    padding: 10px 25px !important;
+}
+
+.tooltip-arrow:before,
+.tooltip-arrow:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 15px 14px 1px 14px;
+    border-color: #FFFFFF transparent transparent transparent;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.tooltip-arrow:after {
+    border-top-color: #8B8B8B;
+    bottom: -17px;
+    z-index: 1;
+}
+
+.hippoo-tooltip,
+.factor-order {
+    position: relative;
+    z-index: 999;
+    cursor: pointer;
+    margin: 0 auto;
+}
+.hippoo-tooltip,
+.hippoo-tooltip:active,
+.hippoo-tooltip:focus, .hippoo-tooltip img {
+    color:white !important;
+    box-shadow: none;
+    padding: 4px;
+}
+
+.hippoo-tooltip img{
+    padding: 0;
+}
+.factor-order {
+    display: block;
+    padding-top: 15px;
+    color: #000000;
+}
+
+.factor-order img {
+    vertical-align: bottom;
+}
+
+#order_line_items .barcode {
+    text-align: center !important;
+}
+
+#order_id_barcode_meta .inside,
+#product_barcode_meta .inside {
+    padding-top: 15px;
+    text-align: center;
+}
+
+#order_id_barcode_meta .inside > div,
+#product_barcode_meta .inside > div {
+    margin: 0 auto;
+}
+
+/* Notice */
+
+.hippoo-notice {
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    border-color: #4896ae;
+}
+
+.hippoo-notice * {
+    align-self: center;
+}
+
+.hippoo-notice img.hippoo-logo {
+    padding: 10px 15px;
+}
+
+.hippoo-notice .content {
+    padding: 0 25px;
+}
+
+.hippoo-notice .content h3 {
+    margin-bottom: 0;
+}
+
+.hippoo-notice .notice-dismiss {
+    top: auto !important;
+}
+
+.google-button {
+    display: flex;
+    text-decoration: none;
+    color: #000000;
+    padding: 10px 25px;
+    border-radius: 5px;
+    border: 1px solid #CECECE;
+    box-shadow: 0px 2px 3px 0px #00000012;
+    margin-bottom: 16px;
+    min-width: 300px;
+    align-items: center;
+}
+
+.google-button:focus {
+    box-shadow: none;
+}
+
+.google-button strong {
+    padding: 0 5px;
+    color: #000000;
+}
+
+/* Hippoo App Tab */
+
+#hippoo_invoice_settings .introduction {
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    padding-bottom: 50px;
+    margin-bottom: 50px;
+    border-bottom: 1px solid #DFDFDF;
+}
+
+#hippoo_invoice_settings .introduction .details,
+#hippoo_invoice_settings .introduction .qrcode {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+
+#hippoo_invoice_settings .introduction .qrcode {
+    min-width: 300px;
+    text-align: center;
+    padding: 25px 50px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #DFDFDF;
+    border-radius: 10px;
+}
+
+#hippoo_invoice_settings .introduction .qrcode img {
+    margin: 0 auto;
+}
+
+/* Carousel */
+
+#hippoo_invoice_settings #image-carousel {
+    position: relative;
+}
+  
+#hippoo_invoice_settings .carousel-wrapper {
+    overflow: hidden;
+}
+
+#hippoo_invoice_settings .carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+#hippoo_invoice_settings .carousel-inner img.carousel-image {
+    width: 360px;
+    height: 640px;
+    margin-right: 30px;
+    border-radius: 10px;
+}
+
+#hippoo_invoice_settings .carousel-nav {
+    padding: 30px;
+    text-align: center;
+}
+
+#hippoo_invoice_settings .carousel-arrow {
+    display: inline-block;
+    cursor: pointer;
+    margin: 0 15px;
+    padding: 15px;
+    background: #FFFFFF;
+    border: 1px solid #CBCBCB;
+    border-radius: 50%;
+}
+
+#hippoo_invoice_settings .carousel-prev,
+#hippoo_invoice_settings .carousel-next {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+#hippoo_invoice_settings .carousel-prev {
+    background-image: url('../img/prev-arrow.svg');
+}
+
+#hippoo_invoice_settings .carousel-next {
+    background-image: url('../img/next-arrow.svg');
+}
+
+/* Invoice Notice */
+
+.hippoo-invoice-notice {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    border: 2px solid #79B2EA;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin: 0;
+}
+
+.hippoo-invoice-notice .logo-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.hippoo-invoice-notice .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 5px;
+    padding: 0 15px;
+}
+
+.hippoo-invoice-notice .content h4,
+.hippoo-invoice-notice .content p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+tr.invoice-notice-row {
+    display: table-row;
+    width: 100%;
+}
+
+tr.invoice-notice-row th {
+    display: none;
+}
+
+tr.invoice-notice-row td {
+    display: block;
+    min-height: 120px;
+    padding: 0 !important;
+}
+
+@media only screen and (min-width: 767px) {
+    tr.invoice-notice-row .hippoo-invoice-notice {
+        position: absolute;
+    }
+}

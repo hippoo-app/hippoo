@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "Hippoo Botiga"
+  },
+  "home": {
+    "title": "Inici",
+    "searchPlaceholder": "Cerca a tots els productes",
+    "category": "Categoria",
+    "sortBy": "Ordena per:",
+    "inStock": "En estoc",
+    "noData": "No s'han trobat productes"
+  },
+  "product": {
+    "title": "Detalls del producte",
+    "addToCart": "Afegeix a la cistella",
+    "outOfStock": "Sense estoc",
+    "choose": "Tria",
+    "addToCartSuccess": "Producte afegit correctament a la cistella.",
+    "viewCart": "Veure cistella"
+  },
+  "cart": {
+    "title": "Cistella",
+    "subtotal": "Subtotal",
+    "discount": "Descompte",
+    "total": "Total",
+    "couponDialogTitle": "Introdueix el codi de cupó",
+    "couponDescription": "Escriu el teu codi i prem 'aplica' per veure els teus estalvis.",
+    "couponPlaceholder": "Introdueix el codi de cupó",
+    "couponApply": "Aplica",
+    "couponHave": "Tinc un codi de cupó",
+    "goToCheckout": "Vés a la caixa",
+    "noData": "No s'han trobat dades!",
+    "updateSuccess": "Producte actualitzat correctament."
+  },
+  "checkout": {
+    "title": "Caixa",
+    "billingAddress": "Adreça de facturació",
+    "shippingAddress": "Adreça d'enviament",
+    "firstName": "Nom",
+    "lastName": "Cognom",
+    "country": "País",
+    "province": "Província",
+    "city": "Ciutat",
+    "email": "Correu electrònic",
+    "zipCode": "Codi postal",
+    "address": "Adreça",
+    "address2": "Adreça 2",
+    "phoneNumber": "Número de telèfon",
+    "shippingSameAsBilling": "L'adreça d'enviament és la mateixa que la de facturació",
+    "nextStep": "Següent pas",
+    "purchase": "Compra",
+    "phone": "Telèfon",
+    "editDetails": "Edita els detalls",
+    "customerNote": "Nota del client",
+    "shippingMethod": "Mètode d'enviament",
+    "noShippingMethods": "No hi ha mètodes d'enviament disponibles",
+    "paymentMethod": "Mètode de pagament",
+    "noPaymentMethods": "No hi ha mètodes de pagament disponibles",
+    "total": "Total",
+    "termsConditions": "En fer la teva comanda, acceptes els nostres Termes i Condicions.",
+    "noDataForCheckout": "No hi ha dades disponibles per a la compra!",
+    "chooseShippingMethod": "Si us plau, tria un mètode d'enviament",
+    "choosePaymentMethod": "Si us plau, tria un mètode de pagament"
+  },
+  "payment": {
+    "title": "Resultat del pagament",
+    "successful": "Pagament satisfactori",
+    "orderId": "ID de la comanda",
+    "redirecting": "Redirigint al banc...",
+    "processing": "La teva comanda s'està processant.",
+    "backToHome": "Torna a la pàgina d'inici"
+  },
+  "nav": {
+    "mainMenu": "Menú principal"
+  },
+  "component": {
+    "input": {
+      "optional": "opcional"
+    }
+  },
+  "enums": {
+    "productSortType": {
+      "1": "Més nou primer",
+      "2": "Més antic primer",
+      "3": "Modificat recentment",
+      "4": "Modificat fa més temps",
+      "5": "Preu - De més baix a més alt",
+      "6": "Preu - De més alt a més baix",
+      "7": "Més venuts - De més alt a més baix",
+      "8": "Més venuts - De més baix a més alt",
+      "9": "Valoració - De més alt a més baix"
+    }
+  },
+  "errors": {
+    "default": {
+      "400": "El model no és vàlid",
+      "401": "El teu token d'inici de sessió no és vàlid",
+      "403": "No tens permís per accedir a aquesta pàgina",
+      "404": "La teva pàgina no existeix!",
+      "500": "Vaja, alguna cosa ha anat malament!"
+    }
+  },
+  "validations": {
+    "between": "El valor ha d'estar entre {min} i {max}",
+    "digits": "El valor ha de ser numèric i contenir exactament {length} dígits",
+    "email": "El valor ha de ser una adreça de correu electrònic vàlida",
+    "ext": "El format de l'arxiu no és vàlid",
+    "integer": "El valor ha de ser un nombre enter",
+    "length": "La longitud del valor ha de ser {length}",
+    "max_value": "El valor ha de ser {max} o inferior",
+    "max": "El valor no pot superar els {length} caràcters",
+    "min_value": "El valor ha de ser {min} o superior",
+    "min": "El valor ha de contenir almenys {length} caràcters",
+    "numeric": "El valor només pot contenir caràcters numèrics",
+    "regex": "El format del valor no és vàlid",
+    "required_if": "El valor és obligatori",
+    "required": "El valor és obligatori",
+    "size": "La mida de l'arxiu ha de ser inferior a {size}KB"
+  }
+}

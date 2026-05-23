@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Toko Hippoo"
+  },
+
+  "home": {
+    "title": "Beranda",
+    "searchPlaceholder": "Cari semua produk",
+    "category": "Kategori",
+    "sortBy": "Urutkan berdasarkan:",
+    "inStock": "Tersedia",
+    "noData": "Produk tidak ditemukan"
+  },
+
+  "product": {
+    "title": "Detail Produk",
+    "addToCart": "Tambah ke keranjang",
+    "outOfStock": "Stok habis",
+    "choose": "Pilih",
+    "addToCartSuccess": "Produk berhasil ditambahkan ke keranjang.",
+    "viewCart": "Lihat keranjang"
+  },
+
+  "cart": {
+    "title": "Keranjang",
+    "subtotal": "Subtotal",
+    "discount": "Diskon",
+    "total": "Total",
+    "couponDialogTitle": "Masukkan Kode Kupon",
+    "couponDescription": "Ketik kode Anda dan tekan terapkan untuk melihat penghematan Anda.",
+    "couponPlaceholder": "Masukkan kode kupon",
+    "couponApply": "Terapkan",
+    "couponHave": "Saya punya kode kupon",
+    "goToCheckout": "Lanjut ke pembayaran",
+    "noData": "Data tidak ditemukan!",
+    "updateSuccess": "Produk berhasil diperbarui."
+  },
+
+  "checkout": {
+    "title": "Pembayaran",
+    "billingAddress": "Alamat penagihan",
+    "shippingAddress": "Alamat pengiriman",
+    "firstName": "Nama depan",
+    "lastName": "Nama belakang",
+    "country": "Negara",
+    "province": "Provinsi",
+    "city": "Kota",
+    "email": "Email",
+    "zipCode": "Kode pos",
+    "address": "Alamat",
+    "address2": "Alamat 2",
+    "phoneNumber": "Nomor telepon",
+    "shippingSameAsBilling": "Alamat pengiriman sama dengan alamat penagihan",
+    "nextStep": "Langkah selanjutnya",
+    "purchase": "Beli",
+    "phone": "Telepon",
+    "editDetails": "Edit detail",
+    "customerNote": "Catatan pelanggan",
+    "shippingMethod": "Metode pengiriman",
+    "noShippingMethods": "Tidak ada metode pengiriman tersedia",
+    "paymentMethod": "Metode pembayaran",
+    "noPaymentMethods": "Tidak ada metode pembayaran tersedia",
+    "total": "Total",
+    "termsConditions": "Dengan menempatkan pesanan Anda, Anda menyetujui Syarat & Ketentuan kami.",
+    "noDataForCheckout": "Tidak ada data tersedia untuk pembayaran!",
+    "chooseShippingMethod": "Mohon pilih metode pengiriman",
+    "choosePaymentMethod": "Mohon pilih metode pembayaran"
+  },
+
+  "payment": {
+    "title": "Hasil Pembayaran",
+    "successful": "Pembayaran Berhasil",
+    "orderId": "ID Pesanan",
+    "redirecting": "Mengarahkan ulang ke bank ...",
+    "processing": "Pesanan Anda sedang diproses.",
+    "backToHome": "Kembali ke Beranda"
+  },
+
+  "nav": {
+    "mainMenu": "Menu utama"
+  },
+
+  "component": {
+    "input": {
+      "optional": "opsional"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Terbaru Dulu",
+      "2": "Terlama Dulu",
+      "3": "Baru Diubah",
+      "4": "Lama Diubah",
+      "5": "Harga - Rendah ke Tinggi",
+      "6": "Harga - Tinggi ke Rendah",
+      "7": "Terlaris - Tinggi ke Rendah",
+      "8": "Terlaris - Rendah ke Tinggi",
+      "9": "Peringkat - Tinggi ke Rendah"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Model tidak valid",
+      "401": "Token login Anda tidak valid",
+      "403": "Anda tidak diizinkan mengakses halaman ini",
+      "404": "Halaman Anda tidak ada!",
+      "500": "Ups, terjadi kesalahan!"
+    }
+  },
+
+  "validations": {
+    "between": "Nilai harus antara {min} dan {max}",
+    "digits": "Nilai harus numerik dan tepat mengandung {length} digit",
+    "email": "Nilai harus berupa email yang valid",
+    "ext": "Format file tidak valid",
+    "integer": "Nilai harus berupa bilangan bulat",
+    "length": "Nilai harus sepanjang {length}",
+    "max_value": "Nilai harus {max} atau kurang",
+    "max": "Nilai tidak boleh lebih dari {length} karakter",
+    "min_value": "Nilai harus {min} atau lebih",
+    "min": "Nilai harus setidaknya {length} karakter",
+    "numeric": "Nilai hanya boleh berisi karakter numerik",
+    "regex": "Format nilai tidak valid",
+    "required_if": "Nilai wajib diisi",
+    "required": "Nilai wajib diisi",
+    "size": "Ukuran file harus kurang dari {size}KB"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "Sklep Hippoo"
+  },
+  "home": {
+    "title": "Strona główna",
+    "searchPlaceholder": "Szukaj we wszystkich produktach",
+    "category": "Kategoria",
+    "sortBy": "Sortuj według:",
+    "inStock": "Dostępny w magazynie",
+    "noData": "Nie znaleziono produktów"
+  },
+  "product": {
+    "title": "Szczegóły Produktu",
+    "addToCart": "Dodaj do koszyka",
+    "outOfStock": "Brak w magazynie",
+    "choose": "Wybierz",
+    "addToCartSuccess": "Produkt pomyślnie dodany do koszyka.",
+    "viewCart": "Zobacz koszyk"
+  },
+  "cart": {
+    "title": "Koszyk",
+    "subtotal": "Suma częściowa",
+    "discount": "Rabat",
+    "total": "Razem",
+    "couponDialogTitle": "Wprowadź kod kuponu",
+    "couponDescription": "Wpisz kod i naciśnij 'Zastosuj', aby zobaczyć swoje oszczędności.",
+    "couponPlaceholder": "Wprowadź kod kuponu",
+    "couponApply": "Zastosuj",
+    "couponHave": "Mam kod kuponu",
+    "goToCheckout": "Przejdź do kasy",
+    "noData": "Nie znaleziono danych!",
+    "updateSuccess": "Produkt pomyślnie zaktualizowany."
+  },
+  "checkout": {
+    "title": "Kasa",
+    "billingAddress": "Adres rozliczeniowy",
+    "shippingAddress": "Adres wysyłki",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "country": "Kraj",
+    "province": "Województwo",
+    "city": "Miasto",
+    "email": "E-mail",
+    "zipCode": "Kod pocztowy",
+    "address": "Adres",
+    "address2": "Adres 2",
+    "phoneNumber": "Numer telefonu",
+    "shippingSameAsBilling": "Adres wysyłki jest taki sam jak adres rozliczeniowy",
+    "nextStep": "Następny krok",
+    "purchase": "Kup",
+    "phone": "Telefon",
+    "editDetails": "Edytuj szczegóły",
+    "customerNote": "Uwaga klienta",
+    "shippingMethod": "Metoda wysyłki",
+    "noShippingMethods": "Brak dostępnych metod wysyłki",
+    "paymentMethod": "Metoda płatności",
+    "noPaymentMethods": "Brak dostępnych metod płatności",
+    "total": "Razem",
+    "termsConditions": "Składając zamówienie, akceptujesz nasze Warunki i Zasady.",
+    "noDataForCheckout": "Brak danych dostępnych do realizacji zamówienia!",
+    "chooseShippingMethod": "Proszę wybrać metodę wysyłki",
+    "choosePaymentMethod": "Proszę wybrać metodę płatności"
+  },
+  "payment": {
+    "title": "Wynik płatności",
+    "successful": "Płatność pomyślna",
+    "orderId": "ID zamówienia",
+    "redirecting": "Przekierowanie do banku ...",
+    "processing": "Twoje zamówienie jest przetwarzane.",
+    "backToHome": "Wróć do Strony Głównej"
+  },
+  "nav": {
+    "mainMenu": "Główne menu"
+  },
+  "component": {
+    "input": {
+      "optional": "opcjonalne"
+    }
+  },
+  "enums": {
+    "productSortType": {
+      "1": "Najnowsze jako pierwsze",
+      "2": "Najstarsze jako pierwsze",
+      "3": "Ostatnio modyfikowane",
+      "4": "Najstarsza modyfikacja",
+      "5": "Cena - Od najniższej do najwyższej",
+      "6": "Cena - Od najwyższej do najniższej",
+      "7": "Najlepiej sprzedające się - Od najwyższej do najniższej",
+      "8": "Najlepiej sprzedające się - Od najniższej do najwyższej",
+      "9": "Ocena - Od najwyższej do najniższej"
+    }
+  },
+  "errors": {
+    "default": {
+      "400": "Model jest nieprawidłowy",
+      "401": "Twój token logowania jest nieprawidłowy",
+      "403": "Nie masz uprawnień, aby uzyskać dostęp do tej strony",
+      "404": "Twoja strona nie istnieje!",
+      "500": "Ups, coś poszło nie tak!"
+    }
+  },
+  "validations": {
+    "between": "Wartość musi mieścić się w zakresie {min} i {max}",
+    "digits": "Wartość musi być numeryczna i zawierać dokładnie {length} cyfr",
+    "email": "Wartość musi być prawidłowym adresem e-mail",
+    "ext": "Nieprawidłowy format pliku",
+    "integer": "Wartość musi być liczbą całkowitą",
+    "length": "Długość wartości musi wynosić {length}",
+    "max_value": "Wartość musi być mniejsza lub równa {max}",
+    "max": "Wartość nie może przekraczać {length} znaków",
+    "min_value": "Wartość musi być większa lub równa {min}",
+    "min": "Wartość musi zawierać co najmniej {length} znaków",
+    "numeric": "Wartość może zawierać tylko znaki numeryczne",
+    "regex": "Nieprawidłowy format wartości",
+    "required_if": "Wartość jest wymagana",
+    "required": "Wartość jest wymagana",
+    "size": "Rozmiar pliku musi być mniejszy niż {size}KB"
+  }
+}

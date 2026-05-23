@@ -1,0 +1,1 @@
+.nuxt-progress{background-color:#ffb800;height:2px;left:auto;opacity:1;position:fixed;right:0;top:0;-webkit-transition:width .1s,opacity .4s;-moz-transition:width .1s,opacity .4s;transition:width .1s,opacity .4s;width:0;z-index:999999}.nuxt-progress.nuxt-progress-notransition{-webkit-transition:none;-moz-transition:none;transition:none}.nuxt-progress-failed{background-color:red}

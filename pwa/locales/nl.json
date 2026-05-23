@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippoo Shop"
+  },
+
+  "home": {
+    "title": "Home",
+    "searchPlaceholder": "Zoeken in alle producten",
+    "category": "Categorie",
+    "sortBy": "Sorteren op:",
+    "inStock": "Op voorraad",
+    "noData": "Geen producten gevonden"
+  },
+
+  "product": {
+    "title": "Productdetails",
+    "addToCart": "Toevoegen aan winkelwagen",
+    "outOfStock": "Niet op voorraad",
+    "choose": "Kiezen",
+    "addToCartSuccess": "Product succesvol toegevoegd aan winkelwagen.",
+    "viewCart": "Winkelwagen bekijken"
+  },
+
+  "cart": {
+    "title": "Winkelwagen",
+    "subtotal": "Subtotaal",
+    "discount": "Korting",
+    "total": "Totaal",
+    "couponDialogTitle": "Couponcode invoeren",
+    "couponDescription": "Typ uw code in en klik op toepassen om uw besparingen te zien.",
+    "couponPlaceholder": "Couponcode invoeren",
+    "couponApply": "Toepassen",
+    "couponHave": "Ik heb een couponcode",
+    "goToCheckout": "Doorgaan naar afrekenen",
+    "noData": "Geen gegevens gevonden!",
+    "updateSuccess": "Product succesvol bijgewerkt."
+  },
+
+  "checkout": {
+    "title": "Afrekenen",
+    "billingAddress": "Factuuradres",
+    "shippingAddress": "Verzendadres",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "country": "Land",
+    "province": "Provincie",
+    "city": "Stad",
+    "email": "E-mail",
+    "zipCode": "Postcode",
+    "address": "Adres",
+    "address2": "Adres 2",
+    "phoneNumber": "Telefoonnummer",
+    "shippingSameAsBilling": "Verzendadres is hetzelfde als het factuuradres",
+    "nextStep": "Volgende stap",
+    "purchase": "Aankopen",
+    "phone": "Telefoon",
+    "editDetails": "Details bewerken",
+    "customerNote": "Klantnotitie",
+    "shippingMethod": "Verzendmethode",
+    "noShippingMethods": "Geen verzendmethoden beschikbaar",
+    "paymentMethod": "Betaalmethode",
+    "noPaymentMethods": "Geen betaalmethoden beschikbaar",
+    "total": "Totaal",
+    "termsConditions": "Door uw bestelling te plaatsen, gaat u akkoord met onze Algemene Voorwaarden.",
+    "noDataForCheckout": "Geen gegevens beschikbaar voor het afrekenen!",
+    "chooseShippingMethod": "Kies alstublieft een verzendmethode",
+    "choosePaymentMethod": "Kies alstublieft een betaalmethode"
+  },
+
+  "payment": {
+    "title": "Betaalresultaat",
+    "successful": "Betaling succesvol",
+    "orderId": "Bestelnummer",
+    "redirecting": "Doorsturen naar de bank ...",
+    "processing": "Uw bestelling wordt verwerkt.",
+    "backToHome": "Terug naar Home"
+  },
+
+  "nav": {
+    "mainMenu": "Hoofdmenu"
+  },
+
+  "component": {
+    "input": {
+      "optional": "optioneel"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Nieuwste eerst",
+      "2": "Oudste eerst",
+      "3": "Recent gewijzigd",
+      "4": "Oudst gewijzigd",
+      "5": "Prijs - Laag naar Hoog",
+      "6": "Prijs - Hoog naar Laag",
+      "7": "Best verkocht - Hoog naar Laag",
+      "8": "Best verkocht - Laag naar Hoog",
+      "9": "Beoordeling - Hoog naar Laag"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Model is ongeldig",
+      "401": "Uw login-token is ongeldig",
+      "403": "U heeft geen toegang tot deze pagina",
+      "404": "Uw pagina bestaat niet!",
+      "500": "Oeps, er ging iets mis!"
+    }
+  },
+
+  "validations": {
+    "between": "Waarde moet tussen {min} en {max} liggen",
+    "digits": "Waarde moet numeriek zijn en exact {length} cijfers bevatten",
+    "email": "Waarde moet een geldig e-mailadres zijn",
+    "ext": "Bestandsformaat is ongeldig",
+    "integer": "Waarde moet een geheel getal zijn",
+    "length": "Waarde moet {length} lang zijn",
+    "max_value": "Waarde moet {max} of minder zijn",
+    "max": "Waarde mag niet langer zijn dan {length} tekens",
+    "min_value": "Waarde moet {min} of meer zijn",
+    "min": "Waarde moet minstens {length} tekens lang zijn",
+    "numeric": "Waarde mag alleen numerieke tekens bevatten",
+    "regex": "Waardeformaat is ongeldig",
+    "required_if": "Waarde is vereist",
+    "required": "Waarde is vereist",
+    "size": "Bestandsgrootte moet minder dan {size}KB zijn"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "Hippoo Butik"
+  },
+  "home": {
+    "title": "Hem",
+    "searchPlaceholder": "Sök i alla produkter",
+    "category": "Kategori",
+    "sortBy": "Sortera efter:",
+    "inStock": "I lager",
+    "noData": "Inga produkter hittades"
+  },
+  "product": {
+    "title": "Produktinformation",
+    "addToCart": "Lägg i kundvagn",
+    "outOfStock": "Slut i lager",
+    "choose": "Välj",
+    "addToCartSuccess": "Produkten har lagts till i kundvagnen.",
+    "viewCart": "Visa kundvagn"
+  },
+  "cart": {
+    "title": "Kundvagn",
+    "subtotal": "Delsumma",
+    "discount": "Rabatt",
+    "total": "Totalt",
+    "couponDialogTitle": "Ange kupongkod",
+    "couponDescription": "Skriv in din kod och tryck på 'tillämpa' för att se din besparing.",
+    "couponPlaceholder": "Ange kupongkod",
+    "couponApply": "Tillämpa",
+    "couponHave": "Jag har en kupongkod",
+    "goToCheckout": "Gå till kassan",
+    "noData": "Ingen data hittades!",
+    "updateSuccess": "Produkten har uppdaterats framgångsrikt."
+  },
+  "checkout": {
+    "title": "Kassan",
+    "billingAddress": "Faktureringsadress",
+    "shippingAddress": "Leveransadress",
+    "firstName": "Förnamn",
+    "lastName": "Efternamn",
+    "country": "Land",
+    "province": "Län",
+    "city": "Stad",
+    "email": "E-post",
+    "zipCode": "Postnummer",
+    "address": "Adress",
+    "address2": "Adress 2",
+    "phoneNumber": "Telefonnummer",
+    "shippingSameAsBilling": "Leveransadressen är densamma som faktureringsadressen",
+    "nextStep": "Nästa steg",
+    "purchase": "Köp",
+    "phone": "Telefon",
+    "editDetails": "Redigera detaljer",
+    "customerNote": "Kundanteckning",
+    "shippingMethod": "Leveranssätt",
+    "noShippingMethods": "Inga leveranssätt tillgängliga",
+    "paymentMethod": "Betalningsmetod",
+    "noPaymentMethods": "Inga betalningsmetoder tillgängliga",
+    "total": "Totalt",
+    "termsConditions": "Genom att lägga din beställning godkänner du våra Allmänna Villkor.",
+    "noDataForCheckout": "Ingen data tillgänglig för kassan!",
+    "chooseShippingMethod": "Vänligen välj ett leveranssätt",
+    "choosePaymentMethod": "Vänligen välj en betalningsmetod"
+  },
+  "payment": {
+    "title": "Betalningsresultat",
+    "successful": "Betalning lyckades",
+    "orderId": "Order-ID",
+    "redirecting": "Omdirigerar till banken ...",
+    "processing": "Din beställning behandlas.",
+    "backToHome": "Tillbaka till Hem"
+  },
+  "nav": {
+    "mainMenu": "Huvudmeny"
+  },
+  "component": {
+    "input": {
+      "optional": "valfritt"
+    }
+  },
+  "enums": {
+    "productSortType": {
+      "1": "Nyaste först",
+      "2": "Äldsta först",
+      "3": "Senast ändrade",
+      "4": "Äldst ändrade",
+      "5": "Pris - Lågt till Högt",
+      "6": "Pris - Högt till Lågt",
+      "7": "Bästsäljande - Högt till Lågt",
+      "8": "Bästsäljande - Lågt till Högt",
+      "9": "Betyg - Högt till Lågt"
+    }
+  },
+  "errors": {
+    "default": {
+      "400": "Modellen är ogiltig",
+      "401": "Din inloggningstoken är ogiltig",
+      "403": "Du har inte behörighet att komma åt denna sida",
+      "404": "Sidan du söker finns inte!",
+      "500": "Hoppsan, något gick fel!"
+    }
+  },
+  "validations": {
+    "between": "Värdet måste vara mellan {min} och {max}",
+    "digits": "Värdet måste vara numeriskt och innehålla exakt {length} siffror",
+    "email": "Värdet måste vara en giltig e-postadress",
+    "ext": "Filformatet är ogiltigt",
+    "integer": "Värdet måste vara ett heltal",
+    "length": "Värdet måste vara {length} långt",
+    "max_value": "Värdet måste vara {max} eller mindre",
+    "max": "Värdet får inte vara längre än {length} tecken",
+    "min_value": "Värdet måste vara {min} eller mer",
+    "min": "Värdet måste vara minst {length} tecken",
+    "numeric": "Värdet får endast innehålla numeriska tecken",
+    "regex": "Värdeformatet är ogiltigt",
+    "required_if": "Värdet är obligatoriskt",
+    "required": "Värdet är obligatoriskt",
+    "size": "Filstorleken måste vara mindre än {size}KB"
+  }
+}

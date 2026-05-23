@@ -1,0 +1,1313 @@
+* {
+    box-sizing: inherit;
+}
+
+#adminmenu #toplevel_page_hippoo_settings div.wp-menu-image img {
+    width: 30px;
+    height: 30px;
+}
+
+#adminmenu #toplevel_page_hippoo_settings .wp-menu-image img {
+    padding: 3px 0 0;
+}
+
+#invoice_and_label_meta a {
+    text-decoration: none;
+    color: #000000;
+    display: block;
+    padding: 10px 0;
+}
+
+#invoice_and_label_meta img {
+    vertical-align: bottom;
+}
+
+/* General Settigs */
+
+#hippoo_settings .button-primary {
+    background: #1A77B1;
+    color: #FFFFFF;
+    border-radius: 8px;
+    border: none;
+    padding: 5px 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#hippoo_settings .button-primary:hover {
+    background: #146A8E;
+}
+
+#hippoo_settings .form-table {
+    max-width: 800px;
+    vertical-align: middle;
+}
+
+#hippoo_settings .form-table tr {
+    position: relative;
+}
+
+#hippoo_settings .form-table:not(:last-of-type) tr:last-child {
+    border-bottom: 1px solid #DFDFDF;
+}
+
+#hippoo_settings .form-table tr.disabled * {
+    color: #818181;
+    cursor: not-allowed;
+}
+
+#hippoo_settings .form-table th {
+    font-size: 16px;
+    font-weight: normal;
+    vertical-align: middle;
+    width: 100%;
+}
+
+#hippoo_settings .form-table td {
+    text-align: end;
+    vertical-align: top;
+    text-wrap: nowrap;
+    max-width: 100px;
+}
+
+#hippoo_settings .form-table td > * {
+    float: right;
+}
+
+#hippoo_settings h2 {
+    font-size: 25px;
+}
+
+#hippoo_settings h2:first-of-type {
+    font-size: 36px;
+}
+
+#hippoo_settings .form-table tr.custom-css-row {
+    display: table-row;
+    width: 100%;
+}
+
+#hippoo_settings .form-table tr.custom-css-row th,
+#hippoo_settings .form-table tr.custom-css-row td {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: 0;
+    position: relative;
+}
+
+#hippoo_settings .form-table tr.custom-css-row td {
+    min-height: 225px;
+}
+
+#hippoo_settings .form-table tr.custom-css-row textarea {
+    width: 100%;
+    max-width: 785px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+@media only screen and (max-width: 782px) {
+    #hippoo_settings .form-table tr td .route-name-field {
+        float: left;
+    }
+
+    #hippoo_settings .form-table th {
+        padding: 20px 10px 20px 0 !important;
+    }
+}
+
+#hippoo_settings #image_size_selection {
+    position: absolute;
+    left: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Tabs */
+
+#hippoo_settings .tabs .nav-tab-wrapper {
+    padding: 0 10px;
+    border-bottom: 1px solid #A0A0A0 !important;
+}
+
+#hippoo_settings .tabs .nav-tab {
+    padding: 10px 50px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    background: none;
+    color: #000000;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#hippoo_settings .tabs .nav-tab:hover,
+#hippoo_settings .tabs .nav-tab-active {
+    border: 1px solid #A0A0A0;
+    background-color: #FFFFFF;
+    border-bottom: none;
+}
+
+#hippoo_settings .tabs .tab-content {
+    display: none;
+    padding: 20px;
+}
+
+#hippoo_settings .tabs .tab-content.active {
+    display: block;
+}
+
+#hippoo_settings .tabs .tab-content .is-locked {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Form Elements */
+
+#hippoo_settings input[type="text"] {
+    width: 150px;
+    height: 39px;
+}
+
+#hippoo_settings select {
+    width: 291px;
+    height: 39px;
+}
+
+#hippoo_settings textarea {
+    resize: none;
+}
+
+#hippoo_settings input[type=checkbox].switch {
+    --active: #E8F7FF;
+    --active-inner: #FFFFFF;
+    --border: #BBC1E1;
+    --border-hover: #E8F7FF;
+    --button: #2F80ED;
+    --background: #FFFFFF;
+    --disabled: #F6F8FF;
+    --disabled-inner: #E1E6F9;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 50px;
+    height: 24px;
+    outline: none;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 25px;
+    border: 1px solid var(--bc, var(--border));
+    background: var(--b, var(--background));
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+}
+
+#hippoo_settings input[type=checkbox].switch:focus {
+    box-shadow: none;
+}
+
+#hippoo_settings input[type=checkbox].switch:before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background: var(--ab, var(--border));
+    transform: translateX(var(--x, 0));
+    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
+}
+
+#hippoo_settings input[type=checkbox].switch:checked:before {
+    margin: 0 0 0 8px;
+}
+
+#hippoo_settings input[type=checkbox].switch:checked {
+    --ab: var(--button);
+    --x: 17px;
+    background: var(--b, var(--active));
+    border: 1px solid var(--bc, var(--button));
+}
+
+/* Media Uploader */
+
+#hippoo_settings .media_uploader_wrapper .uploader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#hippoo_settings .media_uploader_wrapper img {
+    display: none;
+}
+
+#hippoo_settings .media_uploader_wrapper .upload_buttons {
+    max-width: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#hippoo_settings .media_uploader_wrapper .button {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#hippoo_settings .media_uploader_wrapper .button.upload {
+    color: #2F80ED;
+}
+
+#hippoo_settings .media_uploader_wrapper .button.remove {
+    color: #EB5757;
+}
+
+#hippoo_settings .media_uploader_wrapper .desc {
+    width: 100%;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+/* Notice */
+
+.hippoo-notice {
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    border-color: #4896ae;
+}
+
+.hippoo-notice * {
+    align-self: center;
+}
+
+.hippoo-notice img.hippoo-logo {
+    padding: 10px 15px;
+}
+
+.hippoo-notice .content {
+    padding: 0 25px;
+}
+
+.hippoo-notice .content h3 {
+    margin-bottom: 0;
+}
+
+.hippoo-notice .notice-dismiss {
+    top: auto !important;
+}
+
+.google-button {
+    display: flex;
+    text-decoration: none;
+    color: #000000;
+    padding: 10px 25px;
+    border-radius: 5px;
+    border: 1px solid #CECECE;
+    box-shadow: 0px 2px 3px 0px #00000012;
+}
+
+.google-button:focus {
+    box-shadow: none;
+}
+
+.google-button strong {
+    padding: 0 5px;
+    color: #000000;
+}
+
+/* API Error Notice */
+
+.hippoo-rest-api-error {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 2px solid #EB5757;
+    border-radius: 10px;
+    padding: 15px 20px;
+    gap: 10px;
+}
+
+.hippoo-rest-api-error .notice-dismiss {
+    display: none;
+}
+
+.hippoo-rest-api-error .logo-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.hippoo-rest-api-error .logo-wrapper img.hippoo-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: block;
+}
+
+.hippoo-rest-api-error .logo-wrapper::after {
+    content: '!';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #ff4343;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    color: white;
+    font-size: 9pt;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    line-height: 1;
+}
+
+.hippoo-rest-api-error .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 5px;
+    padding: 0 15px;
+}
+
+.hippoo-rest-api-error .content h4,
+.hippoo-rest-api-error .content p {
+    margin: 0;
+    padding: 0;
+}
+
+.hippoo-rest-api-error .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.hippoo-rest-api-error .actions .button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 5px;
+    padding: 5px 40px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.hippoo-rest-api-error .actions .hippoo-dismiss-api-error {
+    color: #32435b
+}
+
+.hippoo-rest-api-error .actions .hippoo-retry-api-check {
+    color: #ffffff;
+    background: #32435b;
+}
+
+/* License Notice */
+
+.hippoo-upgrade-banner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1px solid #B3B3B3;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-right: 15px;
+    gap: 10px;
+}
+
+.rtl .hippoo-upgrade-banner {
+    margin-left: 15px;
+}
+
+.hippoo-upgrade-banner .logo-wrapper img.hippoo-logo {
+    width: 49px;
+    height: 49px;
+}
+
+.hippoo-upgrade-banner .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 5px;
+    padding: 0 15px;
+}
+
+.hippoo-upgrade-banner .content h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2C2C2C;
+}
+
+.hippoo-upgrade-banner .content p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2C2C2C;
+}
+
+.hippoo-upgrade-banner .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.hippoo-upgrade-banner .actions .button {
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.hippoo-upgrade-banner .actions .upgrade-btn {
+    background: #FF8D28;
+    color: #323232;
+    padding: 5px 40px;
+}
+
+.hippoo-upgrade-banner .actions .learn-more {
+    background: none;
+    color: #32435B;
+}
+
+/* Hippoo App Tab */
+
+#hippoo_settings .introduction {
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    padding-bottom: 50px;
+    margin-bottom: 50px;
+    border-bottom: 1px solid #DFDFDF;
+}
+
+#hippoo_settings .introduction .details,
+#hippoo_settings .introduction .qrcode {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    vertical-align: middle;
+}
+
+#hippoo_settings .introduction .qrcode {
+    min-width: 300px;
+    text-align: center;
+    padding: 25px 50px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #DFDFDF;
+    border-radius: 10px;
+}
+
+#hippoo_settings .introduction .qrcode img {
+    margin: 0 auto;
+}
+
+/* Carousel */
+
+#hippoo_settings #image-carousel {
+    position: relative;
+}
+  
+#hippoo_settings .carousel-wrapper {
+    overflow: hidden;
+}
+
+#hippoo_settings .carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+#hippoo_settings .carousel-inner img.carousel-image {
+    width: 360px;
+    height: 640px;
+    margin-right: 30px;
+    border-radius: 10px;
+}
+
+#hippoo_settings .carousel-nav {
+    padding: 30px;
+    text-align: center;
+}
+
+#hippoo_settings .carousel-arrow {
+    display: inline-block;
+    cursor: pointer;
+    margin: 0 15px;
+    padding: 15px;
+    background: #FFFFFF;
+    border: 1px solid #CBCBCB;
+    border-radius: 50%;
+}
+
+#hippoo_settings .carousel-prev,
+#hippoo_settings .carousel-next {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+#hippoo_settings .carousel-prev {
+    background-image: url('../images/prev-arrow.svg');
+}
+
+#hippoo_settings .carousel-next {
+    background-image: url('../images/next-arrow.svg');
+}
+
+/* Hippoo AI Settings */
+
+#hippoo_settings .hippoo-ai-tab {
+    max-width: 800px;
+}
+
+#hippoo_settings .hippoo-ai-tab input[type="text"],
+#hippoo_settings .hippoo-ai-tab input[type="password"],
+#hippoo_settings .hippoo-ai-tab input[type="number"],
+#hippoo_settings .hippoo-ai-tab select,
+#hippoo_settings .hippoo-ai-tab textarea {
+    width: 100%;
+    min-width: 200px;
+    min-height: 40px;
+}
+
+#hippoo_settings .hippoo-ai-tab select,
+#hippoo_settings .hippoo-ai-tab input[type="number"] {
+    max-width: 200px;
+}
+
+#hippoo_settings .hippoo-ai-tab .field-hint {
+    text-decoration: none;
+    margin-top: 4px;
+}
+
+#hippoo_settings .hippoo-ai-tab .button-outline {
+    min-width: 150px;
+    background: #FFFFFF;
+    border: 1px solid #1A77B1;
+    color: #146A8E;
+    border-radius: 8px;
+    padding: 5px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#hippoo_settings .hippoo-ai-tab .button-outline:hover {
+    background: #E8F7FF;
+}
+
+#hippoo_settings .hippoo-ai-tab .input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    text-wrap: auto;
+}
+
+#hippoo_settings .hippoo-ai-tab .form-table th {
+    width: 200px !important;
+}
+
+#hippoo_settings .hippoo-ai-tab .inline-row th {
+    vertical-align: baseline !important;
+}
+
+#hippoo_settings .hippoo-ai-tab .inline-row td {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+#hippoo_settings .hippoo-ai-tab .form-table td > * {
+    float: left !important;
+}
+
+/* Hippoo Permissions Settings */
+
+.hippoo-permissions-tab {
+    position: relative;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 60px;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #000000;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role select {
+    color: #828282;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role .select-wrapper {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role .select-wrapper.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role .select-wrapper.loading .select2-selection__arrow {
+    display: none;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permissions-select-role .select-wrapper.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #E3E3E3;
+    border-top-color: #32435B;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    animation: hippoo-spin 0.9s linear infinite;
+}
+
+.rtl #hippoo_settings .hippoo-permissions-tab .permissions-select-role .select-wrapper.loading::after {
+    right: auto;
+    left: 0;
+}
+
+#hippoo_settings .hippoo-permissions-tab #permissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-block {
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    cursor: pointer;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-header .role-name {
+    font-weight: 600;
+    font-size: 18px;
+    color: #000000;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-header .remove-role {
+    font-weight: 600;
+    font-size: 14px;
+    color: #FF383C;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-header .accordion-toggle {
+    width: 12px;
+    height: 8px;
+    background: url('data:image/svg+xml;utf8,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7.4L0 1.4L1.4 0L6 4.6L10.6 0L12 1.4L6 7.4Z" fill="%23636363"/></svg>') no-repeat center center;
+    background-size: contain;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-header .accordion-toggle.open {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-content {
+    padding: 0 30px 32px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-content form.hippoo-permission-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-section .permission-label {
+    display: flex;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #000000;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-section .permission-label-actions {
+    font-size: 12px;
+    display: flex;
+    gap: 5px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-section .separator {
+    color: #8B8B8B;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-section .select-all-btn,
+#hippoo_settings .hippoo-permissions-tab .permission-section .deselect-all-btn {
+    color: #276FFF;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+#hippoo_settings .hippoo-permissions-tab .checkbox-label input[type="checkbox"] {
+    appearance: none;
+    box-shadow: none;
+    width: 20px;
+    height: 20px;
+    background: #FFFFFF;
+    border: 1px solid #4E4C4C;
+    border-radius: 2px;
+    position: relative;
+}
+
+#hippoo_settings .hippoo-permissions-tab .checkbox-label input[type="checkbox"]::before,
+#hippoo_settings .hippoo-permissions-tab .checkbox-label input[type="checkbox"]::after {
+    display: none;
+}
+
+#hippoo_settings .hippoo-permissions-tab .checkbox-label input[type="checkbox"]:checked {
+    background: #276FFF;
+}
+
+#hippoo_settings .hippoo-permissions-tab .checkbox-label input[type="checkbox"]:checked::after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 10px;
+    background: url('data:image/svg+xml;utf8,<svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9.4L0 5.4L1.4 4L4 6.6L10.6 0L12 1.4L4 9.4Z" fill="%23E3E3E3" /></svg>') no-repeat center center;
+    background-size: contain;
+}
+
+#hippoo_settings .hippoo-permissions-tab .multi-select-group {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+#hippoo_settings .hippoo-permissions-tab .multi-select-group > label {
+    min-width: 140px;
+    max-width: 200px;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+#hippoo_settings .hippoo-permissions-tab .multi-select-group select[multiple],
+#hippoo_settings .hippoo-permissions-tab .multi-select-group .select2-container {
+    flex: 1 1 0%;
+    min-width: 0;
+    width: 100% !important;
+    max-width: 600px !important;
+    box-sizing: border-box;
+}
+
+#hippoo_settings .hippoo-permissions-tab .sub-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin: 0 30px;
+    max-width: 900px !important;
+}
+
+#hippoo_settings .permission-section .disabled label,
+#hippoo_settings .permission-section .disabled .checkbox-label {
+    color: #999 !important;
+    cursor: not-allowed !important;
+}
+
+#hippoo_settings .permission-section .disabled input[type="checkbox"] {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+}
+
+#hippoo_settings .permission-section .section-toggle,
+#hippoo_settings .permission-section .sub-toggle {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+}
+
+#hippoo_settings .permission-section .disabled,
+#hippoo_settings .permission-section .disabled input[type="checkbox"],
+#hippoo_settings .permission-section .disabled select,
+#hippoo_settings .permission-section .disabled .multi-select-group,
+#hippoo_settings .permission-section .disabled .sub-details,
+#hippoo_settings .permission-section .disabled .sub-details *,
+#hippoo_settings .permission-section .section-toggle:not(:checked) ~ *,
+#hippoo_settings .permission-section .sub-toggle:not(:checked) ~ .sub-details *,
+#hippoo_settings .permission-section .section-toggle:not(:checked) ~ .sub-toggle ~ .sub-details,
+#hippoo_settings .permission-section .section-toggle:not(:checked) ~ * .sub-details {
+    pointer-events: none !important;
+    user-select: none !important;
+    cursor: not-allowed !important;
+    opacity: 0.55 !important;
+}
+
+#hippoo_settings .hippoo-permissions-tab hr {
+    border: none;
+    border-top: 1px solid #E8E8E8;
+    margin: 0;
+}
+
+#hippoo_settings .hippoo-permissions-tab .permission-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .save-settings-notice {
+    border: none;
+    box-shadow: none;
+    display: none;
+    padding: 0;
+    margin: 0;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .modal-content {
+    position: relative;
+    background: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 20px;
+    width: 420px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .close-delete-modal {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 16px;
+    height: 16px;
+    font-size: 0;
+    cursor: pointer;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234F4F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>') no-repeat center / contain;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal h4 {
+    margin: 10px 0 20px 0;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #4F4F4F;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal p {
+    margin: 0 0 30px 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4F4F4F;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 25px;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .cancel-delete,
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .confirm-delete {
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .cancel-delete {
+    color: #000000;
+}
+
+#hippoo_settings .hippoo-permissions-tab .delete-confirm-modal .confirm-delete {
+    color: #4257F6;
+}
+
+@media only screen and (max-width: 782px) {
+    #hippoo_settings .hippoo-permissions-tab .permissions-select-role {
+        gap: 20px;
+    }
+}
+
+.hippoo-select2 + .select2-container {
+    box-sizing: border-box;
+    width: 100% !important; 
+    min-height: 39px;
+    height: auto;
+    background: #FFFFFF;
+    border: 1px solid #B9B9B9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.hippoo-select2 + .select2-container .select2-selection--multiple {
+    border: none;
+    min-height: 37px;
+    padding: 0 8px;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__rendered {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    padding-right: 8px;
+    align-items: center;
+    height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__rendered::-webkit-scrollbar {
+    height: 6px;
+}
+.hippoo-select2 + .select2-container .select2-selection__rendered::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__choice {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 5px !important;
+    gap: 4px !important;
+    background: #F2F2F2 !important;
+    border-radius: 4px !important;
+    height: 25px !important;
+    min-width: 60px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin: 0 !important;
+    position: relative !important;
+    border: none !important;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__choice > span:not(.select2-selection__choice__remove) {
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    color: #3B3B3B !important;
+    flex: none;
+    order: 0;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__choice__remove {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 16px !important;
+    height: 16px !important;
+    background: transparent !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
+    position: relative !important;
+    order: 1;
+    flex: none;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__choice__remove::before {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18' stroke='%232C2C2C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6L18 18' stroke='%232C2C2C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px no-repeat !important;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__choice:hover {
+    background: #E8E8E8 !important;
+}
+
+.hippoo-select2 + .select2-container .select2-selection__choice__remove:hover::before {
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6L18 18' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+}
+
+.hippoo-role-container {
+    width: 304px !important;
+    height: 39px !important;
+}
+
+.hippoo-role-container .select2-selection--single {
+    height: 39px !important;
+    min-height: 39px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #B9B9B9 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.hippoo-role-container .select2-selection__rendered {
+    color: #828282 !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    padding-left: 16px !important;
+    padding-right: 30px !important;
+    margin: 0 !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 39px !important;
+}
+
+.hippoo-role-container .select2-selection__arrow {
+    height: 39px !important;
+    width: 30px !important;
+    background: none !important;
+    cursor: pointer;
+}
+
+.hippoo-role-container .select2-selection__arrow b {
+    display: none !important;
+}
+
+.hippoo-role-container .select2-selection__arrow::after {
+    content: '';
+    width: 12px;
+    height: 8px;
+    background: url('data:image/svg+xml;utf8,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7.4L0 1.4L1.4 0L6 4.6L10.6 0L12 1.4L6 7.4Z" fill="%23636363"/></svg>') no-repeat center center;
+    background-size: contain;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+}
+
+.hippoo-role-container.select2-container--open .select2-selection__arrow::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.hippoo-role-dropdown,
+.hippoo-role-dropdown-visible {
+    background: #FFFFFF !important;
+    border: 1px solid #EAEAEA !important;
+    border-radius: 8px !important;
+    box-shadow: 0px 1px 14px rgba(141, 141, 141, 0.37) !important;
+    width: 307px !important;
+    padding: 8px 0 !important;
+}
+
+.hippoo-role-dropdown .select2-results__options {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hippoo-role-dropdown .select2-results__option {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    color: #2C2C2C !important;
+    border-bottom: 1px solid #EAEAEA !important;
+    background: transparent !important;
+}
+
+.hippoo-role-dropdown .select2-results__option:last-child {
+    border-bottom: none !important;
+}
+
+.hippoo-role-dropdown .select2-results__option--highlighted {
+    background-color: #F2F2F2 !important;
+}
+
+.hippoo-role-dropdown .select2-results__option[aria-disabled="true"] {
+    color: #828282 !important;
+    cursor: not-allowed !important;
+}
+
+/* Hippoo Integrations Settings */
+
+#hippoo-integrations-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background: #FFFFFF;
+    border-radius: 16px;
+    position: relative;
+    margin-top: 20px;
+}
+
+#hippoo-integrations-list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: #E3E3E3;
+    transform: translateX(-50%);
+}
+
+#hippoo-integrations-list .integration-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+#hippoo-integrations-list .integration-item:nth-child(n+3)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #E3E3E3;
+    z-index: 1;
+}
+
+#hippoo-integrations-list .integration-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    object-fit: cover;
+    background: #F7F7F7;
+    padding: 5px;
+}
+
+#hippoo-integrations-list .integration-info {
+    flex: 1;
+}
+
+#hippoo-integrations-list .integration-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+}
+
+#hippoo-integrations-list .integration-info h4 a {
+    text-decoration: none;
+    color: #000000;
+}
+
+#hippoo-integrations-list .integration-actions .button {
+    width: 140px;
+    border-radius: 8px;
+    border: none;
+    padding: 5px 30px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#hippoo-integrations-list .integration-actions .button-primary,
+#hippoo-integrations-list .integration-actions .button-primary:hover {
+    background: #32435B;
+    color: #FFFFFF; 
+}
+
+#hippoo-integrations-list .integration-actions .button-secondary,
+#hippoo-integrations-list .integration-actions .button-secondary:hover {
+    background: #F7F7F7;
+    color: #424242; 
+}
+
+#hippoo-integrations-loading {
+    display: none;
+    width: 100%;
+    padding: 40px 0;
+    text-align: center;
+}
+
+#hippoo-integrations-loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid #E3E3E3;
+    border-top-color: #32435B;
+    border-radius: 50%;
+    display: inline-block;
+    animation: hippoo-spin 0.9s linear infinite;
+}
+
+@keyframes hippoo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

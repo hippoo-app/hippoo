@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Loja Hippoo"
+  },
+
+  "home": {
+    "title": "Início",
+    "searchPlaceholder": "Pesquisar todos os produtos",
+    "category": "Categoria",
+    "sortBy": "Ordenar por:",
+    "inStock": "Em stock",
+    "noData": "Nenhum produto encontrado"
+  },
+
+  "product": {
+    "title": "Detalhes do produto",
+    "addToCart": "Adicionar ao carrinho",
+    "outOfStock": "Esgotado",
+    "choose": "Escolher",
+    "addToCartSuccess": "Produto adicionado ao carrinho com sucesso.",
+    "viewCart": "Ver carrinho"
+  },
+
+  "cart": {
+    "title": "Carrinho",
+    "subtotal": "Subtotal",
+    "discount": "Desconto",
+    "total": "Total",
+    "couponDialogTitle": "Inserir Código do Cupão",
+    "couponDescription": "Digite seu código e clique em aplicar para ver as suas economias.",
+    "couponPlaceholder": "Inserir código do cupão",
+    "couponApply": "Aplicar",
+    "couponHave": "Eu tenho um código de cupão",
+    "goToCheckout": "Ir para o pagamento",
+    "noData": "Nenhum dado encontrado!",
+    "updateSuccess": "Produto atualizado com sucesso."
+  },
+
+  "checkout": {
+    "title": "Pagamento",
+    "billingAddress": "Endereço de faturação",
+    "shippingAddress": "Endereço de envio",
+    "firstName": "Nome próprio",
+    "lastName": "Apelido",
+    "country": "País",
+    "province": "Província",
+    "city": "Cidade",
+    "email": "E-mail",
+    "zipCode": "Código postal",
+    "address": "Morada",
+    "address2": "Morada 2",
+    "phoneNumber": "Número de telefone",
+    "shippingSameAsBilling": "O endereço de envio é o mesmo que o de faturação",
+    "nextStep": "Próximo passo",
+    "purchase": "Comprar",
+    "phone": "Telefone",
+    "editDetails": "Editar detalhes",
+    "customerNote": "Nota do cliente",
+    "shippingMethod": "Método de envio",
+    "noShippingMethods": "Nenhum método de envio disponível",
+    "paymentMethod": "Método de pagamento",
+    "noPaymentMethods": "Nenhum método de pagamento disponível",
+    "total": "Total",
+    "termsConditions": "Ao fazer o seu pedido, concorda com os nossos Termos e Condições.",
+    "noDataForCheckout": "Nenhum dado disponível para o pagamento!",
+    "chooseShippingMethod": "Por favor, escolha um método de envio",
+    "choosePaymentMethod": "Por favor, escolha um método de pagamento"
+  },
+
+  "payment": {
+    "title": "Resultado do Pagamento",
+    "successful": "Pagamento Concluído com Sucesso",
+    "orderId": "ID do Pedido",
+    "redirecting": "A redirecionar para o banco ...",
+    "processing": "O seu pedido está a ser processado.",
+    "backToHome": "Voltar ao Início"
+  },
+
+  "nav": {
+    "mainMenu": "Menu principal"
+  },
+
+  "component": {
+    "input": {
+      "optional": "opcional"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Mais recente primeiro",
+      "2": "Mais antigo primeiro",
+      "3": "Modificado recentemente",
+      "4": "Modificado mais antigo",
+      "5": "Preço - Mais baixo ao mais alto",
+      "6": "Preço - Mais alto ao mais baixo",
+      "7": "Mais vendidos - Do mais alto ao mais baixo",
+      "8": "Mais vendidos - Do mais baixo ao mais alto",
+      "9": "Avaliação - Do mais alto ao mais baixo"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "O modelo não é válido",
+      "401": "O seu token de login é inválido",
+      "403": "Não tem permissão para aceder a esta página",
+      "404": "A sua página não existe!",
+      "500": "Oops, algo correu mal!"
+    }
+  },
+
+  "validations": {
+    "between": "O valor deve estar entre {min} e {max}",
+    "digits": "O valor deve ser numérico e conter exatamente {length} dígitos",
+    "email": "O valor deve ser um e-mail válido",
+    "ext": "O formato do arquivo não é válido",
+    "integer": "O valor deve ser um número inteiro",
+    "length": "O valor deve ter {length} de comprimento",
+    "max_value": "O valor deve ser {max} ou inferior",
+    "max": "O valor não pode ser superior a {length} caracteres",
+    "min_value": "O valor deve ser {min} ou superior",
+    "min": "O valor deve ter pelo menos {length} caracteres",
+    "numeric": "O valor só pode conter caracteres numéricos",
+    "regex": "O formato do valor é inválido",
+    "required_if": "O valor é obrigatório",
+    "required": "O valor é obrigatório",
+    "size": "O tamanho do arquivo deve ser inferior a {size}KB"
+  }
+}

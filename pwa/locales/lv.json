@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "Hippoo Veikals"
+  },
+  "home": {
+    "title": "Sākums",
+    "searchPlaceholder": "Meklēt visos produktos",
+    "category": "Kategorija",
+    "sortBy": "Kārtot pēc:",
+    "inStock": "Noliktavā",
+    "noData": "Produkti nav atrasti"
+  },
+  "product": {
+    "title": "Produkta detaļas",
+    "addToCart": "Pievienot grozam",
+    "outOfStock": "Izpārdots",
+    "choose": "Izvēlēties",
+    "addToCartSuccess": "Produkts veiksmīgi pievienots grozam.",
+    "viewCart": "Skatīt grozu"
+  },
+  "cart": {
+    "title": "Grozs",
+    "subtotal": "Starpsumma",
+    "discount": "Atlaide",
+    "total": "Kopā",
+    "couponDialogTitle": "Ievadiet kupona kodu",
+    "couponDescription": "Ierakstiet kodu un nospiediet 'piemērot', lai redzētu savu ietaupījumu.",
+    "couponPlaceholder": "Ievadiet kupona kodu",
+    "couponApply": "Piemērot",
+    "couponHave": "Man ir kupona kods",
+    "goToCheckout": "Doties uz apmaksu",
+    "noData": "Dati nav atrasti!",
+    "updateSuccess": "Produkts veiksmīgi atjaunināts."
+  },
+  "checkout": {
+    "title": "Apmaksa",
+    "billingAddress": "Norēķinu adrese",
+    "shippingAddress": "Piegādes adrese",
+    "firstName": "Vārds",
+    "lastName": "Uzvārds",
+    "country": "Valsts",
+    "province": "Province",
+    "city": "Pilsēta",
+    "email": "E-pasts",
+    "zipCode": "Pasta indekss",
+    "address": "Adrese",
+    "address2": "Adrese 2",
+    "phoneNumber": "Tālruņa numurs",
+    "shippingSameAsBilling": "Piegādes adrese ir tāda pati kā norēķinu adrese",
+    "nextStep": "Nākamais solis",
+    "purchase": "Pirkt",
+    "phone": "Tālrunis",
+    "editDetails": "Rediģēt detaļas",
+    "customerNote": "Klienta piezīme",
+    "shippingMethod": "Piegādes veids",
+    "noShippingMethods": "Nav pieejamu piegādes veidu",
+    "paymentMethod": "Maksājuma veids",
+    "noPaymentMethods": "Nav pieejamu maksājuma veidu",
+    "total": "Kopā",
+    "termsConditions": "Veicot pasūtījumu, jūs piekrītat mūsu Noteikumiem un Nosacījumiem.",
+    "noDataForCheckout": "Nav pieejamu datu apmaksai!",
+    "chooseShippingMethod": "Lūdzu, izvēlieties piegādes veidu",
+    "choosePaymentMethod": "Lūdzu, izvēlieties maksājuma veidu"
+  },
+  "payment": {
+    "title": "Maksājuma rezultāts",
+    "successful": "Maksājums veiksmīgs",
+    "orderId": "Pasūtījuma ID",
+    "redirecting": "Pārvirza uz banku ...",
+    "processing": "Jūsu pasūtījums tiek apstrādāts.",
+    "backToHome": "Atpakaļ uz Sākumu"
+  },
+  "nav": {
+    "mainMenu": "Galvenā izvēlne"
+  },
+  "component": {
+    "input": {
+      "optional": "neobligāti"
+    }
+  },
+  "enums": {
+    "productSortType": {
+      "1": "Jaunākie pirms",
+      "2": "Vecākie pirms",
+      "3": "Pēdējoreiz modificēts",
+      "4": "Senākais modificēts",
+      "5": "Cena - No zemākās uz augstāko",
+      "6": "Cena - No augstākās uz zemāko",
+      "7": "Visvairāk pārdotie - No augstākās uz zemāko",
+      "8": "Visvairāk pārdotie - No zemākās uz augstāko",
+      "9": "Vērtējums - No augstākās uz zemāko"
+    }
+  },
+  "errors": {
+    "default": {
+      "400": "Modelis nav derīgs",
+      "401": "Jūsu pieteikšanās pilnvara nav derīga",
+      "403": "Jums nav atļauts piekļūt šai lapai",
+      "404": "Jūsu lapa neeksistē!",
+      "500": "Ups, kaut kas nogāja greizi!"
+    }
+  },
+  "validations": {
+    "between": "Vērtībai jābūt starp {min} un {max}",
+    "digits": "Vērtībai jābūt skaitliskai un jāsatur tieši {length} cipari",
+    "email": "Vērtībai jābūt derīgai e-pasta adresei",
+    "ext": "Faila formāts nav derīgs",
+    "integer": "Vērtībai jābūt veselam skaitlim",
+    "length": "Vērtības garumam jābūt {length}",
+    "max_value": "Vērtībai jābūt {max} vai mazāk",
+    "max": "Vērtība nedrīkst pārsniegt {length} rakstzīmes",
+    "min_value": "Vērtībai jābūt {min} vai vairāk",
+    "min": "Vērtībai jāsatur vismaz {length} rakstzīmes",
+    "numeric": "Vērtība var saturēt tikai skaitliskas rakstzīmes",
+    "regex": "Vērtības formāts nav derīgs",
+    "required_if": "Vērtība ir obligāta",
+    "required": "Vērtība ir obligāta",
+    "size": "Faila izmēram jābūt mazākam par {size}KB"
+  }
+}

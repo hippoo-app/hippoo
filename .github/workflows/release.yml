@@ -1,0 +1,14 @@
+name: Release to WordPress.org
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    uses: hippoo-app/devops-templates/.github/workflows/deploy-to-wporg.yml@main
+    with:
+      plugin-slug: hippoo
+    secrets:
+      SVN_USERNAME: ${{ secrets.WPORG_SVN_USERNAME_HIPPOOO }}
+      SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD_HIPPOOO }}

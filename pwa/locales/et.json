@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "Hippoo Pood"
+  },
+  "home": {
+    "title": "Avaleht",
+    "searchPlaceholder": "Otsi kõigi toodete hulgast",
+    "category": "Kategooria",
+    "sortBy": "Sorteeri:",
+    "inStock": "Laos",
+    "noData": "Tooteid ei leitud"
+  },
+  "product": {
+    "title": "Toote detailid",
+    "addToCart": "Lisa ostukorvi",
+    "outOfStock": "Läbi müüdud",
+    "choose": "Vali",
+    "addToCartSuccess": "Toode edukalt ostukorvi lisatud.",
+    "viewCart": "Vaata ostukorvi"
+  },
+  "cart": {
+    "title": "Ostukorv",
+    "subtotal": "Vahesumma",
+    "discount": "Allahindlus",
+    "total": "Kokku",
+    "couponDialogTitle": "Sisesta kupongi kood",
+    "couponDescription": "Sisesta kood ja vajuta 'rakenda', et näha oma säästu.",
+    "couponPlaceholder": "Sisesta kupongi kood",
+    "couponApply": "Rakenda",
+    "couponHave": "Mul on kupongi kood",
+    "goToCheckout": "Mine kassasse",
+    "noData": "Andmeid ei leitud!",
+    "updateSuccess": "Toode edukalt uuendatud."
+  },
+  "checkout": {
+    "title": "Kassa",
+    "billingAddress": "Arveldusaadress",
+    "shippingAddress": "Tarneaadress",
+    "firstName": "Eesnimi",
+    "lastName": "Perekonnanimi",
+    "country": "Riik",
+    "province": "Maakond",
+    "city": "Linn",
+    "email": "E-post",
+    "zipCode": "Postiindeks",
+    "address": "Aadress",
+    "address2": "Aadress 2",
+    "phoneNumber": "Telefoninumber",
+    "shippingSameAsBilling": "Tarneaadress on sama, mis arveldusaadress",
+    "nextStep": "Järgmine samm",
+    "purchase": "Osta",
+    "phone": "Telefon",
+    "editDetails": "Muuda detaile",
+    "customerNote": "Kliendi märkus",
+    "shippingMethod": "Kohaletoimetamise viis",
+    "noShippingMethods": "Tarneviise pole saadaval",
+    "paymentMethod": "Makseviis",
+    "noPaymentMethods": "Makseviise pole saadaval",
+    "total": "Kokku",
+    "termsConditions": "Tellimuse esitamisega nõustute meie tingimustega.",
+    "noDataForCheckout": "Kassas pole andmeid saadaval!",
+    "chooseShippingMethod": "Palun valige tarneviis",
+    "choosePaymentMethod": "Palun valige makseviis"
+  },
+  "payment": {
+    "title": "Makse tulemus",
+    "successful": "Makse õnnestus",
+    "orderId": "Tellimuse ID",
+    "redirecting": "Suunatakse panka ...",
+    "processing": "Teie tellimust töödeldakse.",
+    "backToHome": "Tagasi Avalehele"
+  },
+  "nav": {
+    "mainMenu": "Peamenüü"
+  },
+  "component": {
+    "input": {
+      "optional": "valikuline"
+    }
+  },
+  "enums": {
+    "productSortType": {
+      "1": "Kõige uuemad esimesena",
+      "2": "Kõige vanemad esimesena",
+      "3": "Viimati muudetud",
+      "4": "Kõige varem muudetud",
+      "5": "Hind - Madalamast Kõrgeimale",
+      "6": "Hind - Kõrgeimast Madalamale",
+      "7": "Enim müüdud - Kõrgeimast Madalamale",
+      "8": "Enim müüdud - Madalamast Kõrgeimale",
+      "9": "Hinnang - Kõrgeimast Madalamale"
+    }
+  },
+  "errors": {
+    "default": {
+      "400": "Mudel on vigane",
+      "401": "Teie sisselogimise tunnus on vigane",
+      "403": "Teil pole luba sellele lehele juurde pääseda",
+      "404": "Teie lehte ei eksisteeri!",
+      "500": "Ups, midagi läks valesti!"
+    }
+  },
+  "validations": {
+    "between": "Väärtus peab olema vahemikus {min} ja {max}",
+    "digits": "Väärtus peab olema numbriline ja sisaldama täpselt {length} numbrit",
+    "email": "Väärtus peab olema kehtiv e-posti aadress",
+    "ext": "Failivorming on vigane",
+    "integer": "Väärtus peab olema täisarv",
+    "length": "Väärtuse pikkus peab olema {length}",
+    "max_value": "Väärtus peab olema {max} või väiksem",
+    "max": "Väärtus ei tohi ületada {length} märki",
+    "min_value": "Väärtus peab olema {min} või suurem",
+    "min": "Väärtus peab sisaldama vähemalt {length} märki",
+    "numeric": "Väärtus võib sisaldada ainult numbrilisi märke",
+    "regex": "Väärtuse vorming on vigane",
+    "required_if": "Väärtus on kohustuslik",
+    "required": "Väärtus on kohustuslik",
+    "size": "Faili suurus peab olema väiksem kui {size}KB"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippoo Shop"
+  },
+
+  "home": {
+    "title": "Startseite",
+    "searchPlaceholder": "Alle Produkte durchsuchen",
+    "category": "Kategorie",
+    "sortBy": "Sortieren nach:",
+    "inStock": "Auf Lager",
+    "noData": "Keine Produkte gefunden"
+  },
+
+  "product": {
+    "title": "Produktdetails",
+    "addToCart": "Zum Warenkorb hinzufügen",
+    "outOfStock": "Nicht auf Lager",
+    "choose": "Auswählen",
+    "addToCartSuccess": "Produkt erfolgreich zum Warenkorb hinzugefügt.",
+    "viewCart": "Warenkorb anzeigen"
+  },
+
+  "cart": {
+    "title": "Warenkorb",
+    "subtotal": "Zwischensumme",
+    "discount": "Rabatt",
+    "total": "Gesamtbetrag",
+    "couponDialogTitle": "Gutscheincode eingeben",
+    "couponDescription": "Geben Sie Ihren Code ein und klicken Sie auf 'Anwenden', um Ihre Ersparnisse zu sehen.",
+    "couponPlaceholder": "Gutscheincode eingeben",
+    "couponApply": "Anwenden",
+    "couponHave": "Ich habe einen Gutscheincode",
+    "goToCheckout": "Zur Kasse gehen",
+    "noData": "Keine Daten gefunden!",
+    "updateSuccess": "Produkt erfolgreich aktualisiert."
+  },
+
+  "checkout": {
+    "title": "Zur Kasse",
+    "billingAddress": "Rechnungsadresse",
+    "shippingAddress": "Versandadresse",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "country": "Land",
+    "province": "Provinz",
+    "city": "Stadt",
+    "email": "E-Mail",
+    "zipCode": "Postleitzahl",
+    "address": "Adresse",
+    "address2": "Adresse 2",
+    "phoneNumber": "Telefonnummer",
+    "shippingSameAsBilling": "Versandadresse ist gleich der Rechnungsadresse",
+    "nextStep": "Nächster Schritt",
+    "purchase": "Kaufen",
+    "phone": "Telefon",
+    "editDetails": "Details bearbeiten",
+    "customerNote": "Kundennotiz",
+    "shippingMethod": "Versandart",
+    "noShippingMethods": "Keine Versandmethoden verfügbar",
+    "paymentMethod": "Zahlungsmethode",
+    "noPaymentMethods": "Keine Zahlungsmethoden verfügbar",
+    "total": "Gesamtbetrag",
+    "termsConditions": "Mit der Abgabe Ihrer Bestellung stimmen Sie unseren Allgemeinen Geschäftsbedingungen zu.",
+    "noDataForCheckout": "Keine Daten für den Bezahlvorgang verfügbar!",
+    "chooseShippingMethod": "Bitte wählen Sie eine Versandart",
+    "choosePaymentMethod": "Bitte wählen Sie eine Zahlungsmethode"
+  },
+
+  "payment": {
+    "title": "Zahlungsergebnis",
+    "successful": "Zahlung erfolgreich",
+    "orderId": "Bestellnummer",
+    "redirecting": "Weiterleitung zur Bank ...",
+    "processing": "Ihre Bestellung wird bearbeitet.",
+    "backToHome": "Zurück zur Startseite"
+  },
+
+  "nav": {
+    "mainMenu": "Hauptmenü"
+  },
+
+  "component": {
+    "input": {
+      "optional": "optional"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Neueste zuerst",
+      "2": "Älteste zuerst",
+      "3": "Zuletzt geändert",
+      "4": "Älteste Änderung",
+      "5": "Preis - Niedrig zu Hoch",
+      "6": "Preis - Hoch zu Niedrig",
+      "7": "Meistverkauft - Hoch zu Niedrig",
+      "8": "Meistverkauft - Niedrig zu Hoch",
+      "9": "Bewertung - Hoch zu Niedrig"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Modell ist ungültig",
+      "401": "Ihr Login-Token ist ungültig",
+      "403": "Sie sind nicht berechtigt, auf diese Seite zuzugreifen",
+      "404": "Ihre Seite existiert nicht!",
+      "500": "Hoppla, etwas ist schiefgelaufen!"
+    }
+  },
+
+  "validations": {
+    "between": "Der Wert muss zwischen {min} und {max} liegen",
+    "digits": "Der Wert muss numerisch sein und genau {length} Ziffern enthalten",
+    "email": "Der Wert muss eine gültige E-Mail-Adresse sein",
+    "ext": "Das Dateiformat ist ungültig",
+    "integer": "Der Wert muss eine Ganzzahl sein",
+    "length": "Der Wert muss {length} lang sein",
+    "max_value": "Der Wert muss {max} oder kleiner sein",
+    "max": "Der Wert darf nicht länger als {length} Zeichen sein",
+    "min_value": "Der Wert muss {min} oder größer sein",
+    "min": "Der Wert muss mindestens {length} Zeichen umfassen",
+    "numeric": "Der Wert darf nur numerische Zeichen enthalten",
+    "regex": "Das Wertformat ist ungültig",
+    "required_if": "Der Wert ist erforderlich",
+    "required": "Der Wert ist erforderlich",
+    "size": "Die Dateigröße muss kleiner als {size}KB sein"
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippoo Mağazası"
+  },
+
+  "home": {
+    "title": "Ana Sayfa",
+    "searchPlaceholder": "Tüm ürünlerde ara",
+    "category": "Kategori",
+    "sortBy": "Sırala:",
+    "inStock": "Stokta",
+    "noData": "Hiç ürün bulunamadı"
+  },
+
+  "product": {
+    "title": "Ürün detayları",
+    "addToCart": "Sepete ekle",
+    "outOfStock": "Stokta yok",
+    "choose": "Seç",
+    "addToCartSuccess": "Ürün sepete başarıyla eklendi.",
+    "viewCart": "Sepeti görüntüle"
+  },
+
+  "cart": {
+    "title": "Sepet",
+    "subtotal": "Ara toplam",
+    "discount": "İndirim",
+    "total": "Toplam",
+    "couponDialogTitle": "Kupon Kodunu Girin",
+    "couponDescription": "Tasarruflarınızı görmek için kodunuzu yazın ve uygula'ya basın.",
+    "couponPlaceholder": "Kupon kodunu girin",
+    "couponApply": "Uygula",
+    "couponHave": "Bir kupon kodum var",
+    "goToCheckout": "Ödeme sayfasına git",
+    "noData": "Veri bulunamadı!",
+    "updateSuccess": "Ürün başarıyla güncellendi."
+  },
+
+  "checkout": {
+    "title": "Ödeme",
+    "billingAddress": "Fatura adresi",
+    "shippingAddress": "Teslimat adresi",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "country": "Ülke",
+    "province": "Eyalet/İl",
+    "city": "Şehir",
+    "email": "E-posta",
+    "zipCode": "Posta kodu",
+    "address": "Adres",
+    "address2": "Adres 2",
+    "phoneNumber": "Telefon numarası",
+    "shippingSameAsBilling": "Teslimat adresi fatura adresi ile aynı",
+    "nextStep": "Sonraki adım",
+    "purchase": "Satın al",
+    "phone": "Telefon",
+    "editDetails": "Detayları düzenle",
+    "customerNote": "Müşteri notu",
+    "shippingMethod": "Kargo yöntemi",
+    "noShippingMethods": "Kargo yöntemleri mevcut değil",
+    "paymentMethod": "Ödeme yöntemi",
+    "noPaymentMethods": "Ödeme yöntemleri mevcut değil",
+    "total": "Toplam",
+    "termsConditions": "Siparişinizi vererek Şartlar ve Koşullarımızı kabul etmiş olursunuz.",
+    "noDataForCheckout": "Ödeme için veri mevcut değil!",
+    "chooseShippingMethod": "Lütfen kargo yöntemini seçin",
+    "choosePaymentMethod": "Lütfen ödeme yöntemini seçin"
+  },
+
+  "payment": {
+    "title": "Ödeme Sonucu",
+    "successful": "Ödeme Başarılı",
+    "orderId": "Sipariş ID",
+    "redirecting": "Banka yönlendiriliyor ...",
+    "processing": "Siparişiniz işleniyor.",
+    "backToHome": "Ana Sayfaya Dön"
+  },
+
+  "nav": {
+    "mainMenu": "Ana menü"
+  },
+
+  "component": {
+    "input": {
+      "optional": "isteğe bağlı"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "Önce En Yeni",
+      "2": "Önce En Eski",
+      "3": "Yakın Zamanda Düzenlenen",
+      "4": "En Eski Düzenlenen",
+      "5": "Fiyat - Düşükten Yükseğe",
+      "6": "Fiyat - Yüksekten Düşüğe",
+      "7": "Çok Satan - Yüksekten Düşüğe",
+      "8": "Çok Satan - Düşükten Yükseğe",
+      "9": "Değerlendirme - Yüksekten Düşüğe"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "Model geçerli değil",
+      "401": "Giriş belirteciniz geçersiz",
+      "403": "Bu sayfaya erişim izniniz yok",
+      "404": "Sayfanız mevcut değil!",
+      "500": "Hata, bir şeyler ters gitti!"
+    }
+  },
+
+  "validations": {
+    "between": "Değer {min} ile {max} arasında olmalıdır",
+    "digits": "Değer sayısal olmalı ve tam olarak {length} hane içermelidir",
+    "email": "Değer geçerli bir e-posta olmalıdır",
+    "ext": "Dosya biçimi geçerli değil",
+    "integer": "Değer bir tam sayı olmalıdır",
+    "length": "Değer {length} uzunluğunda olmalıdır",
+    "max_value": "Değer {max} veya daha az olmalıdır",
+    "max": "Değer {length} karakterden fazla olamaz",
+    "min_value": "Değer {min} veya daha fazla olmalıdır",
+    "min": "Değer en az {length} karakter olmalıdır",
+    "numeric": "Değer yalnızca sayısal karakterler içerebilir",
+    "regex": "Değer biçimi geçersiz",
+    "required_if": "Değer gereklidir",
+    "required": "Değer gereklidir",
+    "size": "Dosya boyutu {size}KB'den az olmalıdır"
+  }
+}

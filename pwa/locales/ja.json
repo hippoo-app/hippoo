@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "Hippooショップ"
+  },
+
+  "home": {
+    "title": "ホーム",
+    "searchPlaceholder": "すべての商品を検索",
+    "category": "カテゴリー",
+    "sortBy": "並べ替え:",
+    "inStock": "在庫あり",
+    "noData": "商品が見つかりませんでした"
+  },
+
+  "product": {
+    "title": "商品詳細",
+    "addToCart": "カートに追加",
+    "outOfStock": "在庫切れ",
+    "choose": "選択",
+    "addToCartSuccess": "商品がカートに正常に追加されました。",
+    "viewCart": "カートを見る"
+  },
+
+  "cart": {
+    "title": "カート",
+    "subtotal": "小計",
+    "discount": "割引",
+    "total": "合計",
+    "couponDialogTitle": "クーポンコードを入力",
+    "couponDescription": "コードを入力し、「適用」を押して割引額を確認してください。",
+    "couponPlaceholder": "クーポンコードを入力",
+    "couponApply": "適用",
+    "couponHave": "クーポンコードを持っています",
+    "goToCheckout": "レジへ進む",
+    "noData": "データが見つかりません！",
+    "updateSuccess": "商品が正常に更新されました。"
+  },
+
+  "checkout": {
+    "title": "チェックアウト",
+    "billingAddress": "請求先住所",
+    "shippingAddress": "配送先住所",
+    "firstName": "名",
+    "lastName": "姓",
+    "country": "国",
+    "province": "都道府県",
+    "city": "市区町村",
+    "email": "Eメール",
+    "zipCode": "郵便番号",
+    "address": "住所",
+    "address2": "住所 2",
+    "phoneNumber": "電話番号",
+    "shippingSameAsBilling": "配送先住所は請求先住所と同じです",
+    "nextStep": "次のステップ",
+    "purchase": "購入する",
+    "phone": "電話",
+    "editDetails": "詳細を編集",
+    "customerNote": "お客様メモ",
+    "shippingMethod": "配送方法",
+    "noShippingMethods": "利用可能な配送方法がありません",
+    "paymentMethod": "支払い方法",
+    "noPaymentMethods": "利用可能な支払い方法がありません",
+    "total": "合計",
+    "termsConditions": "注文を行うことにより、当社の利用規約に同意したものとみなされます。",
+    "noDataForCheckout": "チェックアウトに利用可能なデータがありません！",
+    "chooseShippingMethod": "配送方法を選択してください",
+    "choosePaymentMethod": "支払い方法を選択してください"
+  },
+
+  "payment": {
+    "title": "支払い結果",
+    "successful": "支払いに成功しました",
+    "orderId": "注文ID",
+    "redirecting": "銀行へリダイレクト中です...",
+    "processing": "ご注文は処理中です。",
+    "backToHome": "ホームに戻る"
+  },
+
+  "nav": {
+    "mainMenu": "メインメニュー"
+  },
+
+  "component": {
+    "input": {
+      "optional": "オプション"
+    }
+  },
+
+  "enums": {
+    "productSortType": {
+      "1": "新しい順",
+      "2": "古い順",
+      "3": "最近変更された順",
+      "4": "古い変更順",
+      "5": "価格 - 低い順",
+      "6": "価格 - 高い順",
+      "7": "売れ筋 - 高い順",
+      "8": "売れ筋 - 低い順",
+      "9": "評価 - 高い順"
+    }
+  },
+
+  "errors": {
+    "default": {
+      "400": "モデルが無効です",
+      "401": "ログイン トークンが無効です",
+      "403": "このページへのアクセスは許可されていません",
+      "404": "お探しのページは存在しません！",
+      "500": "おっと、何か問題が発生しました！"
+    }
+  },
+
+  "validations": {
+    "between": "値は {min} から {max} の間でなければなりません",
+    "digits": "値は数値で、正確に {length} 桁でなければなりません",
+    "email": "値は有効なEメールでなければなりません",
+    "ext": "ファイル形式が無効です",
+    "integer": "値は整数でなければなりません",
+    "length": "値の長さは {length} でなければなりません",
+    "max_value": "値は {max} 以下でなければなりません",
+    "max": "値は {length} 文字を超えてはなりません",
+    "min_value": "値は {min} 以上でなければなりません",
+    "min": "値は少なくとも {length} 文字でなければなりません",
+    "numeric": "値は数字のみを含めることができます",
+    "regex": "値の形式が無効です",
+    "required_if": "値は必須です",
+    "required": "値は必須です",
+    "size": "ファイルサイズは {size}KB 未満でなければなりません"
+  }
+}

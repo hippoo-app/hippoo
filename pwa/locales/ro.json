@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "Magazin Hippoo"
+  },
+  "home": {
+    "title": "Acasă",
+    "searchPlaceholder": "Căutați toate produsele",
+    "category": "Categorie",
+    "sortBy": "Sortați după:",
+    "inStock": "În stoc",
+    "noData": "Nu au fost găsite produse"
+  },
+  "product": {
+    "title": "Detalii Produs",
+    "addToCart": "Adaugă în coș",
+    "outOfStock": "Stoc epuizat",
+    "choose": "Alege",
+    "addToCartSuccess": "Produs adăugat cu succes în coș.",
+    "viewCart": "Vizualizează coșul"
+  },
+  "cart": {
+    "title": "Coș",
+    "subtotal": "Subtotal",
+    "discount": "Reducere",
+    "total": "Total",
+    "couponDialogTitle": "Introduceți Codul Cuponului",
+    "couponDescription": "Introduceți codul și apăsați aplică pentru a vedea economiile.",
+    "couponPlaceholder": "Introduceți codul cuponului",
+    "couponApply": "Aplică",
+    "couponHave": "Am un cod de cupon",
+    "goToCheckout": "Mergi la finalizare comandă",
+    "noData": "Nu au fost găsite date!",
+    "updateSuccess": "Produs actualizat cu succes."
+  },
+  "checkout": {
+    "title": "Finalizare comandă",
+    "billingAddress": "Adresă de facturare",
+    "shippingAddress": "Adresă de livrare",
+    "firstName": "Prenume",
+    "lastName": "Nume",
+    "country": "Țara",
+    "province": "Județ/Provincie",
+    "city": "Oraș",
+    "email": "E-mail",
+    "zipCode": "Cod poștal",
+    "address": "Adresă",
+    "address2": "Adresă 2",
+    "phoneNumber": "Număr de telefon",
+    "shippingSameAsBilling": "Adresa de livrare este aceeași cu adresa de facturare",
+    "nextStep": "Pasul următor",
+    "purchase": "Cumpără",
+    "phone": "Telefon",
+    "editDetails": "Editează detalii",
+    "customerNote": "Notă client",
+    "shippingMethod": "Metodă de livrare",
+    "noShippingMethods": "Nicio metodă de livrare disponibilă",
+    "paymentMethod": "Metodă de plată",
+    "noPaymentMethods": "Nicio metodă de plată disponibilă",
+    "total": "Total",
+    "termsConditions": "Plasând comanda, sunteți de acord cu Termenii și Condițiile noastre.",
+    "noDataForCheckout": "Nicio dată disponibilă pentru finalizarea comenzii!",
+    "chooseShippingMethod": "Vă rugăm să alegeți o metodă de livrare",
+    "choosePaymentMethod": "Vă rugăm să alegeți o metodă de plată"
+  },
+  "payment": {
+    "title": "Rezultat Plată",
+    "successful": "Plată Reușită",
+    "orderId": "ID Comandă",
+    "redirecting": "Se redirecționează către bancă ...",
+    "processing": "Comanda dumneavoastră este în curs de procesare.",
+    "backToHome": "Înapoi la Acasă"
+  },
+  "nav": {
+    "mainMenu": "Meniu principal"
+  },
+  "component": {
+    "input": {
+      "optional": "opțional"
+    }
+  },
+  "enums": {
+    "productSortType": {
+      "1": "Cele mai noi întâi",
+      "2": "Cele mai vechi întâi",
+      "3": "Modificat recent",
+      "4": "Modificat cel mai vechi",
+      "5": "Preț - De la mic la mare",
+      "6": "Preț - De la mare la mic",
+      "7": "Cel mai vândut - De la mare la mic",
+      "8": "Cel mai vândut - De la mic la mare",
+      "9": "Evaluare - De la mare la mic"
+    }
+  },
+  "errors": {
+    "default": {
+      "400": "Modelul este invalid",
+      "401": "Tokenul de autentificare este invalid",
+      "403": "Nu aveți permisiunea de a accesa această pagină",
+      "404": "Pagina dvs. nu există!",
+      "500": "Ups, a apărut o eroare!"
+    }
+  },
+  "validations": {
+    "between": "Valoarea trebuie să fie între {min} și {max}",
+    "digits": "Valoarea trebuie să fie numerică și să conțină exact {length} cifre",
+    "email": "Valoarea trebuie să fie un e-mail valid",
+    "ext": "Formatul fișierului este invalid",
+    "integer": "Valoarea trebuie să fie un număr întreg",
+    "length": "Lungimea valorii trebuie să fie {length}",
+    "max_value": "Valoarea trebuie să fie {max} sau mai mică",
+    "max": "Valoarea nu poate depăși {length} caractere",
+    "min_value": "Valoarea trebuie să fie {min} sau mai mare",
+    "min": "Valoarea trebuie să aibă cel puțin {length} caractere",
+    "numeric": "Valoarea poate conține doar caractere numerice",
+    "regex": "Formatul valorii este invalid",
+    "required_if": "Valoarea este obligatorie",
+    "required": "Valoarea este obligatorie",
+    "size": "Dimensiunea fișierului trebuie să fie mai mică de {size}KB"
+  }
+}

@@ -1,0 +1,229 @@
+/* Style the barcode button */
+.barcode-button {
+    display: inline-block;
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: #0073aa;
+    border:1px solid #0073aa;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px 10px;
+    text-decoration: none;
+    position: relative;
+}
+.barcode-button img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    width: 100px;
+}
+.barcode-ico{
+    display: block;
+    height: 24px !important;
+    width: 24px !important;
+    color: #0073aa;
+}
+
+/* Style the tooltip */
+.barcode-button span {
+    visibility: hidden;
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1;
+}
+
+.barcode-button:hover span {
+    visibility: visible;
+}
+
+
+/* Style of the config page */
+.wh-heading{
+	font-weight: 700 !important;
+	font-size: 22px !important;
+	line-height: 30px !important;
+	color: #444444 !important;
+}
+
+.short-desc:after {
+	content:"";
+	display:block;
+	clear:both;
+}
+
+.short-desc .left{
+	width: 65%;
+	float: left;
+}
+
+.short-desc .left p{
+	font-weight: 400;
+	font-size: 19px;
+	line-height: 28px;
+	color: #000000;
+	padding-right: 80px;
+}
+
+.short-desc .right{
+	width: 35%;
+	float: right;
+}
+
+.short-desc .right div{
+	background: #FFFFFF;
+	border: 1px solid #DEDEDE;
+	border-radius: 16px;
+	text-align: center;
+	padding: 32px;
+	display: inline-block;
+	max-width: 320px;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 25px;
+	text-align: center;
+	color: #000000;
+	float: right
+}
+
+.short-desc .right div img{
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	width: 200px;
+	height: auto;
+}
+
+.extentions{
+	border-top: 1px solid #D6D6D6;
+	margin-top: 35px;
+}
+
+.extentions > strong{
+	font-weight: 700;
+	font-size: 19px;
+	line-height: 26px;
+	color: #444444;
+	position: relative;
+	top: -15px;
+	background: #f0f0f1;
+	padding: 15px 15px 15px 0
+}
+
+.extentions > p{
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 25px;
+	color: #000000;
+}
+
+.extentions .item{
+	width: 49%;
+	display: inline-block;
+	float: left
+}
+
+.extentions .item .item-inner{
+	background: #FFFFFF;
+	border: 1px solid #DEDEDE;
+	border-radius: 16px;
+	margin: 15px 15px 15px 0;
+	padding: 30px;
+	position: relative
+}
+.item-inner p{
+ margin-right: 100px;
+}
+
+.extentions .item:nth-of-type(2n) .item-inner{
+	margin: 15px 0 15px 15px;
+}
+
+.extentions .item .item-inner strong{
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 25px;
+	color: #000000;
+	display: block
+}
+
+.extentions .item .item-inner p{
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 22px;
+	color: #000000;
+}
+.item-footer{
+	margin-top:15px
+}
+
+.extentions .item .item-inner a{
+	background: #5F238D;
+	border-radius: 60px;
+	padding: 10px 45px 12px;
+	font-weight: 700;
+	font-size: 14px;
+	color: #FFFFFF;
+	text-decoration: none;
+	display: inline-block;
+}
+
+.extentions .item .item-inner span{
+	float: right;
+	font-weight: 700;
+	font-size: 18px;
+	line-height: 25px;
+	color: #5F238D;
+	margin: 7px 0 0 0;
+}
+
+.extentions .item .item-inner img{
+	background: #CFCFCF;
+	border-radius: 8px;
+	position: absolute;
+	width: 75px;
+	height: auto;
+	top: 30px;
+	right: 30px;
+}
+.short-desc .left img{
+	height:50px;
+	padding: 4px
+}
+
+@media only screen and (max-width: 480px) {
+
+	.short-desc .left,
+	.short-desc .right{
+		width: 100%;
+		float: none;
+	}
+	.short-desc .left p{
+		padding-right: 0;
+	}
+
+	.short-desc .right div{
+		display: block;
+		float: none;
+		margin: 20px auto
+	}
+
+	.extentions .item{
+		width: 100%;
+		display: block;
+		float: none
+	}
+	.extentions .item .item-inner{
+		margin: 15px !important;
+	}
+}

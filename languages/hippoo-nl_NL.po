@@ -1,0 +1,1135 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Hippoo Mobile app for WooCommerce 1.7.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hippoo\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-12-14T20:22:12+00:00\n"
+"PO-Revision-Date: 2025-12-22 13:48+0000\n"
+"Language: nl_NL\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: hippoo\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.8.0; wp-6.9; php-8.2.29\n"
+
+#. Plugin Name of the plugin
+#: hippoo.php
+msgid "Hippoo Mobile app for WooCommerce"
+msgstr "Hippoo mobiele app voor WooCommerce"
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: hippoo.php
+msgid "https://Hippoo.app/"
+msgstr "https://hippoo.app/"
+
+#. Description of the plugin
+#: hippoo.php
+msgid "Best WooCommerce App Alternative – Manage orders and products on the go with real-time notifications, seamless order and product management, and powerful add-ons. Available for Android & iOS. 🚀."
+msgstr "De beste WooCommerce-app-alternatief – Beheer bestellingen en producten onderweg met realtime meldingen, naadloze order- en productbeheer en krachtige add-ons. Beschikbaar voor Android & iOS. 🚀"
+
+#. Author of the plugin
+#: hippoo.php
+msgid "Hippoo Team"
+msgstr "Hippoo Team"
+
+#: app/ai.php:30
+msgid "Hippoo AI"
+msgstr "Hippoo AI"
+
+#: app/ai.php:72
+msgid "Select AI Provider"
+msgstr "Selecteer AI-provider"
+
+#: app/ai.php:80
+msgid "Select model"
+msgstr "Selecteer model"
+
+#: app/ai.php:88
+msgid "Your API Token"
+msgstr "Je API-token"
+
+#: app/ai.php:104
+msgid "System Prompt"
+msgstr "Systeem-prompt"
+
+#: app/ai.php:113
+msgid "Description Prompt"
+msgstr "Beschrijvings-prompt"
+
+#: app/ai.php:122
+msgid "Max Tokens"
+msgstr "Maximale tokens"
+
+#: app/ai.php:139
+msgid "Connect the AI"
+msgstr "Verbind de AI"
+
+#: app/ai.php:140
+#: app/ai.php:203
+msgid "Generate product descriptions automatically from images using AI. Configure your preferred model and prompts in the settings below."
+msgstr "Genereer automatisch productbeschrijvingen uit afbeeldingen met AI. Configureer je voorkeursmodel en prompts in de onderstaande instellingen."
+
+#: app/ai.php:150
+msgid "Chat GPT"
+msgstr "ChatGPT"
+
+#: app/ai.php:151
+msgid "Gemini"
+msgstr "Gemini"
+
+#: app/ai.php:192
+msgid "Enter your API key"
+msgstr "Voer je API-sleutel in"
+
+#: app/ai.php:193
+msgid "How can I provide the token?"
+msgstr "Hoe kan ik de token opgeven?"
+
+#: app/ai.php:195
+msgid "Test connection"
+msgstr "Verbinding testen"
+
+#: app/ai.php:202
+msgid "AI Product Reader"
+msgstr "AI-productlezer"
+
+#: app/ai.php:204
+msgid "Prompt settings"
+msgstr "Prompt-instellingen"
+
+#: app/ai.php:205
+msgid "Customize how the AI generates text by editing the prompts below. Each prompt guides the AI to produce the desired type of content for your products. You can adjust these to change tone, style, or structure of the generated descriptions."
+msgstr "Pas aan hoe de AI tekst genereert door de onderstaande prompts te bewerken. Elke prompt leidt de AI om het gewenste type inhoud voor je producten te produceren. Je kunt deze aanpassen om toon, stijl of structuur van de gegenereerde beschrijvingen te wijzigen."
+
+#: app/ai.php:216
+msgid "Sets the general behavior or role of the AI (e.g., “You are a product description writer for an online store.)"
+msgstr "Stelt het algemene gedrag of de rol van de AI in (bijv. „Je bent een schrijver van productbeschrijvingen voor een webwinkel“.)"
+
+#: app/ai.php:228
+msgid "Defines how the main product description should be written (e.g., length, tone, structure)"
+msgstr "Definieert hoe de hoofdproductbeschrijving moet worden geschreven (bijv. lengte, toon, structuur)"
+
+#: app/ai.php:252
+#: app/ai.php:366
+#: app/ai.php:439
+msgid "You haven’t provided an API key. Please go to the Hippoo settings page and add your API key to connect to the AI."
+msgstr "Je hebt geen API-sleutel opgegeven. Ga naar de Hippoo-instellingenpagina en voeg je API-sleutel toe om verbinding te maken met de AI."
+
+#: app/ai.php:260
+#: app/ai.php:413
+#: app/ai.php:453
+#: app/ai.php:484
+msgid "Unsupported AI provider."
+msgstr "Niet-ondersteunde AI-provider."
+
+#: app/ai.php:266
+#: app/ai.php:465
+msgid "Failed to connect to AI service."
+msgstr "Verbinding met AI-service mislukt."
+
+#: app/ai.php:281
+msgid "Invalid provider"
+msgstr "Ongeldige provider"
+
+#: app/ai.php:355
+msgid "Too many requests. Please try again later."
+msgstr "Te veel verzoeken. Probeer het later opnieuw."
+
+#: app/ai.php:555
+msgid "Invalid parameters provided"
+msgstr "Ongeldige parameters opgegeven"
+
+#: app/ai.php:582
+msgid "Analyze product images and related descriptions to generate high-quality, engaging, and SEO-optimized product content. Focus on identifying key visual details such as type, color, material, and purpose to create accurate, natural, and persuasive descriptions suitable for e-commerce platforms."
+msgstr "Analyseer productafbeeldingen en gerelateerde beschrijvingen om hoogwaardige, aantrekkelijke en SEO-geoptimaliseerde productinhoud te genereren. Focus op het identificeren van belangrijke visuele details zoals type, kleur, materiaal en doel om nauwkeurige, natuurlijke en overtuigende beschrijvingen te maken die geschikt zijn voor e-commerceplatforms."
+
+#: app/ai.php:589
+msgid "Review the provided product image and its details to understand the item’s appearance, features, and intended use. Then generate a compelling product title, short summary, detailed description, and a list of relevant SEO keywords based on your analysis."
+msgstr "Bekijk de verstrekte productafbeelding en details om het uiterlijk, de kenmerken en het beoogde gebruik van het artikel te begrijpen. Genereer vervolgens een aantrekkelijke producttitel, een korte samenvatting, een gedetailleerde beschrijving en een lijst met relevante SEO-zoekwoorden op basis van je analyse."
+
+#: app/ai.php:619
+msgid "Failed to download image: "
+msgstr "Downloaden van afbeelding mislukt: "
+
+#: app/ai.php:625
+msgid "No valid image provided."
+msgstr "Geen geldige afbeelding opgegeven."
+
+#: app/ai.php:635
+msgid "Invalid image file."
+msgstr "Ongeldig afbeeldingsbestand."
+
+#: app/ai.php:640
+msgid "Supported formats: jpg, png, webp"
+msgstr "Ondersteunde formaten: jpg, png, webp"
+
+#: app/ai.php:645
+msgid "Failed to open image editor."
+msgstr "Afbeeldingseditor kon niet worden geopend."
+
+#: app/ai.php:659
+msgid "Could not save optimized image."
+msgstr "Geoptimaliseerde afbeelding kon niet worden opgeslagen."
+
+#: app/ai.php:663
+msgid "Optimized image exceeds 2MB."
+msgstr "Geoptimaliseerde afbeelding overschrijdt 2 MB."
+
+#: app/ai.php:705
+#: app/ai.php:836
+msgid "You MUST only respond with a clean HTML block suitable for WordPress editor, no markdown, no backticks, no explanations."
+msgstr "JE MOET ALLEEN antwoorden met een schoon HTML-blok dat geschikt is voor de WordPress-editor, geen markdown, geen backticks, geen uitleg."
+
+#: app/ai.php:760
+msgid "Unexpected response from OpenAI."
+msgstr "Onverwachte reactie van OpenAI."
+
+#: app/ai.php:765
+msgid "Max token limit reached for this prompt."
+msgstr "Maximale tokenlimiet bereikt voor deze prompt."
+
+#: app/ai.php:777
+msgid "OpenAI did not return any text. Try increasing max_tokens."
+msgstr "OpenAI heeft geen tekst geretourneerd. Probeer max_tokens te verhogen."
+
+#: app/ai.php:873
+msgid "Unexpected response from Gemini."
+msgstr "Onverwachte reactie van Gemini."
+
+#: app/ai.php:880
+msgid "Gemini did not return any text. Try increasing max_tokens."
+msgstr "Gemini heeft geen tekst geretourneerd. Probeer max_tokens te verhogen."
+
+#: app/app.php:78
+msgid "Help Center"
+msgstr "Helpcentrum"
+
+#: app/app.php:79
+msgid "Feature Request"
+msgstr "Functieverzoek"
+
+#: app/app.php:80
+msgid "Customer Support"
+msgstr "Klantenondersteuning"
+
+#: app/app.php:92
+#: app/app.php:101
+msgid "Latest blog posts on Hippoo"
+msgstr "Laatste blogberichten op Hippoo"
+
+#: app/app.php:109
+msgid "Read more on our blog"
+msgstr "Lees meer op onze blog"
+
+#: app/app.php:139
+msgid "Enjoying the Hippoo Mobile App for WooCommerce? We would love to hear your feedback! Please take a moment to leave a review."
+msgstr "Geniet je van de Hippoo mobiele app voor WooCommerce? We horen graag je feedback! Neem even de tijd om een beoordeling achter te laten."
+
+#: app/app.php:141
+msgid "Leave a Review"
+msgstr "Beoordeling achterlaten"
+
+#: app/app.php:142
+#: app/app.php:198
+msgid "Dismiss"
+msgstr "Sluiten"
+
+#: app/app.php:190
+msgid "Hippoo Logo"
+msgstr "Hippoo-logo"
+
+#: app/app.php:193
+msgid "Hippoo app can’t connect to your WooCommerce"
+msgstr "De Hippoo-app kan geen verbinding maken met je WooCommerce"
+
+#: app/app.php:200
+msgid "Try again"
+msgstr "Opnieuw proberen"
+
+#: app/app.php:242
+msgid "Upgrade to Hippoo Premium"
+msgstr "Upgraden naar Hippoo Premium"
+
+#: app/app.php:243
+msgid "Upgrade to Hippoo Premium for custom event notifications, full extension access, Shippo integration, advanced analytics, and smart AI tools."
+msgstr "Upgrade naar Hippoo Premium voor aangepaste gebeurtenismeldingen, volledige toegang tot extensies, Shippo-integratie, geavanceerde analyses en slimme AI-tools."
+
+#: app/app.php:250
+msgid "Learn more"
+msgstr "Meer informatie"
+
+#: app/app.php:255
+msgid "Upgrade"
+msgstr "Upgraden"
+
+#: app/integrations.php:29
+#: app/integrations.php:41
+msgid "Hippoo Integrations"
+msgstr "Hippoo-integraties"
+
+#: app/integrations.php:42
+msgid "Integrations are free WordPress plugins that bring new features to both WooCommerce and the Hippoo App. They are completely free to install and use in WooCommerce. A Premium license is required to use these features inside the Hippoo App."
+msgstr "Integraties zijn gratis WordPress-plugins die nieuwe functies toevoegen aan zowel WooCommerce als de Hippoo-app. Ze zijn volledig gratis te installeren en te gebruiken in WooCommerce. Een Premium-licentie is vereist om deze functies in de Hippoo-app te gebruiken."
+
+#: app/integrations.php:58
+#: app/integrations.php:169
+msgid "Failed to fetch integrations."
+msgstr "Ophalen van integraties mislukt."
+
+#: app/integrations.php:72
+#: app/integrations.php:197
+msgid "Invalid or unauthorized plugin."
+msgstr "Ongeldige of niet-geautoriseerde plugin."
+
+#: app/integrations.php:81
+msgid "Already active."
+msgstr "Al actief."
+
+#: app/integrations.php:92
+msgid "Activated successfully."
+msgstr "Succesvol geactiveerd."
+
+#: app/integrations.php:103
+msgid "Installed successfully."
+msgstr "Succesvol geïnstalleerd."
+
+#: app/integrations.php:205
+msgid "Plugin already installed."
+msgstr "Plugin al geïnstalleerd."
+
+#: app/integrations.php:215
+msgid "Plugin installed successfully."
+msgstr "Plugin succesvol geïnstalleerd."
+
+#: app/integrations.php:231
+msgid "Plugin already active."
+msgstr "Plugin al actief."
+
+#: app/integrations.php:242
+msgid "Plugin activated successfully."
+msgstr "Plugin succesvol geactiveerd."
+
+#: app/integrations.php:247
+msgid "Plugin is not active."
+msgstr "Plugin is niet actief."
+
+#: app/integrations.php:253
+msgid "Failed to deactivate plugin."
+msgstr "Deactiveren van plugin mislukt."
+
+#: app/integrations.php:258
+msgid "Plugin deactivated successfully."
+msgstr "Plugin succesvol gedeactiveerd."
+
+#: app/integrations.php:262
+msgid "Invalid action."
+msgstr "Ongeldige actie."
+
+#: app/integrations.php:304
+msgid "Installation failed."
+msgstr "Installatie mislukt."
+
+#: app/pwa.php:102
+msgid "Showcase your products with a clean, minimal design. This lightweight theme creates a mobile-friendly product display. Use the link below as an Instagram-style shop to share your products. We recommend keeping it enabled."
+msgstr "Presenteer je producten met een schoon, minimalistisch ontwerp. Dit lichte thema creëert een mobielvriendelijke productweergave. Gebruik de onderstaande link als Instagram-achtige winkel om je producten te delen. We raden aan om het ingeschakeld te houden."
+
+#: app/pwa.php:105
+msgid "Hippoo Mobile Storefront"
+msgstr "Hippoo mobiele etalage"
+
+#: app/pwa.php:113
+msgid "Storefront address"
+msgstr "Etalage-adres"
+
+#: app/pwa.php:119
+msgid "Add your own CSS rules for Hippoo Shop. Styles entered here override defaults."
+msgstr "Voeg je eigen CSS-regels toe voor de Hippoo-winkel. Hier ingevoerde stijlen overschrijven de standaardinstellingen."
+
+#: app/pwa.php:122
+msgid "Custom CSS"
+msgstr "Aangepaste CSS"
+
+#: app/settings.php:21
+#: app/settings.php:238
+msgid "Hippoo Settings"
+msgstr "Hippoo-instellingen"
+
+#: app/settings.php:22
+#: app/web_api.php:103
+msgid "Hippoo"
+msgstr "Hippoo"
+
+#: app/settings.php:44
+msgid "Provides PDF invoices and shipping labels for easy printing. Also generates barcodes for orders and product SKUs inside the WooCommerce dashboard, allowing you to scan them with the Hippoo WooCommerce app's barcode scanner to quickly find orders and products."
+msgstr "Biedt PDF-facturen en verzendetiketten voor eenvoudige afdruk. Genereert ook barcodes voor bestellingen en product-SKU's in het WooCommerce-dashboard, zodat je ze kunt scannen met de barcode-scanner van de Hippoo WooCommerce-app om snel bestellingen en producten te vinden."
+
+#: app/settings.php:47
+msgid "Enable Hippoo invoice and shipping label"
+msgstr "Hippoo-factuur en verzendetiket inschakelen"
+
+#: app/permissions.php:1155
+#: app/settings.php:145
+#: invoice/settings.php:75
+msgid "Settings"
+msgstr "Instellingen"
+
+#: app/settings.php:149
+msgid "Hippoo App"
+msgstr "Hippoo-app"
+
+#: app/settings.php:177
+msgid "Hippoo Woocommerce app"
+msgstr "Hippoo WooCommerce-app"
+
+#: app/settings.php:178
+msgid "Hippoo! is not just a shop management app, it's also a platform that enables you to extend its capabilities. With the ability to install extensions, you can customize your experience and add new features to the app. Browse and install other Hippoo plugins from our app to enhance your store's functionality."
+msgstr "Hippoo is niet alleen een winkelbeheer-app, het is ook een platform waarmee je de mogelijkheden kunt uitbreiden. Met de mogelijkheid om extensies te installeren, kun je je ervaring aanpassen en nieuwe functies toevoegen aan de app. Blader door en installeer andere Hippoo-plugins vanuit onze app om de functionaliteit van je winkel te verbeteren."
+
+#: app/settings.php:180
+#: app/settings.php:181
+msgid "Download Hippoo Android app"
+msgstr "Hippoo Android-app downloaden"
+
+#: app/settings.php:184
+#: app/settings.php:185
+msgid "Download Hippoo iOS app"
+msgstr "Hippoo iOS-app downloaden"
+
+#: app/settings.php:189
+msgid "Scan QR code with your Android phone to install the app"
+msgstr "Scan de QR-code met je Android-telefoon om de app te installeren"
+
+#: app/settings.php:190
+msgid "QR Code"
+msgstr "QR-code"
+
+#: app/settings.php:196
+msgid "App screenshot 1"
+msgstr "App-screenshot 1"
+
+#: app/settings.php:197
+msgid "App screenshot 2"
+msgstr "App-screenshot 2"
+
+#: app/settings.php:198
+msgid "App screenshot 3"
+msgstr "App-screenshot 3"
+
+#: app/settings.php:199
+msgid "App screenshot 4"
+msgstr "App-screenshot 4"
+
+#: app/settings.php:200
+msgid "App screenshot 5"
+msgstr "App-screenshot 5"
+
+#: app/settings.php:234
+msgid "Settings saved successfully."
+msgstr "Instellingen succesvol opgeslagen."
+
+#. translators: %s: URL to the Permalink Settings page in wp-admin
+#: app/utils.php:51
+msgid "Hippoo can’t connect because your WordPress permalinks are set to “Plain”. To enable the WordPress REST API, open your <a href=\"%s\">Permalink Settings</a> and select Post name or Custom Structure, then save changes."
+msgstr "Hippoo kan geen verbinding maken omdat je WordPress-permalinks op „Eenvoudig“ staan. Om de WordPress REST API in te schakelen, open je <a href=\"%s\">Permalink-instellingen</a> en selecteer „Berichtnaam“ of „Aangepaste structuur“, sla daarna de wijzigingen op."
+
+#: app/utils.php:61
+msgid "Hippoo can’t connect because the WordPress REST API has been disabled by a theme or plugin."
+msgstr "Hippoo kan geen verbinding maken omdat de WordPress REST API is uitgeschakeld door een thema of plugin."
+
+#: app/utils.php:74
+msgid "Hippoo can’t connect to your website because the WordPress REST API is not responding. Please check your firewall or hosting settings."
+msgstr "Hippoo kan geen verbinding maken met je website omdat de WordPress REST API niet reageert. Controleer je firewall- of hostinginstellingen."
+
+#: app/utils.php:85
+msgid "Hippoo can’t connect to your site because the WordPress REST API is restricted. Please allow public access to the REST API."
+msgstr "Hippoo kan geen verbinding maken met je site omdat de WordPress REST API beperkt is. Sta openbare toegang tot de REST API toe."
+
+#: app/utils.php:91
+msgid "Hippoo can’t connect because something on your site (like a security plugin or server rule) is blocking access to the WordPress REST API."
+msgstr "Hippoo kan geen verbinding maken omdat iets op je site (zoals een beveiligingsplugin of serverregel) toegang tot de WordPress REST API blokkeert."
+
+#: app/utils.php:97
+msgid "Hippoo can’t connect because the WordPress API endpoint wasn’t found. Please make sure your WordPress installation is complete and .htaccess is correctly configured."
+msgstr "Hippoo kan geen verbinding maken omdat het WordPress API-eindpunt niet gevonden is. Zorg ervoor dat je WordPress-installatie compleet is en dat .htaccess correct geconfigureerd is."
+
+#: app/utils.php:103
+msgid "Hippoo can’t connect right now because your site returned an internal error when trying to reach the WordPress REST API."
+msgstr "Hippoo kan momenteel geen verbinding maken omdat je site een interne fout retourneerde bij het proberen te bereiken van de WordPress REST API."
+
+#: app/utils.php:113
+msgid "Hippoo can’t connect because essential WordPress API routes are missing. A plugin may have disabled them."
+msgstr "Hippoo kan geen verbinding maken omdat essentiële WordPress API-routes ontbreken. Een plugin heeft ze mogelijk uitgeschakeld."
+
+#: app/web_api.php:131
+#: app/web_api.php:185
+msgid "Invalid token."
+msgstr "Ongeldige token."
+
+#: app/web_api.php:138
+msgid "Invalid JSON payload."
+msgstr "Ongeldige JSON-payload."
+
+#: app/web_api.php:152
+msgid "No valid token data."
+msgstr "Geen geldige tokengegevens."
+
+#: app/web_api.php:205
+msgid "Unauthenticated. No token found. Please reauthenticate."
+msgstr "Niet geauthenticeerd. Geen token gevonden. Authenticeer opnieuw."
+
+#: app/web_api.php:211
+msgid "Unauthenticated. No token data found."
+msgstr "Niet geauthenticeerd. Geen tokengegevens gevonden."
+
+#: app/web_api.php:221
+msgid "Auto Redirect"
+msgstr "Automatische doorverwijzing"
+
+#: app/web_api.php:222
+msgid "This page will automatically redirect in a few seconds..."
+msgstr "Deze pagina wordt over een paar seconden automatisch doorgestuurd..."
+
+#: app/web_api.php:247
+msgid "You can get the data from here"
+msgstr "Je kunt de gegevens hier ophalen"
+
+#: app/web_api.php:253
+msgid "Unauthenticated, No Token Data"
+msgstr "Niet geauthenticeerd, geen tokengegevens"
+
+#: app/web_api.php:353
+msgid "Country code must be a valid two-letter uppercase code."
+msgstr "Landcode moet een geldige tweeleterige hoofdlettercode zijn."
+
+#: app/web_api.php:358
+msgid "Invalid or unauthorized country code."
+msgstr "Ongeldige of niet-geautoriseerde landcode."
+
+#: app/web_api.php:425
+msgid "Image saved successfully."
+msgstr "Afbeelding succesvol opgeslagen."
+
+#: app/web_api.php:438
+msgid "Image deleted successfully."
+msgstr "Afbeelding succesvol verwijderd."
+
+#: app/web_api.php:440
+msgid "Image not found!"
+msgstr "Afbeelding niet gevonden!"
+
+#. translators: 1: order ID, 2: order status
+#: app/web_api.php:666
+msgid "Order %1$d %2$s!"
+msgstr "Bestelling %1$d %2$s!"
+
+#. translators: %d: number of items in the order
+#: app/web_api.php:668
+msgid "%d items"
+msgstr "%d artikelen"
+
+#. translators: %s: order status
+#: app/web_api.php:671
+msgid "Status: %s"
+msgstr "Status: %s"
+
+#: app/web_api.php:706
+msgid "Product is out of stock!"
+msgstr "Product is niet op voorraad!"
+
+#: app/web_api.php:707
+msgid "Product "
+msgstr "Product "
+
+#: app/web_api_auth.php:45
+msgid "Array of media item IDs to delete."
+msgstr "Array van media-item-ID's om te verwijderen."
+
+#: app/web_api_auth.php:169
+msgid "Invalid or missing file."
+msgstr "Ongeldig of ontbrekend bestand."
+
+#: app/web_api_auth.php:180
+msgid "Failed to read file content."
+msgstr "Lezen van bestandinhoud mislukt."
+
+#: app/web_api_auth.php:187
+msgid "Media upload failed."
+msgstr "Media-upload mislukt."
+
+#: app/web_api_auth.php:202
+msgid "Failed to create attachment."
+msgstr "Bijlage kon niet worden aangemaakt."
+
+#: app/web_api_auth.php:231
+msgid "Attachment not found."
+msgstr "Bijlage niet gevonden."
+
+#: app/web_api_auth.php:237
+msgid "Error deleting the attachment."
+msgstr "Fout bij verwijderen van bijlage."
+
+#: app/web_api_auth.php:246
+msgid "Attachment(s) deleted successfully."
+msgstr "Bijlage(n) succesvol verwijderd."
+
+#: app/web_api_auth.php:254
+msgid "Nothing to delete."
+msgstr "Niets om te verwijderen."
+
+#: app/web_api_notification.php:349
+#: app/web_api_notification.php:391
+#: app/web_api_notification.php:415
+msgid "Notification not found."
+msgstr "Melding niet gevonden."
+
+#. translators: %s: missing required field name
+#: app/web_api_notification.php:455
+msgid "Missing %s field."
+msgstr "Veld %s ontbreekt."
+
+#: app/web_api_notification.php:461
+msgid "Invalid event hook."
+msgstr "Ongeldige event-hook."
+
+#: invoice/main.php:82
+msgid "You do not have access to view this order."
+msgstr "Je hebt geen toegang om deze bestelling te bekijken."
+
+#: invoice/settings.php:71
+msgid "Hippoo invoice and shipping label"
+msgstr "Hippoo-factuur en verzendetiket"
+
+#: invoice/settings.php:94
+msgid "General settings"
+msgstr "Algemene instellingen"
+
+#: invoice/settings.php:101
+msgid "Shop logo"
+msgstr "Winkellogo"
+
+#: invoice/settings.php:109
+msgid "Language direction"
+msgstr "Taalrichting"
+
+#: invoice/settings.php:117
+msgid "Show barcode(Order id) in order list"
+msgstr "Barcode (bestel-ID) tonen in bestellijst"
+
+#: invoice/settings.php:125
+msgid "Show barcode(Order id) in order details"
+msgstr "Barcode (bestel-ID) tonen in besteldetails"
+
+#: invoice/settings.php:133
+msgid "Show barcode(SKU) in products list"
+msgstr "Barcode (SKU) tonen in productlijst"
+
+#: invoice/settings.php:141
+msgid "Show barcode(SKU) in products details"
+msgstr "Barcode (SKU) tonen in productdetails"
+
+#: invoice/settings.php:151
+msgid "Invoice settings"
+msgstr "Factuurinstellingen"
+
+#: invoice/settings.php:158
+#: invoice/settings.php:224
+msgid "Paper Size"
+msgstr "Papierformaat"
+
+#: invoice/settings.php:166
+msgid "Font name"
+msgstr "Lettertype"
+
+#: invoice/settings.php:174
+#: invoice/settings.php:232
+msgid "Show logo"
+msgstr "Logo tonen"
+
+#: invoice/settings.php:182
+msgid "Show customer note"
+msgstr "Klantnotitie tonen"
+
+#: invoice/settings.php:190
+msgid "Show product SKU in invoice"
+msgstr "Product-SKU tonen in factuur"
+
+#: invoice/settings.php:198
+msgid "Footer description"
+msgstr "Voettekstbeschrijving"
+
+#: invoice/settings.php:217
+msgid "Shipping label settings"
+msgstr "Verzendetiketinstanties"
+
+#: invoice/settings.php:240
+msgid "Calculate Weight"
+msgstr "Gewicht berekenen"
+
+#: invoice/settings.php:248
+msgid "Courier logo"
+msgstr "Koerierslogo"
+
+#: invoice/settings.php:274
+#: invoice/templates/simple/hippoo-factor.php:160
+#: invoice/templates/simple/hippoo-label.php:97
+msgid "Shop Logo"
+msgstr "Winkellogo"
+
+#: invoice/settings.php:276
+#: invoice/settings.php:419
+msgid "Upload Logo"
+msgstr "Logo uploaden"
+
+#: app/permissions.php:833
+#: invoice/settings.php:277
+#: invoice/settings.php:420
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: invoice/settings.php:278
+msgid "512x512 is perfect size for logo"
+msgstr "512x512 is de perfecte grootte voor een logo"
+
+#: invoice/settings.php:388
+msgid "Exclamation Icon"
+msgstr "Uitroepteken-icoon"
+
+#: invoice/settings.php:391
+msgid "Need more invoice or shipping label customization?"
+msgstr "Meer aanpassingen nodig voor facturen of verzendetiketten?"
+
+#: invoice/settings.php:392
+msgid "You can customize your invoice layout by copying the template file from the plugin folder to your active theme folder. Then edit the copied file to adjust the design, paper size, or language to fit your needs."
+msgstr "Je kunt je factuurlayout aanpassen door het sjabloonbestand te kopiëren uit de plugin-map naar de map van je actieve thema. Bewerk daarna het gekopieerde bestand om ontwerp, papierformaat of taal aan te passen aan je behoeften."
+
+#: invoice/settings.php:393
+msgid "Learn more here"
+msgstr "Meer informatie hier"
+
+#: invoice/settings.php:458
+msgid "Setting saved."
+msgstr "Instelling opgeslagen."
+
+#: app/permissions.php:932
+#: invoice/templates/simple/hippoo-factor.php:9
+#: invoice/templates/simple/hippoo-factor.php:168
+#: invoice/templates/simple/hippoo-label.php:119
+msgid "Invoice"
+msgstr "Factuur"
+
+#: invoice/templates/simple/hippoo-factor.php:170
+#: invoice/templates/simple/hippoo-label.php:121
+msgid "Invoice Barcode"
+msgstr "Factuur-barcode"
+
+#: invoice/templates/simple/hippoo-factor.php:184
+msgid "Bill to:"
+msgstr "Factuur aan:"
+
+#: invoice/templates/simple/hippoo-factor.php:186
+msgid "Customer note:"
+msgstr "Klantnotitie:"
+
+#: invoice/templates/simple/hippoo-factor.php:202
+msgid "Item"
+msgstr "Artikel"
+
+#: app/permissions.php:988
+#: invoice/templates/simple/hippoo-factor.php:204
+#: invoice/woocommerce/product.php:28
+msgid "SKU"
+msgstr "SKU"
+
+#: invoice/templates/simple/hippoo-factor.php:206
+msgid "Qty"
+msgstr "Aantal"
+
+#: invoice/templates/simple/hippoo-factor.php:207
+msgid "Price"
+msgstr "Prijs"
+
+#: invoice/templates/simple/hippoo-factor.php:208
+msgid "Amount"
+msgstr "Bedrag"
+
+#: invoice/templates/simple/hippoo-factor.php:222
+msgid "Product SKU Barcode"
+msgstr "Product-SKU-barcode"
+
+#: invoice/templates/simple/hippoo-factor.php:235
+msgid "Subtotal"
+msgstr "Subtotaal"
+
+#: invoice/templates/simple/hippoo-factor.php:241
+msgid "Discount"
+msgstr "Korting"
+
+#: invoice/templates/simple/hippoo-factor.php:248
+msgid "Tax"
+msgstr "Belasting"
+
+#: invoice/templates/simple/hippoo-factor.php:254
+msgid "Total"
+msgstr "Totaal"
+
+#: invoice/templates/simple/hippoo-label.php:9
+msgid "Label"
+msgstr "Etiket"
+
+#: invoice/templates/simple/hippoo-label.php:92
+msgid "From:"
+msgstr "Van:"
+
+#: invoice/templates/simple/hippoo-label.php:103
+msgid "Ship to:"
+msgstr "Verzenden naar:"
+
+#: invoice/templates/simple/hippoo-label.php:113
+msgid "Weight:"
+msgstr "Gewicht:"
+
+#: invoice/templates/simple/hippoo-label.php:124
+msgid "Courier Logo"
+msgstr "Koerierslogo"
+
+#: invoice/woocommerce/order.php:76
+msgid "Barcode"
+msgstr "Barcode"
+
+#: invoice/woocommerce/order.php:219
+msgid "Order ID Barcode"
+msgstr "Bestel-ID-barcode"
+
+#: invoice/woocommerce/product.php:52
+msgid "Product Barcode (SKU)"
+msgstr "Product-barcode (SKU)"
+
+#: app/permissions.php:52
+#: app/permissions.php:67
+msgid "Role & permissions"
+msgstr ""
+
+#: app/permissions.php:68
+msgid "Control what data each user role can see in the Hippoo app, including orders, revenue, customers, and reviews and more. These settings are managed by admins and applied directly at the API level for better data security."
+msgstr ""
+
+#: app/permissions.php:71
+msgid "Select role"
+msgstr ""
+
+#: app/permissions.php:74
+msgid "Select role to manage permission"
+msgstr ""
+
+#: app/permissions.php:104
+#: app/permissions.php:129
+#: app/permissions.php:148
+msgid "Invalid request."
+msgstr ""
+
+#: app/permissions.php:109
+msgid "Role already exists."
+msgstr ""
+
+#. translators: %s: role name
+#: app/permissions.php:830
+msgid "%s permissions"
+msgstr ""
+
+#: app/permissions.php:846
+msgid "General"
+msgstr ""
+
+#: app/permissions.php:849
+msgid "Enable access for this role"
+msgstr ""
+
+#: app/permissions.php:853
+msgid "Read-only mode"
+msgstr ""
+
+#: app/permissions.php:861
+msgid "Orders"
+msgstr ""
+
+#: app/permissions.php:863
+#: app/permissions.php:961
+#: app/permissions.php:1030
+#: app/permissions.php:1063
+msgid "Select all"
+msgstr ""
+
+#: app/permissions.php:865
+#: app/permissions.php:963
+#: app/permissions.php:1032
+#: app/permissions.php:1065
+msgid "Deselect all"
+msgstr ""
+
+#: app/permissions.php:870
+msgid "Access orders"
+msgstr ""
+
+#: app/permissions.php:874
+msgid "Order count"
+msgstr ""
+
+#: app/permissions.php:878
+msgid "Order totals"
+msgstr ""
+
+#: app/permissions.php:882
+msgid "Order details"
+msgstr ""
+
+#: app/permissions.php:888
+#: app/permissions.php:1041
+msgid "Name"
+msgstr ""
+
+#: app/permissions.php:892
+msgid "Items"
+msgstr ""
+
+#: app/permissions.php:896
+msgid "Taxes"
+msgstr ""
+
+#: app/permissions.php:900
+msgid "Shipping info"
+msgstr ""
+
+#: app/permissions.php:904
+msgid "Order statuses"
+msgstr ""
+
+#: app/permissions.php:908
+msgid "Coupon info"
+msgstr ""
+
+#: app/permissions.php:912
+msgid "Payment info"
+msgstr ""
+
+#: app/permissions.php:916
+msgid "Customer info"
+msgstr ""
+
+#: app/permissions.php:920
+msgid "Order note"
+msgstr ""
+
+#: app/permissions.php:924
+msgid "Order custom fields"
+msgstr ""
+
+#: app/permissions.php:928
+msgid "Customer note"
+msgstr ""
+
+#: app/permissions.php:936
+msgid "Shipping label"
+msgstr ""
+
+#: app/permissions.php:941
+msgid "Allowed order status"
+msgstr ""
+
+#: app/permissions.php:959
+msgid "Products"
+msgstr ""
+
+#: app/permissions.php:968
+msgid "Access products"
+msgstr ""
+
+#: app/permissions.php:972
+msgid "Product name"
+msgstr ""
+
+#: app/permissions.php:976
+msgid "Prices"
+msgstr ""
+
+#: app/permissions.php:980
+msgid "Stock quantity"
+msgstr ""
+
+#: app/permissions.php:984
+msgid "Out of stock list"
+msgstr ""
+
+#: app/permissions.php:992
+msgid "Status"
+msgstr ""
+
+#: app/permissions.php:996
+msgid "Limit to categories"
+msgstr ""
+
+#: app/permissions.php:1010
+msgid "Limit to product type"
+msgstr ""
+
+#: app/permissions.php:1028
+msgid "Customers"
+msgstr ""
+
+#: app/permissions.php:1037
+msgid "Access customers"
+msgstr ""
+
+#: app/permissions.php:1045
+msgid "Address"
+msgstr ""
+
+#: app/permissions.php:1049
+msgid "Phone number"
+msgstr ""
+
+#: app/permissions.php:1053
+msgid "Email"
+msgstr ""
+
+#: app/permissions.php:1061
+msgid "Reviews"
+msgstr ""
+
+#: app/permissions.php:1070
+msgid "Access reviews"
+msgstr ""
+
+#: app/permissions.php:1074
+msgid "Reviewer name"
+msgstr ""
+
+#: app/permissions.php:1078
+msgid "Review content"
+msgstr ""
+
+#: app/permissions.php:1085
+msgid "Sale analytics"
+msgstr ""
+
+#: app/permissions.php:1088
+msgid "Show sale analytics"
+msgstr ""
+
+#: app/permissions.php:1095
+msgid "Coupons"
+msgstr ""
+
+#: app/permissions.php:1098
+msgid "Access coupons"
+msgstr ""
+
+#: app/permissions.php:1105
+msgid "Product categories"
+msgstr ""
+
+#: app/permissions.php:1108
+msgid "Access product categories"
+msgstr ""
+
+#: app/permissions.php:1115
+msgid "Product attributes"
+msgstr ""
+
+#: app/permissions.php:1118
+msgid "Access product attributes"
+msgstr ""
+
+#: app/permissions.php:1125
+msgid "Product tags"
+msgstr ""
+
+#: app/permissions.php:1128
+msgid "Access product tags"
+msgstr ""
+
+#: app/permissions.php:1135
+msgid "Product brands"
+msgstr ""
+
+#: app/permissions.php:1138
+msgid "Access product brands"
+msgstr ""
+
+#: app/permissions.php:1145
+msgid "Product shipping classes"
+msgstr ""
+
+#: app/permissions.php:1148
+msgid "Access product shipping classes"
+msgstr ""
+
+#: app/permissions.php:1158
+msgid "Show shop settings"
+msgstr ""
+
+#: app/permissions.php:1165
+msgid "App features"
+msgstr ""
+
+#: app/permissions.php:1168
+msgid "Access extensions"
+msgstr ""
+
+#: app/permissions.php:1172
+msgid "Limit to selected extensions"
+msgstr ""
+
+#: app/permissions.php:1190
+msgid "Settings updated successfully."
+msgstr ""
+
+#: app/permissions.php:1193
+msgid "Save changes"
+msgstr ""
+
+#. translators: %s: role name
+#: app/permissions.php:1204
+msgid "Delete %s role permissions?"
+msgstr ""
+
+#: app/permissions.php:1206
+msgid "This will remove all custom access rules for this role. This action can’t be undone."
+msgstr ""
+
+#: app/permissions.php:1208
+msgid "Cancel"
+msgstr ""
+
+#: app/permissions.php:1209
+msgid "Delete"
+msgstr ""
+
+#: invoice/settings.php:21
+#: invoice/settings.php:22
+msgid "Hippoo Invoice"
+msgstr ""
+
+#: app/permissions.php:187
+#: app/permissions.php:197
+#: app/permissions.php:207
+#: app/permissions.php:217
+#: app/permissions.php:224
+#: app/permissions.php:229
+#: app/permissions.php:234
+#: app/permissions.php:239
+#: app/permissions.php:244
+#: app/permissions.php:249
+#: app/permissions.php:254
+#: app/permissions.php:264
+#: app/permissions.php:270
+#: app/permissions.php:276
+#: app/permissions.php:282
+#: app/permissions.php:288
+#: app/permissions.php:294
+#: app/permissions.php:299
+msgid "Sorry, you are not allowed to do that."
+msgstr ""
