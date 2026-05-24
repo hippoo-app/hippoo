@@ -182,13 +182,13 @@ class HippooPermissions
         $route = untrailingslashit($request->get_route());
 
         // Orders
-        if (preg_match('#^/wc/v\d+/orders#', $route)) {
+        if (strpos($route, '/wc/v') === 0 && strpos($route, '/orders') !== false) {
             if (!$this->has_role_access('orders', 'access_orders')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
         // Order note
-        elseif (preg_match('#^/wc/v\d+/orders/notes#', $route)) {
+        elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/orders/notes') !== false) {
             if (
                 !$this->has_role_access('orders', 'access_orders') || 
                 !$this->has_role_access('orders', 'order_details') || 
@@ -198,7 +198,7 @@ class HippooPermissions
             }
         }
         // Invoice
-        elseif (preg_match('#^/wc-hippoo-invoice/v\d+/invoice#', $route)) {
+        elseif (strpos($route, '/wc-hippoo-invoice/v') === 0 && strpos($route, '/invoice') !== false) {
             if (
                 !$this->has_role_access('orders', 'access_orders') || 
                 !$this->has_role_access('orders', 'order_details') || 
@@ -208,7 +208,7 @@ class HippooPermissions
             }
         }
         // Shipping label
-        elseif (preg_match('#^/wc-hippoo-invoice/v\d+/shipping-label#', $route)) {
+        elseif (strpos($route, '/wc-hippoo-invoice/v') === 0 && strpos($route, '/shipping-label') !== false) {
             if (
                 !$this->has_role_access('orders', 'access_orders') || 
                 !$this->has_role_access('orders', 'order_details') || 
@@ -218,33 +218,33 @@ class HippooPermissions
             }
         }
         // Products
-        elseif (preg_match('#^/wc/v\d+/products#', $route)) {
-            if (preg_match('#^/wc/v\d+/products/attributes#', $route)) {
+        elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/products') !== false) {
+            if (strpos($route, '/products/attributes') !== false) {
                 if (!$this->has_role_access('products', 'access_attributes')) {
                     return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
                 }
             }
-            elseif (preg_match('#^/wc/v\d+/products/categories#', $route)) {
+            elseif (strpos($route, '/products/categories') !== false) {
                 if (!$this->has_role_access('products', 'access_categories')) {
                     return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
                 }
             }
-            elseif (preg_match('#^/wc/v\d+/products/tags#', $route)) {
+            elseif (strpos($route, '/products/tags') !== false) {
                 if (!$this->has_role_access('products', 'access_tags')) {
                     return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
                 }
             }
-            elseif (preg_match('#^/wc/v\d+/products/brands#', $route)) {
+            elseif (strpos($route, '/products/brands') !== false) {
                 if (!$this->has_role_access('products', 'access_brands')) {
                     return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
                 }
             }
-            elseif (preg_match('#^/wc/v\d+/products/shipping_classes#', $route)) {
+            elseif (strpos($route, '/products/shipping_classes') !== false) {
                 if (!$this->has_role_access('products', 'access_shipping_classes')) {
                     return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
                 }
             }
-            elseif (preg_match('#^/wc/v\d+/products/reviews#', $route)) {
+            elseif (strpos($route, '/products/reviews') !== false) {
                 if (!$this->has_role_access('reviews', 'access_reviews')) {
                     return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
                 }
@@ -256,7 +256,7 @@ class HippooPermissions
             }
         }
         // Out of stock list
-        elseif (preg_match('#^/wc-hippoo/v\d+/wc/stock#', $route)) {
+        elseif (strpos($route, '/wc-hippoo/v') === 0 && strpos($route, '/wc/stock') !== false) {
             if (
                 !$this->has_role_access('products', 'access_products') || 
                 !$this->has_role_access('products', 'out_of_stock_list')
@@ -265,36 +265,36 @@ class HippooPermissions
             }
         }
         // Customers
-        elseif (preg_match('#^/wc/v\d+/customers#', $route)) {
+        elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/customers') !== false) {
             if (!$this->has_role_access('customers', 'access_customers')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
         // Reports
-        elseif (preg_match('#^/wc/v\d+/reports#', $route)) {
+        elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/reports') !== false) {
             if (!$this->has_role_access('analytics', 'show_sale_analytics')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
         // Coupons
-        elseif (preg_match('#^/wc/v\d+/coupons#', $route)) {
+        elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/coupons') !== false) {
             if (!$this->has_role_access('coupons', 'access_coupons')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
         // Settings
-        elseif (preg_match('#^/wc/v\d+/settings#', $route)) {
+        elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/settings') !== false) {
             if (!$this->has_role_access('settings', 'show_shop_settings')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
         // Extensions
-        elseif (preg_match('#^/wc-hippoo/v\d+/wp/system/info#', $route)) {
+        elseif (strpos($route, '/wc-hippoo/v') === 0 && strpos($route, '/wp/system/info') !== false) {
             if (!$this->has_role_access('app_features', 'access_extensions')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
-        elseif (preg_match('#^/wc-hippoo/v\d+/ext#', $route)) {
+        elseif (strpos($route, '/wc-hippoo/v') === 0 && strpos($route, '/ext') !== false) {
             if (!$this->has_role_access('app_features', 'access_extensions')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
@@ -455,17 +455,15 @@ class HippooPermissions
     {
         $route = untrailingslashit($request->get_route());
 
-        if (!preg_match('#^/wc/v\d+/orders#', $route)) {
-            return $response;
-        }
+        if (strpos($route, '/wc/v') === 0 && strpos($route, '/orders') !== false) {
+            if (is_wp_error($response)) {
+                return $response;
+            }
 
-        if (is_wp_error($response)) {
-            return $response;
-        }
-
-        if (!$this->has_role_access('orders', 'order_count')) {
-            $response->header('X-WP-Total', '0');
-            $response->header('X-WP-TotalPages', '1');
+            if (!$this->has_role_access('orders', 'order_count')) {
+                $response->header('X-WP-Total', '0');
+                $response->header('X-WP-TotalPages', '1');
+            }
         }
 
         return $response;

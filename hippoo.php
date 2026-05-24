@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Hippoo Mobile app for WooCommerce
- * Version: 1.8.4
+ * Version: 1.9.0
  * Plugin URI: https://Hippoo.app/
  * Description: Best WooCommerce App Alternative – Manage orders and products on the go with real-time notifications, seamless order and product management, and powerful add-ons. Available for Android & iOS. 🚀.
  * Short Description: Best WooCommerce App Alternative – Manage orders and products on the go with real-time notifications, seamless order and product management, and powerful add-ons. Available for Android & iOS. 🚀.
@@ -29,21 +29,22 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define('hippoo_version', '1.8.4');
-define('hippoo_path', dirname(__FILE__).DIRECTORY_SEPARATOR);
-define('hippoo_main_file_path', __FILE__);
-define('hippoo_dir', __DIR__);
-define('hippoo_url', plugins_url('hippoo').'/assets/');
-define('hippoo_proxy_notifiction_url', 'https://hippoo.app/wp-json/woohouse/v1/fb/proxy_notification');
+define('HIPPOO_VERSION', '1.9.0');
+define('HIPPOO_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
+define('HIPPOO_MAIN_FILE_PATH', __FILE__);
+define('HIPPOO_DIR', __DIR__);
+define('HIPPOO_URL', plugins_url('hippoo').'/assets/');
+define('HIPPOO_PROXY_NOTIFICTION_URL', 'https://hippoo.app/wp-json/woohouse/v1/fb/proxy_notification');
 
 # This is used by hippoo_pif_get_url_attachment
 require_once(ABSPATH.'wp-admin/includes/image.php');
 
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'utils.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'web_api.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'settings.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'pwa.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'ai.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'permissions.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'integrations.php');
-include_once(hippoo_path.'app'.DIRECTORY_SEPARATOR.'app.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'utils.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'web_api.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'settings.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'pwa.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'ai.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'permissions.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'integrations.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'compatibility.php');
+include_once(HIPPOO_PATH.'app'.DIRECTORY_SEPARATOR.'app.php');

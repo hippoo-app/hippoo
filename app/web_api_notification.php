@@ -564,7 +564,7 @@ class HippooEventNotificationController {
             ),
         );
 
-        wp_remote_post(hippoo_proxy_notifiction_url, array(
+        wp_remote_post(HIPPOO_PROXY_NOTIFICTION_URL, array(
             'body' => $payload,
         ));
     }
