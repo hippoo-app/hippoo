@@ -11,13 +11,13 @@ function hippoo_page_style( $hook ) {
     wp_deregister_script('select2');
     wp_deregister_style('select2');
 
-    wp_enqueue_style('select2', hippoo_url . 'css/select2.min.css', [], '4.0.13');
-    wp_enqueue_script('select2', hippoo_url . 'js/select2.min.js', [ 'jquery' ], '4.0.13', true);
+    wp_enqueue_style('select2', HIPPOO_URL . 'css/select2.min.css', [], '4.0.13');
+    wp_enqueue_script('select2', HIPPOO_URL . 'js/select2.min.js', [ 'jquery' ], '4.0.13', true);
 
-    wp_enqueue_style('hippoo-main-page-style', hippoo_url . 'css/style.css', null, hippoo_version);
-    wp_enqueue_style('hippoo-main-admin-style', hippoo_url . 'css/admin-style.css', null, hippoo_version);
+    wp_enqueue_style('hippoo-main-page-style', HIPPOO_URL . 'css/style.css', null, HIPPOO_VERSION);
+    wp_enqueue_style('hippoo-main-admin-style', HIPPOO_URL . 'css/admin-style.css', null, HIPPOO_VERSION);
 
-    wp_enqueue_script('hippoo-main-scripts', hippoo_url . 'js/admin-script.js', [ 'jquery', 'jquery-ui-core', 'jquery-ui-tooltip' ], hippoo_version, true);
+    wp_enqueue_script('hippoo-main-scripts', HIPPOO_URL . 'js/admin-script.js', [ 'jquery', 'jquery-ui-core', 'jquery-ui-tooltip' ], HIPPOO_VERSION, true);
     wp_localize_script('hippoo-main-scripts', 'hippoo', [
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('hippoo_nonce')
@@ -26,7 +26,7 @@ function hippoo_page_style( $hook ) {
 add_action( 'admin_enqueue_scripts', 'hippoo_page_style' );
 
 // Invoice
-define('HIPPOO_INVOICE_PLUGIN_PATH', hippoo_path . 'invoice/');
+define('HIPPOO_INVOICE_PLUGIN_PATH', HIPPOO_PATH . 'invoice/');
 define('HIPPOO_INVOICE_PLUGIN_URL', plugins_url('hippoo') . '/invoice/');
 
 $options = get_option('hippoo_settings');
@@ -118,7 +118,7 @@ function hippoo_banner_activation_hook() {
         update_option('hippoo_activation_time', time());
     }
 }
-register_activation_hook(hippoo_main_file_path, 'hippoo_banner_activation_hook');
+register_activation_hook(HIPPOO_MAIN_FILE_PATH, 'hippoo_banner_activation_hook');
 
 function hippoo_display_review_banner() {
     if (!current_user_can('manage_options')) {
@@ -161,7 +161,7 @@ function hippoo_check_rest_activation_hook() {
     update_option('hippoo_rest_api_last_status', $status);
     delete_option('hippoo_rest_api_error_dismissed');
 }
-register_activation_hook(hippoo_main_file_path, 'hippoo_check_rest_activation_hook');
+register_activation_hook(HIPPOO_MAIN_FILE_PATH, 'hippoo_check_rest_activation_hook');
 
 function hippoo_display_rest_api_error_banner() {
     if (!current_user_can('manage_options')) {
@@ -187,7 +187,7 @@ function hippoo_display_rest_api_error_banner() {
     ?>
     <div class="notice notice-error <?php echo $is_settings_page ? '' : 'is-dismissible'; ?> hippoo-rest-api-error">
         <div class="logo-wrapper">
-            <img src="<?php echo esc_url(hippoo_url . 'images/icon.png'); ?>" alt="<?php esc_attr_e('Hippoo Logo', 'hippoo'); ?>" class="hippoo-logo">
+            <img src="<?php echo esc_url(HIPPOO_URL . 'images/icon.png'); ?>" alt="<?php esc_attr_e('Hippoo Logo', 'hippoo'); ?>" class="hippoo-logo">
         </div>
         <div class="content">
             <h4><?php esc_html_e('Hippoo app can’t connect to your WooCommerce', 'hippoo'); ?></h4>
@@ -235,7 +235,7 @@ function hippoo_display_upgrade_banner() {
     if ($license_status === 'basic') : ?>
         <div class="hippoo-upgrade-banner">
             <div class="logo-wrapper">
-                <img src="<?php echo esc_url(hippoo_url . 'images/premium.png'); ?>" class="hippoo-logo" />
+                <img src="<?php echo esc_url(HIPPOO_URL . 'images/premium.png'); ?>" class="hippoo-logo" />
             </div>
 
             <div class="content">

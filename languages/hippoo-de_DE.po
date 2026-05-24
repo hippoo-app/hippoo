@@ -333,28 +333,28 @@ msgstr "Ungültige Aktion."
 msgid "Installation failed."
 msgstr "Installation fehlgeschlagen."
 
-#: app/pwa.php:102
+#: app/pwa.php:120
 msgid "Showcase your products with a clean, minimal design. This lightweight theme creates a mobile-friendly product display. Use the link below as an Instagram-style shop to share your products. We recommend keeping it enabled."
 msgstr "Präsentiere deine Produkte mit einem klaren, minimalistischen Design. Dieses leichte Theme erstellt eine mobilfreundliche Produktanzeige. Nutze den folgenden Link als Instagram-ähnlichen Shop, um deine Produkte zu teilen. Wir empfehlen, es aktiviert zu lassen."
 
-#: app/pwa.php:105
+#: app/pwa.php:123
 msgid "Hippoo Mobile Storefront"
 msgstr "Hippoo Mobile Storefront"
 
-#: app/pwa.php:113
+#: app/pwa.php:131
 msgid "Storefront address"
 msgstr "Storefront-Adresse"
 
-#: app/pwa.php:119
+#: app/pwa.php:137
 msgid "Add your own CSS rules for Hippoo Shop. Styles entered here override defaults."
 msgstr "Füge eigene CSS-Regeln für den Hippoo-Shop hinzu. Hier eingefügte Stile überschreiben die Standardeinstellungen."
 
-#: app/pwa.php:122
+#: app/pwa.php:140
 msgid "Custom CSS"
 msgstr "Benutzerdefiniertes CSS"
 
 #: app/settings.php:21
-#: app/settings.php:238
+#: app/settings.php:227
 msgid "Hippoo Settings"
 msgstr "Hippoo Einstellungen"
 
@@ -371,96 +371,96 @@ msgstr "Stellt PDF-Rechnungen und Versandetiketten für einfaches Drucken bereit
 msgid "Enable Hippoo invoice and shipping label"
 msgstr "Hippoo-Rechnung und Versandetikett aktivieren"
 
-#: app/permissions.php:1155
-#: app/settings.php:145
+#: app/permissions.php:1153
+#: app/settings.php:134
 #: invoice/settings.php:75
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: app/settings.php:149
+#: app/settings.php:138
 msgid "Hippoo App"
 msgstr "Hippoo App"
 
-#: app/settings.php:177
+#: app/settings.php:166
 msgid "Hippoo Woocommerce app"
 msgstr "Hippoo WooCommerce App"
 
-#: app/settings.php:178
+#: app/settings.php:167
 msgid "Hippoo! is not just a shop management app, it's also a platform that enables you to extend its capabilities. With the ability to install extensions, you can customize your experience and add new features to the app. Browse and install other Hippoo plugins from our app to enhance your store's functionality."
 msgstr "Hippoo ist nicht nur eine Shop-Management-App, sondern auch eine Plattform, die es dir ermöglicht, ihre Funktionen zu erweitern. Mit der Möglichkeit, Erweiterungen zu installieren, kannst du deine Erfahrung anpassen und neue Funktionen zur App hinzufügen. Durchstöbere und installiere weitere Hippoo-Plugins aus unserer App, um die Funktionalität deines Shops zu verbessern."
 
-#: app/settings.php:180
-#: app/settings.php:181
+#: app/settings.php:169
+#: app/settings.php:170
 msgid "Download Hippoo Android app"
 msgstr "Hippoo Android App herunterladen"
 
-#: app/settings.php:184
-#: app/settings.php:185
+#: app/settings.php:173
+#: app/settings.php:174
 msgid "Download Hippoo iOS app"
 msgstr "Hippoo iOS App herunterladen"
 
-#: app/settings.php:189
+#: app/settings.php:178
 msgid "Scan QR code with your Android phone to install the app"
 msgstr "Scanne den QR-Code mit deinem Android-Handy, um die App zu installieren"
 
-#: app/settings.php:190
+#: app/settings.php:179
 msgid "QR Code"
 msgstr "QR-Code"
 
-#: app/settings.php:196
+#: app/settings.php:185
 msgid "App screenshot 1"
 msgstr "App-Screenshot 1"
 
-#: app/settings.php:197
+#: app/settings.php:186
 msgid "App screenshot 2"
 msgstr "App-Screenshot 2"
 
-#: app/settings.php:198
+#: app/settings.php:187
 msgid "App screenshot 3"
 msgstr "App-Screenshot 3"
 
-#: app/settings.php:199
+#: app/settings.php:188
 msgid "App screenshot 4"
 msgstr "App-Screenshot 4"
 
-#: app/settings.php:200
+#: app/settings.php:189
 msgid "App screenshot 5"
 msgstr "App-Screenshot 5"
 
-#: app/settings.php:234
+#: app/settings.php:223
 msgid "Settings saved successfully."
 msgstr "Einstellungen erfolgreich gespeichert."
 
 #. translators: %s: URL to the Permalink Settings page in wp-admin
-#: app/utils.php:51
+#: app/utils.php:95
 msgid "Hippoo can’t connect because your WordPress permalinks are set to “Plain”. To enable the WordPress REST API, open your <a href=\"%s\">Permalink Settings</a> and select Post name or Custom Structure, then save changes."
 msgstr "Hippoo kann sich nicht verbinden, weil deine WordPress-Permalinks auf „Einfach“ eingestellt sind. Um die WordPress REST API zu aktivieren, öffne die <a href=\"%s\">Permalink-Einstellungen</a> und wähle „Beitragsname“ oder „Benutzerdefinierte Struktur“, dann speichere die Änderungen."
 
-#: app/utils.php:61
+#: app/utils.php:105
 msgid "Hippoo can’t connect because the WordPress REST API has been disabled by a theme or plugin."
 msgstr "Hippoo kann sich nicht verbinden, weil die WordPress REST API durch ein Theme oder Plugin deaktiviert wurde."
 
-#: app/utils.php:74
+#: app/utils.php:118
 msgid "Hippoo can’t connect to your website because the WordPress REST API is not responding. Please check your firewall or hosting settings."
 msgstr "Hippoo kann sich nicht mit deiner Website verbinden, weil die WordPress REST API nicht antwortet. Überprüfe bitte deine Firewall- oder Hosting-Einstellungen."
 
-#: app/utils.php:85
+#: app/utils.php:129
 msgid "Hippoo can’t connect to your site because the WordPress REST API is restricted. Please allow public access to the REST API."
 msgstr "Hippoo kann sich nicht mit deiner Website verbinden, weil die WordPress REST API eingeschränkt ist. Bitte erlaube den öffentlichen Zugriff auf die REST API."
 
-#: app/utils.php:91
+#: app/utils.php:135
 msgid "Hippoo can’t connect because something on your site (like a security plugin or server rule) is blocking access to the WordPress REST API."
 msgstr "Hippoo kann sich nicht verbinden, weil etwas auf deiner Website (wie ein Sicherheits-Plugin oder eine Server-Regel) den Zugriff auf die WordPress REST API blockiert."
 
-#: app/utils.php:97
+#: app/utils.php:141
 msgid "Hippoo can’t connect because the WordPress API endpoint wasn’t found. Please make sure your WordPress installation is complete and .htaccess is correctly configured."
 msgstr "Hippoo kann sich nicht verbinden, weil der WordPress-API-Endpunkt nicht gefunden wurde. Stelle sicher, dass deine WordPress-Installation vollständig ist und die .htaccess-Datei korrekt konfiguriert ist."
 
-#: app/utils.php:103
+#: app/utils.php:147
 msgid "Hippoo can’t connect right now because your site returned an internal error when trying to reach the WordPress REST API."
 msgstr "Hippoo kann sich derzeit nicht verbinden, weil deine Website einen internen Fehler zurückgegeben hat, als versucht wurde, die WordPress REST API zu erreichen."
 
-#: app/utils.php:113
+#: app/utils.php:157
 msgid "Hippoo can’t connect because essential WordPress API routes are missing. A plugin may have disabled them."
 msgstr "Hippoo kann sich nicht verbinden, weil wichtige WordPress-API-Routen fehlen. Ein Plugin könnte sie deaktiviert haben."
 
@@ -548,35 +548,35 @@ msgstr "Produkt "
 msgid "Array of media item IDs to delete."
 msgstr "Array von Medien-IDs zum Löschen."
 
-#: app/web_api_auth.php:169
+#: app/web_api_auth.php:164
 msgid "Invalid or missing file."
 msgstr "Ungültige oder fehlende Datei."
 
-#: app/web_api_auth.php:180
+#: app/web_api_auth.php:175
 msgid "Failed to read file content."
 msgstr "Dateiinhalt konnte nicht gelesen werden."
 
-#: app/web_api_auth.php:187
+#: app/web_api_auth.php:182
 msgid "Media upload failed."
 msgstr "Medien-Upload fehlgeschlagen."
 
-#: app/web_api_auth.php:202
+#: app/web_api_auth.php:197
 msgid "Failed to create attachment."
 msgstr "Anhang konnte nicht erstellt werden."
 
-#: app/web_api_auth.php:231
+#: app/web_api_auth.php:226
 msgid "Attachment not found."
 msgstr "Anhang nicht gefunden."
 
-#: app/web_api_auth.php:237
+#: app/web_api_auth.php:232
 msgid "Error deleting the attachment."
 msgstr "Fehler beim Löschen des Anhangs."
 
-#: app/web_api_auth.php:246
+#: app/web_api_auth.php:241
 msgid "Attachment(s) deleted successfully."
 msgstr "Anhang/Anhangs erfolgreich gelöscht."
 
-#: app/web_api_auth.php:254
+#: app/web_api_auth.php:249
 msgid "Nothing to delete."
 msgstr "Nichts zum Löschen."
 
@@ -684,7 +684,7 @@ msgstr "Shop-Logo"
 msgid "Upload Logo"
 msgstr "Logo hochladen"
 
-#: app/permissions.php:833
+#: app/permissions.php:831
 #: invoice/settings.php:277
 #: invoice/settings.php:420
 msgid "Remove"
@@ -714,7 +714,7 @@ msgstr "Hier mehr erfahren"
 msgid "Setting saved."
 msgstr "Einstellung gespeichert."
 
-#: app/permissions.php:932
+#: app/permissions.php:930
 #: invoice/templates/simple/hippoo-factor.php:9
 #: invoice/templates/simple/hippoo-factor.php:168
 #: invoice/templates/simple/hippoo-label.php:119
@@ -738,7 +738,7 @@ msgstr "Kundennotiz:"
 msgid "Item"
 msgstr "Artikel"
 
-#: app/permissions.php:988
+#: app/permissions.php:986
 #: invoice/templates/simple/hippoo-factor.php:204
 #: invoice/woocommerce/product.php:28
 msgid "SKU"
@@ -825,6 +825,7 @@ msgstr ""
 msgid "Select role to manage permission"
 msgstr ""
 
+#: app/compatibility.php:214
 #: app/permissions.php:104
 #: app/permissions.php:129
 #: app/permissions.php:148
@@ -836,275 +837,275 @@ msgid "Role already exists."
 msgstr ""
 
 #. translators: %s: role name
-#: app/permissions.php:830
+#: app/permissions.php:828
 msgid "%s permissions"
 msgstr ""
 
-#: app/permissions.php:846
+#: app/permissions.php:844
 msgid "General"
 msgstr ""
 
-#: app/permissions.php:849
+#: app/permissions.php:847
 msgid "Enable access for this role"
 msgstr ""
 
-#: app/permissions.php:853
+#: app/permissions.php:851
 msgid "Read-only mode"
 msgstr ""
 
-#: app/permissions.php:861
+#: app/permissions.php:859
 msgid "Orders"
+msgstr ""
+
+#: app/permissions.php:861
+#: app/permissions.php:959
+#: app/permissions.php:1028
+#: app/permissions.php:1061
+msgid "Select all"
 msgstr ""
 
 #: app/permissions.php:863
 #: app/permissions.php:961
 #: app/permissions.php:1030
 #: app/permissions.php:1063
-msgid "Select all"
-msgstr ""
-
-#: app/permissions.php:865
-#: app/permissions.php:963
-#: app/permissions.php:1032
-#: app/permissions.php:1065
 msgid "Deselect all"
 msgstr ""
 
-#: app/permissions.php:870
+#: app/permissions.php:868
 msgid "Access orders"
 msgstr ""
 
-#: app/permissions.php:874
+#: app/permissions.php:872
 msgid "Order count"
 msgstr ""
 
-#: app/permissions.php:878
+#: app/permissions.php:876
 msgid "Order totals"
 msgstr ""
 
-#: app/permissions.php:882
+#: app/permissions.php:880
 msgid "Order details"
 msgstr ""
 
-#: app/permissions.php:888
-#: app/permissions.php:1041
+#: app/permissions.php:886
+#: app/permissions.php:1039
 msgid "Name"
 msgstr ""
 
-#: app/permissions.php:892
+#: app/permissions.php:890
 msgid "Items"
 msgstr ""
 
-#: app/permissions.php:896
+#: app/permissions.php:894
 msgid "Taxes"
 msgstr ""
 
-#: app/permissions.php:900
+#: app/permissions.php:898
 msgid "Shipping info"
 msgstr ""
 
-#: app/permissions.php:904
+#: app/permissions.php:902
 msgid "Order statuses"
 msgstr ""
 
-#: app/permissions.php:908
+#: app/permissions.php:906
 msgid "Coupon info"
 msgstr ""
 
-#: app/permissions.php:912
+#: app/permissions.php:910
 msgid "Payment info"
 msgstr ""
 
-#: app/permissions.php:916
+#: app/permissions.php:914
 msgid "Customer info"
 msgstr ""
 
-#: app/permissions.php:920
+#: app/permissions.php:918
 msgid "Order note"
 msgstr ""
 
-#: app/permissions.php:924
+#: app/permissions.php:922
 msgid "Order custom fields"
 msgstr ""
 
-#: app/permissions.php:928
+#: app/permissions.php:926
 msgid "Customer note"
 msgstr ""
 
-#: app/permissions.php:936
+#: app/permissions.php:934
 msgid "Shipping label"
 msgstr ""
 
-#: app/permissions.php:941
+#: app/permissions.php:939
 msgid "Allowed order status"
 msgstr ""
 
-#: app/permissions.php:959
+#: app/permissions.php:957
 msgid "Products"
 msgstr ""
 
-#: app/permissions.php:968
+#: app/permissions.php:966
 msgid "Access products"
 msgstr ""
 
-#: app/permissions.php:972
+#: app/permissions.php:970
 msgid "Product name"
 msgstr ""
 
-#: app/permissions.php:976
+#: app/permissions.php:974
 msgid "Prices"
 msgstr ""
 
-#: app/permissions.php:980
+#: app/permissions.php:978
 msgid "Stock quantity"
 msgstr ""
 
-#: app/permissions.php:984
+#: app/permissions.php:982
 msgid "Out of stock list"
 msgstr ""
 
-#: app/permissions.php:992
+#: app/permissions.php:990
 msgid "Status"
 msgstr ""
 
-#: app/permissions.php:996
+#: app/permissions.php:994
 msgid "Limit to categories"
 msgstr ""
 
-#: app/permissions.php:1010
+#: app/permissions.php:1008
 msgid "Limit to product type"
 msgstr ""
 
-#: app/permissions.php:1028
+#: app/permissions.php:1026
 msgid "Customers"
 msgstr ""
 
-#: app/permissions.php:1037
+#: app/permissions.php:1035
 msgid "Access customers"
 msgstr ""
 
-#: app/permissions.php:1045
+#: app/permissions.php:1043
 msgid "Address"
 msgstr ""
 
-#: app/permissions.php:1049
+#: app/permissions.php:1047
 msgid "Phone number"
 msgstr ""
 
-#: app/permissions.php:1053
+#: app/permissions.php:1051
 msgid "Email"
 msgstr ""
 
-#: app/permissions.php:1061
+#: app/permissions.php:1059
 msgid "Reviews"
 msgstr ""
 
-#: app/permissions.php:1070
+#: app/permissions.php:1068
 msgid "Access reviews"
 msgstr ""
 
-#: app/permissions.php:1074
+#: app/permissions.php:1072
 msgid "Reviewer name"
 msgstr ""
 
-#: app/permissions.php:1078
+#: app/permissions.php:1076
 msgid "Review content"
 msgstr ""
 
-#: app/permissions.php:1085
+#: app/permissions.php:1083
 msgid "Sale analytics"
 msgstr ""
 
-#: app/permissions.php:1088
+#: app/permissions.php:1086
 msgid "Show sale analytics"
 msgstr ""
 
-#: app/permissions.php:1095
+#: app/permissions.php:1093
 msgid "Coupons"
 msgstr ""
 
-#: app/permissions.php:1098
+#: app/permissions.php:1096
 msgid "Access coupons"
 msgstr ""
 
-#: app/permissions.php:1105
+#: app/permissions.php:1103
 msgid "Product categories"
 msgstr ""
 
-#: app/permissions.php:1108
+#: app/permissions.php:1106
 msgid "Access product categories"
 msgstr ""
 
-#: app/permissions.php:1115
+#: app/permissions.php:1113
 msgid "Product attributes"
 msgstr ""
 
-#: app/permissions.php:1118
+#: app/permissions.php:1116
 msgid "Access product attributes"
 msgstr ""
 
-#: app/permissions.php:1125
+#: app/permissions.php:1123
 msgid "Product tags"
 msgstr ""
 
-#: app/permissions.php:1128
+#: app/permissions.php:1126
 msgid "Access product tags"
 msgstr ""
 
-#: app/permissions.php:1135
+#: app/permissions.php:1133
 msgid "Product brands"
 msgstr ""
 
-#: app/permissions.php:1138
+#: app/permissions.php:1136
 msgid "Access product brands"
 msgstr ""
 
-#: app/permissions.php:1145
+#: app/permissions.php:1143
 msgid "Product shipping classes"
 msgstr ""
 
-#: app/permissions.php:1148
+#: app/permissions.php:1146
 msgid "Access product shipping classes"
 msgstr ""
 
-#: app/permissions.php:1158
+#: app/permissions.php:1156
 msgid "Show shop settings"
 msgstr ""
 
-#: app/permissions.php:1165
+#: app/permissions.php:1163
 msgid "App features"
 msgstr ""
 
-#: app/permissions.php:1168
+#: app/permissions.php:1166
 msgid "Access extensions"
 msgstr ""
 
-#: app/permissions.php:1172
+#: app/permissions.php:1170
 msgid "Limit to selected extensions"
 msgstr ""
 
-#: app/permissions.php:1190
+#: app/permissions.php:1188
 msgid "Settings updated successfully."
 msgstr ""
 
-#: app/permissions.php:1193
+#: app/permissions.php:1191
 msgid "Save changes"
 msgstr ""
 
 #. translators: %s: role name
-#: app/permissions.php:1204
+#: app/permissions.php:1202
 msgid "Delete %s role permissions?"
 msgstr ""
 
-#: app/permissions.php:1206
+#: app/permissions.php:1204
 msgid "This will remove all custom access rules for this role. This action can’t be undone."
 msgstr ""
 
-#: app/permissions.php:1208
+#: app/permissions.php:1206
 msgid "Cancel"
 msgstr ""
 
-#: app/permissions.php:1209
+#: app/permissions.php:1207
 msgid "Delete"
 msgstr ""
 
@@ -1132,4 +1133,58 @@ msgstr ""
 #: app/permissions.php:294
 #: app/permissions.php:299
 msgid "Sorry, you are not allowed to do that."
+msgstr ""
+
+#: app/compatibility.php:137
+msgid "Fix issues when products, orders, or coupons don't load correctly in the Hippoo WooCommerce app."
+msgstr ""
+
+#: app/compatibility.php:138
+msgid "Note:"
+msgstr ""
+
+#: app/compatibility.php:139
+msgid "Enabling this option may affect other tools and plugins that use the WooCommerce API."
+msgstr ""
+
+#: app/compatibility.php:143
+msgid "Enable Compatibility Mode"
+msgstr ""
+
+#: app/compatibility.php:151
+msgid "Applies to:"
+msgstr ""
+
+#: app/compatibility.php:168
+msgid "Hippoo Debug log"
+msgstr ""
+
+#: app/compatibility.php:186
+msgid "WooCommerce orders api"
+msgstr ""
+
+#: app/compatibility.php:190
+msgid "WooCommerce products api"
+msgstr ""
+
+#: app/compatibility.php:194
+msgid "WooCommerce coupons api"
+msgstr ""
+
+#: app/compatibility.php:204
+msgid "Copy API debug log"
+msgstr ""
+
+#: app/compatibility.php:571
+msgid ""
+"No API compatibility issues logged yet.\n"
+""
+msgstr ""
+
+#: app/compatibility.php:574
+msgid "Hippoo API Compatibility Debug Log"
+msgstr ""
+
+#: app/compatibility.php:575
+msgid "Generated: %s"
 msgstr ""

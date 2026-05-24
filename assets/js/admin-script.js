@@ -112,6 +112,67 @@ jQuery(document).ready(function($) {
         togglePwaSettingsFields();
     });
 
+    /* Compatibility */
+    function toggleCompatibilitySettingsFields() {
+        if ($('#compatibility_mode').is(':checked')) {
+            $('.compatibility-applies-row').removeClass('disabled');
+        } else {
+            $('.compatibility-applies-row').addClass('disabled');
+        }
+    }
+
+    toggleCompatibilitySettingsFields();
+
+    $(document).on('click', '#hippoo_settings #compatibility_mode', function() {
+        toggleCompatibilitySettingsFields();
+    });
+
+    $(document).on('click', '#copy-compatibility-log', function(e) {
+        e.preventDefault();
+        
+        var link = $(this);
+        var originalText = link.text();
+        
+        link.text('Preparing log...');
+        
+        $.ajax({
+            url: hippoo.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'hippoo_get_compatibility_log',
+                nonce: hippoo.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    var tempTextarea = $('<textarea>');
+                    $('body').append(tempTextarea);
+                    tempTextarea.val(response.data).select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        link.text('Copied!');
+                    } catch (err) {
+                        link.text('Failed to copy');
+                    }
+                    
+                    tempTextarea.remove();
+                } else {
+                    link.text('Error');
+                }
+                
+                setTimeout(function() {
+                    link.text(originalText);
+                }, 2000);
+            },
+            error: function() {
+                link.text('Error');
+                setTimeout(function() {
+                    link.text(originalText);
+                }, 2000);
+            }
+        });
+    });
+
     /* Review Banner */
     $(document).on('click', '.hippoo-dismiss-review', function(event) {
         event.preventDefault();

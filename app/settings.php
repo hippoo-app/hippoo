@@ -23,7 +23,7 @@ class HippooSettings
             'manage_options',
             'hippoo_setting_page',
             array($this, 'settings_page_render'),
-            (hippoo_url . '/images/icon.svg')
+            (HIPPOO_URL . '/images/icon.svg')
         );
     }
 
@@ -102,24 +102,13 @@ class HippooSettings
             $sanitized['image_size_selection'] = sanitize_text_field($input['image_size_selection']);
         }
         
-        // PWA settings
-        if (isset($input['pwa_plugin_enabled'])) {
-            $sanitized['pwa_plugin_enabled'] = (bool) $input['pwa_plugin_enabled'];
-        }
-        
-        if (isset($input['pwa_route_name'])) {
-            $sanitized['pwa_route_name'] = sanitize_text_field($input['pwa_route_name']);
-        }
-        
-        if (isset($input['pwa_custom_css'])) {
-            $sanitized['pwa_custom_css'] = wp_strip_all_tags($input['pwa_custom_css']);
-        }
-        
         foreach ($input as $key => $value) {
             if (strpos($key, 'send_notification_') === 0) {
                 $sanitized[$key] = (bool) $value;
             }
         }
+
+        $sanitized = apply_filters('hippoo_sanitize_settings', $sanitized, $input);
         
         return $sanitized;
     }
@@ -193,11 +182,11 @@ class HippooSettings
             <div id="image-carousel">
                 <div class="carousel-wrapper">
                     <div class="carousel-inner">
-                        <img class="carousel-image" src="<?php echo esc_url(hippoo_url . 'images/android-app/1.png'); ?>" alt="<?php esc_attr_e('App screenshot 1', 'hippoo'); ?>" />
-                        <img class="carousel-image" src="<?php echo esc_url(hippoo_url . 'images/android-app/2.png'); ?>" alt="<?php esc_attr_e('App screenshot 2', 'hippoo'); ?>" />
-                        <img class="carousel-image" src="<?php echo esc_url(hippoo_url . 'images/android-app/3.png'); ?>" alt="<?php esc_attr_e('App screenshot 3', 'hippoo'); ?>" />
-                        <img class="carousel-image" src="<?php echo esc_url(hippoo_url . 'images/android-app/4.png'); ?>" alt="<?php esc_attr_e('App screenshot 4', 'hippoo'); ?>" />
-                        <img class="carousel-image" src="<?php echo esc_url(hippoo_url . 'images/android-app/5.png'); ?>" alt="<?php esc_attr_e('App screenshot 5', 'hippoo'); ?>" />
+                        <img class="carousel-image" src="<?php echo esc_url(HIPPOO_URL . 'images/android-app/1.png'); ?>" alt="<?php esc_attr_e('App screenshot 1', 'hippoo'); ?>" />
+                        <img class="carousel-image" src="<?php echo esc_url(HIPPOO_URL . 'images/android-app/2.png'); ?>" alt="<?php esc_attr_e('App screenshot 2', 'hippoo'); ?>" />
+                        <img class="carousel-image" src="<?php echo esc_url(HIPPOO_URL . 'images/android-app/3.png'); ?>" alt="<?php esc_attr_e('App screenshot 3', 'hippoo'); ?>" />
+                        <img class="carousel-image" src="<?php echo esc_url(HIPPOO_URL . 'images/android-app/4.png'); ?>" alt="<?php esc_attr_e('App screenshot 4', 'hippoo'); ?>" />
+                        <img class="carousel-image" src="<?php echo esc_url(HIPPOO_URL . 'images/android-app/5.png'); ?>" alt="<?php esc_attr_e('App screenshot 5', 'hippoo'); ?>" />
                     </div>
                 </div>
                 <div class="carousel-nav">
