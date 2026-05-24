@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function hippoo_get_temp_dir() {
     $wp_upload_dir = wp_upload_dir();
-    $temp_dir = implode( DIRECTORY_SEPARATOR, [ $wp_upload_dir['basedir'], 'hippoo', 'tmp' ] ) . DIRECTORY_SEPARATOR;
+    $temp_dir = implode(DIRECTORY_SEPARATOR, [$wp_upload_dir['basedir'], 'hippoo', 'tmp']) . DIRECTORY_SEPARATOR;
     
     if (!file_exists($temp_dir)) {
         // phpcs:ignore
@@ -14,6 +14,50 @@ function hippoo_get_temp_dir() {
     }
 
     return $temp_dir;
+}
+
+function hippoo_get_log_dir() {
+    $wp_upload_dir = wp_upload_dir();
+    $log_dir = implode(DIRECTORY_SEPARATOR, [$wp_upload_dir['basedir'], 'hippoo', 'logs']) . DIRECTORY_SEPARATOR;
+    
+    if (!file_exists($log_dir)) {
+        wp_mkdir_p($log_dir);
+        
+        // Protect directory from direct access
+        $htaccess_content = 'deny from all';
+        $index_content = '';
+        
+        $htaccess_file = $log_dir . '.htaccess';
+        $index_file = $log_dir . 'index.html';
+        
+        if (!file_exists($htaccess_file)) {
+            file_put_contents($htaccess_file, $htaccess_content);
+        }
+        
+        if (!file_exists($index_file)) {
+            file_put_contents($index_file, $index_content);
+        }
+    }
+    
+    return $log_dir;
+}
+
+function hippoo_get_log_content($filename) {
+    $log_dir = hippoo_get_log_dir();
+    $log_file = $log_dir . basename($filename);
+    
+    if (!file_exists($log_file)) {
+        return '';
+    }
+    
+    return file_get_contents($log_file);
+}
+
+function hippoo_put_log_content($filename, $content) {
+    $log_dir = hippoo_get_log_dir();
+    $log_file = $log_dir . basename($filename);
+    
+    file_put_contents($log_file, $content, LOCK_EX);
 }
 
 function hippoo_get_product_by_slug( $products, $name ) {

@@ -15,8 +15,8 @@ define( 'HIPPOO_INVOICE_PLUGIN_TEMPLATE_PATH', HIPPOO_INVOICE_PLUGIN_PATH . 'tem
 
 add_action( 'admin_enqueue_scripts', 'hippoo_enqueue_scripts' );
 function hippoo_enqueue_scripts() {
-    wp_enqueue_style(  'hippoo-styles', HIPPOO_INVOICE_PLUGIN_URL . 'assets/css/admin-style.css', null, hippoo_version );
-    wp_enqueue_script( 'hippoo-scripts', HIPPOO_INVOICE_PLUGIN_URL . 'assets/js/admin-script.js', [ 'jquery', 'jquery-ui-core', 'jquery-ui-tooltip' ], hippoo_version, true );
+    wp_enqueue_style(  'hippoo-styles', HIPPOO_INVOICE_PLUGIN_URL . 'assets/css/admin-style.css', null, HIPPOO_VERSION );
+    wp_enqueue_script( 'hippoo-scripts', HIPPOO_INVOICE_PLUGIN_URL . 'assets/js/admin-script.js', [ 'jquery', 'jquery-ui-core', 'jquery-ui-tooltip' ], HIPPOO_VERSION, true );
 }
 add_action('admin_head', 'hippoo_force_admin_styles', 9999);
 function hippoo_force_admin_styles() {

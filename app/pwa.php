@@ -11,11 +11,12 @@ class HippooPwa
         add_action('init', array($this, 'add_pwa_route'));
         add_filter('query_vars', array($this, 'add_query_vars'));
         add_action('template_redirect', array($this, 'template_redirect'));
-        add_action('admin_init', array($this, 'settings_init'));
         add_action('update_option_hippoo_settings', 'flush_rewrite_rules');
+        add_action('admin_init', array($this, 'settings_init'));
+        add_filter('hippoo_sanitize_settings', array($this, 'sanitize_settings'), 10, 2);
 
-        register_activation_hook(hippoo_main_file_path, array($this, 'activate'));
-        register_deactivation_hook(hippoo_main_file_path, array($this, 'deactivate'));
+        register_activation_hook(HIPPOO_MAIN_FILE_PATH, array($this, 'activate'));
+        register_deactivation_hook(HIPPOO_MAIN_FILE_PATH, array($this, 'deactivate'));
     }
 
     public function activate()
@@ -57,12 +58,12 @@ class HippooPwa
     public function template_redirect()
     {
         if (get_query_var('hippoo_pwa')) {
-            include hippoo_path . 'pwa' . DIRECTORY_SEPARATOR . 'index.html';
+            include HIPPOO_PATH . 'pwa' . DIRECTORY_SEPARATOR . 'index.html';
             exit;
         }
 
         if ($serve_path = get_query_var('hippoo_serve')) {
-            $base       = realpath(hippoo_path . 'pwa');
+            $base       = realpath(HIPPOO_PATH . 'pwa');
             $file_path  = realpath($base . DIRECTORY_SEPARATOR . $serve_path);
             
             if (!$file_path || strpos($file_path, $base) !== 0) {
@@ -88,6 +89,23 @@ class HippooPwa
             echo $custom_css; // phpcs:ignore
             exit;
         }
+    }
+
+    public function sanitize_settings($sanitized, $input)
+    {
+        if (isset($input['pwa_plugin_enabled'])) {
+            $sanitized['pwa_plugin_enabled'] = (bool) $input['pwa_plugin_enabled'];
+        }
+        
+        if (isset($input['pwa_route_name'])) {
+            $sanitized['pwa_route_name'] = sanitize_text_field($input['pwa_route_name']);
+        }
+        
+        if (isset($input['pwa_custom_css'])) {
+            $sanitized['pwa_custom_css'] = wp_strip_all_tags($input['pwa_custom_css']);
+        }
+        
+        return $sanitized;
     }
 
     public function settings_init()
@@ -146,22 +164,22 @@ class HippooPwa
     {
         $custom_css = $this->get_custom_css();
         $disabled = $this->is_plugin_enabled() ? '' : 'disabled';
-        echo '<textarea id="pwa_custom_css" name="hippoo_settings[pwa_custom_css]" rows="10" cols="50" ' . esc_html($disabled) . '>' . esc_textarea($custom_css) . '</textarea>';
+        echo '<textarea id="pwa_custom_css" name="hippoo_settings[pwa_custom_css]" rows="7" cols="50" ' . esc_html($disabled) . '>' . esc_textarea($custom_css) . '</textarea>';
     }
 
-    public function is_plugin_enabled()
+    private function is_plugin_enabled()
     {
         $settings = get_option('hippoo_settings', []);
         return isset($settings['pwa_plugin_enabled']) && $settings['pwa_plugin_enabled'];
     }
 
-    public function get_route_name()
+    private function get_route_name()
     {
         $settings = get_option('hippoo_settings', []);
         return isset($settings['pwa_route_name']) ? $settings['pwa_route_name'] : 'hippooshop';
     }
 
-    public function get_custom_css()
+    private function get_custom_css()
     {
         $settings = get_option('hippoo_settings', []);
         return isset($settings['pwa_custom_css']) ? $settings['pwa_custom_css'] : '';

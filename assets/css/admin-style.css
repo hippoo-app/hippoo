@@ -22,109 +22,6 @@
     vertical-align: bottom;
 }
 
-/* General Settigs */
-
-#hippoo_settings .button-primary {
-    background: #1A77B1;
-    color: #FFFFFF;
-    border-radius: 8px;
-    border: none;
-    padding: 5px 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-#hippoo_settings .button-primary:hover {
-    background: #146A8E;
-}
-
-#hippoo_settings .form-table {
-    max-width: 800px;
-    vertical-align: middle;
-}
-
-#hippoo_settings .form-table tr {
-    position: relative;
-}
-
-#hippoo_settings .form-table:not(:last-of-type) tr:last-child {
-    border-bottom: 1px solid #DFDFDF;
-}
-
-#hippoo_settings .form-table tr.disabled * {
-    color: #818181;
-    cursor: not-allowed;
-}
-
-#hippoo_settings .form-table th {
-    font-size: 16px;
-    font-weight: normal;
-    vertical-align: middle;
-    width: 100%;
-}
-
-#hippoo_settings .form-table td {
-    text-align: end;
-    vertical-align: top;
-    text-wrap: nowrap;
-    max-width: 100px;
-}
-
-#hippoo_settings .form-table td > * {
-    float: right;
-}
-
-#hippoo_settings h2 {
-    font-size: 25px;
-}
-
-#hippoo_settings h2:first-of-type {
-    font-size: 36px;
-}
-
-#hippoo_settings .form-table tr.custom-css-row {
-    display: table-row;
-    width: 100%;
-}
-
-#hippoo_settings .form-table tr.custom-css-row th,
-#hippoo_settings .form-table tr.custom-css-row td {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    padding-bottom: 0;
-    position: relative;
-}
-
-#hippoo_settings .form-table tr.custom-css-row td {
-    min-height: 225px;
-}
-
-#hippoo_settings .form-table tr.custom-css-row textarea {
-    width: 100%;
-    max-width: 785px;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-@media only screen and (max-width: 782px) {
-    #hippoo_settings .form-table tr td .route-name-field {
-        float: left;
-    }
-
-    #hippoo_settings .form-table th {
-        padding: 20px 10px 20px 0 !important;
-    }
-}
-
-#hippoo_settings #image_size_selection {
-    position: absolute;
-    left: 100px;
-    top: 50%;
-    transform: translateY(-50%);
-}
 
 /* Tabs */
 
@@ -163,6 +60,218 @@
 #hippoo_settings .tabs .tab-content .is-locked {
     pointer-events: none;
     opacity: 0.5;
+}
+
+/* General Settigs */
+
+#hippoo_settings .button-primary {
+    background: #1A77B1;
+    color: #FFFFFF;
+    border-radius: 8px;
+    border: none;
+    padding: 5px 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#hippoo_settings .button-primary:hover {
+    background: #146A8E;
+}
+
+#hippoo_settings .form-table {
+    max-width: 800px;
+    vertical-align: middle;
+    table-layout: fixed;
+}
+
+#hippoo_settings .form-table tr {
+    position: relative;
+}
+
+#hippoo_settings .form-table:not(:last-of-type) tr:last-child {
+    border-bottom: 1px solid #DFDFDF;
+}
+
+#hippoo_settings .form-table tr.disabled * {
+    color: #999 !important;
+    cursor: not-allowed !important;
+}
+
+#hippoo_settings .form-table th {
+    font-size: 16px;
+    font-weight: normal;
+    vertical-align: middle;
+    width: 100%;
+}
+
+#hippoo_settings .form-table td {
+    text-align: end;
+    vertical-align: top;
+    text-wrap: nowrap;
+    max-width: 100px;
+}
+
+#hippoo_settings .form-table th,
+#hippoo_settings .form-table td {
+    padding: 20px 10px 10px 10px !important;
+}
+
+#hippoo_settings .form-table td > * {
+    position: relative;
+    float: right;
+    right: 20px;
+}
+
+.rtl #hippoo_settings .form-table td > * {
+    float: left;
+    right: auto;
+}
+
+#hippoo_settings h2 {
+    font-size: 25px;
+}
+
+#hippoo_settings h2:first-of-type {
+    font-size: 36px;
+}
+
+#hippoo_settings .form-table tr.custom-css-row {
+    display: table-row;
+    width: 100%;
+}
+
+#hippoo_settings .form-table tr.custom-css-row th,
+#hippoo_settings .form-table tr.custom-css-row td {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    padding-bottom: 0;
+}
+
+#hippoo_settings .form-table tr.custom-css-row td {
+    min-height: 160px;
+    padding-top: 0 !important;
+}
+
+#hippoo_settings .form-table tr.custom-css-row td > * {
+    position: relative;
+    float: left;
+    left: 0;
+}
+
+.rtl #hippoo_settings .form-table tr.custom-css-row td > * {
+    float: right;
+}
+
+#hippoo_settings .form-table tr.custom-css-row textarea {
+    text-align: left;
+    width: 100%;
+}
+
+@media only screen and (max-width: 782px) {
+    #hippoo_settings .form-table tr td .route-name-field {
+        float: left;
+    }
+
+    #hippoo_settings .form-table th {
+        padding: 20px 10px 20px 0 !important;
+    }
+}
+
+#hippoo_settings #image_size_selection {
+    position: absolute;
+    left: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#hippoo_settings .form-table tr.compatibility-applies-row {
+    display: table-row;
+    width: 100%;
+}
+
+#hippoo_settings .form-table tr.compatibility-applies-row th,
+#hippoo_settings .form-table tr.compatibility-applies-row td {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+}
+
+#hippoo_settings .form-table tr.compatibility-applies-row td {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+#hippoo_settings .form-table tr.compatibility-applies-row td > * {
+    float: none !important;
+    right: 0 !important;
+    left: 0 !important;
+}
+
+#hippoo_settings .form-table tr.compatibility-applies-row .checkbox-label {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+#hippoo_settings .form-table .checkbox-label input[type="checkbox"] {
+    appearance: none;
+    box-shadow: none;
+    width: 20px;
+    height: 20px;
+    background: #FFFFFF;
+    border: 1px solid #2f80ed;
+    border-radius: 2px;
+    position: relative;
+    right: 10px;
+}
+
+.rtl #hippoo_settings .form-table .checkbox-label input[type="checkbox"] {
+    left: 10px;
+    right: auto;
+}
+
+#hippoo_settings .form-table .checkbox-label input[type="checkbox"]::before,
+#hippoo_settings .form-table .checkbox-label input[type="checkbox"]::after {
+    display: none;
+}
+
+#hippoo_settings .form-table .checkbox-label input[type="checkbox"]:checked {
+    background: #ffffff;
+}
+
+#hippoo_settings .form-table .checkbox-label input[type="checkbox"]:checked::after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 10px;
+    background: url('data:image/svg+xml;utf8,<svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9.4L0 5.4L1.4 4L4 6.6L10.6 0L12 1.4L4 9.4Z" fill="%232f80ed" /></svg>') no-repeat center center;
+    background-size: contain;
+}
+
+#hippoo_settings .form-table .disabled input[type="checkbox"] {
+    background-color: #f8f8f8 !important;
+    border-color: #e3e3e3 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    cursor: not-allowed !important;
+}
+
+#hippoo_settings .form-table .disabled input[type="checkbox"]:checked::after {
+    filter: grayscale(100%) brightness(1.5);
+}
+
+#hippoo_settings .form-table a.copy-log-link {
+    color: #2f80ed;
+    text-decoration: none;
 }
 
 /* Form Elements */
@@ -875,8 +984,8 @@
 }
 
 #hippoo_settings .permission-section .disabled input[type="checkbox"] {
-    background-color: #f5f5f5;
-    border-color: #ccc;
+    background-color: #f8f8f8;
+    border-color: #e3e3e3;
 }
 
 #hippoo_settings .permission-section .section-toggle,

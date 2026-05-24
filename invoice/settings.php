@@ -385,7 +385,7 @@ class HippooInvoiceSettings {
         ?>
         <div class="notice notice-info hippoo-invoice-notice">
             <div class="logo-wrapper">
-                <img src="<?php echo esc_url(hippoo_url . 'images/info.svg'); ?>" alt="<?php esc_attr_e('Exclamation Icon', 'hippoo'); ?>" class="exclamation-icon">
+                <img src="<?php echo esc_url(HIPPOO_URL . 'images/info.svg'); ?>" alt="<?php esc_attr_e('Exclamation Icon', 'hippoo'); ?>" class="exclamation-icon">
             </div>
             <div class="content">
                 <h4><?php esc_html_e('Need more invoice or shipping label customization?', 'hippoo'); ?></h4>

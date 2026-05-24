@@ -265,7 +265,7 @@ function hippoo_returned($data) {
 
 function hippoo_config($data) {
     if (function_exists('hippoo_config')) {
-        $plugin_data = get_plugin_data( hippoo_main_file_path );
+        $plugin_data = get_plugin_data( HIPPOO_MAIN_FILE_PATH );
         $plugin_version = $plugin_data['Version'];
         $response = array(
             'hippoo' => 'true',
@@ -680,7 +680,7 @@ function hippoo_send_notification_by_order($order_id) {
             )
     );
     
-    $response = wp_remote_post(hippoo_proxy_notifiction_url, $args);
+    $response = wp_remote_post(HIPPOO_PROXY_NOTIFICTION_URL, $args);
 
     if (!is_wp_error($response))
         $body = wp_remote_retrieve_body($response);
@@ -719,7 +719,7 @@ function hippoo_out_of_stock_send_notification_by_prodcut($product) {
             )
     );
     
-    $response = wp_remote_post(hippoo_proxy_notifiction_url, $args);
+    $response = wp_remote_post(HIPPOO_PROXY_NOTIFICTION_URL, $args);
 
     if (!is_wp_error($response))
         $body = wp_remote_retrieve_body($response);
