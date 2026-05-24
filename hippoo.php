@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define('HIPPOO_VERSION', '1.9.2');
+define('HIPPOO_VERSION', '1.9.3');
 define('HIPPOO_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
 define('HIPPOO_MAIN_FILE_PATH', __FILE__);
 define('HIPPOO_DIR', __DIR__);
