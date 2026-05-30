@@ -61,11 +61,8 @@ function hippoo_put_log_content($filename, $content) {
 }
 
 function hippoo_get_product_by_slug( $products, $name ) {
-    if ( ! is_array( $products ) ) {
-        return null;
-    }
     foreach ( $products as $product ) {
-        if ( is_array( $product ) && isset( $product['slug'] ) && strcasecmp( $product['slug'], $name ) === 0 ) {
+        if ( strcasecmp( $product['slug'], $name ) === 0 ) {
             return $product;
         }
     }
