@@ -671,8 +671,9 @@ class HippooPermissions
     public static function get_user_permissions()
     {
         $user = wp_get_current_user();
-        if (empty($user) || !$user->exists()) {
-            return null;
+        
+        if (empty($user) || !$user->exists() || !is_user_logged_in()) {
+            return false;
         }
 
         if (in_array('administrator', (array) $user->roles)) {
@@ -681,14 +682,12 @@ class HippooPermissions
 
         $settings = get_option('hippoo_permissions_settings', []);
         foreach ((array) $user->roles as $role) {
-            if (!isset($settings[$role])) {
-                continue;
+            if (isset($settings[$role])) {
+                return $settings[$role];
             }
-
-            return $settings[$role];
         }
 
-        return null; // Full access
+        return false; // No access
     }
 
     private function has_role_access($section, $key = null)
@@ -696,7 +695,11 @@ class HippooPermissions
         $perms = self::get_user_permissions();
 
         if ($perms === null) {
-            return true; // admin or unrestricted
+            return true; // admin
+        }
+
+        if ($perms === false) {
+            return false;
         }
 
         if (empty($perms['general']['enable_access'])) {
