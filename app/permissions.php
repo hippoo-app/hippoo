@@ -159,8 +159,8 @@ class HippooPermissions
     {
         $perms = self::get_user_permissions();
 
-        // Admin or no restrictions - allow everything
-        if ($perms === null) {
+        // Admin or no restrictions - default permission
+        if ($perms === null || $perms === false || !is_array($perms)) {
             return $permission;
         }
 
@@ -698,7 +698,7 @@ class HippooPermissions
             return true; // admin
         }
 
-        if ($perms === false) {
+        if ($perms === false || !is_array($perms)) {
             return false;
         }
 
