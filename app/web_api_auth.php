@@ -76,26 +76,96 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
     }
 
 
+    /**
+     * Mirror every non-hippoo REST route under /wc-hippoo/v1/ext/<route>
+     * so the Hippoo mobile client can reach upstream endpoints through a
+     * single namespace.
+     *
+     * Each mirrored route is gated by a two-layer permission check:
+     *   1) Hippoo admin gate (overridable via filter, but validated below
+     *      so a misbehaving filter cannot silently open the surface).
+     *   2) The route's ORIGINAL permission_callback (so upstream rules
+     *      like ownership, nonces, or per-resource capabilities still
+     *      apply after the admin check).
+     *
+     * Called from rest_api_init.
+     */
     function re_register_external_routes() {
         $server = rest_get_server();
         $endpoints = $server->get_routes();
-    
+
         $new_namespace = $this->hippoo_namespace . '/ext';
-    
+        // Anchored with a leading slash because get_routes() keys start
+        // with '/'. Without the slash the skip below would never match
+        // and we'd mirror our own routes (and on repeated calls compound
+        // into /ext/wc-hippoo/v1/ext/...).
+        $own_namespace_prefix = '/' . $this->hippoo_namespace;
+        $default_permission_callback = array($this, 'is_user_wordpress_admin');
+        // Known string callables that always return truthy. If a filter
+        // returns one of these we treat it as a security regression and
+        // fall back to the default admin gate.
+        $unsafe_callbacks = array('__return_true', '__return_yes', '__return_1', '__return_zero', '__return_empty_string');
+
         foreach ($endpoints as $route => $handlers) {
-            if (strpos($route, $this->hippoo_namespace) === 0) {
+            // Skip our own namespace. Exact match handles the namespace
+            // root (/wc-hippoo/v1); the trailing-slash prefix check
+            // handles everything below it and avoids false positives on
+            // siblings like /wc-hippoo-invoice/...
+            if ($route === $own_namespace_prefix || strpos($route, $own_namespace_prefix . '/') === 0) {
                 continue;
             }
-    
+
             foreach ($handlers as $handler) {
-                // print('Route: '. esc_html($route) . '</br>');
-                $methods = is_array($handler['methods']) 
+                $methods = is_array($handler['methods'])
                     ? implode(',', array_keys($handler['methods']))
                     : $handler['methods'];
 
-                $default_permission_callback = array($this, 'is_user_wordpress_admin');
-                $permission_callback = apply_filters('hippoo_extension_permission_check', $default_permission_callback, $route, $handler);
-    
+                // The filter lets integrations override the admin gate,
+                // but a misbehaving filter would expose every plugin's
+                // REST surface under /ext/. Reject non-callables and
+                // known always-true helpers; log every override or
+                // rejection so abuse is visible in error logs.
+                $filtered_permission_callback = apply_filters('hippoo_extension_permission_check', $default_permission_callback, $route, $handler);
+
+                if ((is_string($filtered_permission_callback) && in_array($filtered_permission_callback, $unsafe_callbacks, true))
+                    || !is_callable($filtered_permission_callback)) {
+                    error_log(sprintf('[hippoo] hippoo_extension_permission_check returned unsafe/invalid callback for route %s; using default.', $route));
+                    $hippoo_permission_callback = $default_permission_callback;
+                } else {
+                    if ($filtered_permission_callback !== $default_permission_callback) {
+                        error_log(sprintf('[hippoo] hippoo_extension_permission_check overridden for route %s.', $route));
+                    }
+                    $hippoo_permission_callback = $filtered_permission_callback;
+                }
+
+                $original_permission_callback = isset($handler['permission_callback']) ? $handler['permission_callback'] : null;
+
+                // Wrap the original permission_callback.
+                // WP_Error returns short-circuit with the upstream code/
+                // message; a bool false is converted to a generic 403
+                // so REST returns a proper status instead of 200+empty.
+                $wrapped_permission_callback = function ($request) use ($hippoo_permission_callback, $original_permission_callback) {
+                    $hippoo_check = call_user_func($hippoo_permission_callback, $request);
+                    if (is_wp_error($hippoo_check)) {
+                        return $hippoo_check;
+                    }
+                    if (!$hippoo_check) {
+                        return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), array('status' => 403));
+                    }
+
+                    if (is_callable($original_permission_callback)) {
+                        $original_check = call_user_func($original_permission_callback, $request);
+                        if (is_wp_error($original_check)) {
+                            return $original_check;
+                        }
+                        if (!$original_check) {
+                            return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), array('status' => 403));
+                        }
+                    }
+
+                    return true;
+                };
+
                 register_rest_route(
                     $new_namespace,
                     $route,
@@ -103,7 +173,7 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
                         'methods'             => $methods,
                         'callback'            => $handler['callback'],
                         'args'                => $handler['args'],
-                        'permission_callback' => $permission_callback,
+                        'permission_callback' => $wrapped_permission_callback,
                     )
                 );
             }
@@ -269,17 +339,6 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
         $plugins = get_plugins();
         $plugins_info = array();
 
-        // # Filter hippoo family plugins // Due supporting external plugins we dont need this anymore
-        // $plugins = array_filter($plugins, function ($plugin) {
-        //     $plugin_family_names = array('hippoo');
-        //     foreach ($plugin_family_names as $plugin_family_name) {
-        //         if (stripos($plugin['TextDomain'], $plugin_family_name) === 0) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // });
-
         foreach ($plugins as $plugin_file => $plugin) {
             $available_plugin_from_central = hippoo_get_product_by_slug($available_plugins, $plugin['TextDomain']);
            
@@ -360,7 +419,10 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
     }
 
     function is_user_wordpress_admin(){
-        return current_user_can('manage_options');
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+        return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), array('status' => 403));
     }
 
 }

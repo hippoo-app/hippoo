@@ -294,7 +294,7 @@ class HippooPermissions
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
-        elseif (strpos($route, '/wc-hippoo/v') === 0 && strpos($route, '/ext') !== false) {
+        elseif (preg_match('#^/wc-hippoo/v\d+/ext(/|$)#', $route)) {
             if (!$this->has_role_access('app_features', 'access_extensions')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }

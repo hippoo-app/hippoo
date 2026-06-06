@@ -4,7 +4,7 @@ Donate link: https://Hippoo.app/
 Tags: Hippoo, order notifications, WooCommerce app, Store management app, WooCommerce app alternative, PWA, headless
 Requires at least: 5.3
 Tested up to: 6.9
-Stable tag: 1.9.6
+Stable tag: 1.9.7
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Hippoo helps you manage WooCommerce orders, inventory, and analytics from your mobile. Receive real-time notifications and control your store on the go.
@@ -77,11 +77,12 @@ Manage your WooCommerce store on the go with Hippoo. Receive real-time order not
 7. Advanced sale analytics and top selling products
 
 == Changelog ==
-* 1.9.6 - Critical security bug fix
-* 1.9.5 - Critical security fixes
-* 1.9.4 - Harden hippoo_get_product_by_slug against non-array input from upstream central plugin catalog
-* 1.9.3 - Update title
-* 1.9.2 - minor improvements
+* 1.9.7 - Security: harden /wc-hippoo/v1/ext/*
+* 1.9.6 - Security: Critical security bug fix
+* 1.9.5 - Security: Critical security fixes
+* 1.9.4 - Security: Harden hippoo_get_product_by_slug against non-array input from upstream central plugin catalog
+* 1.9.3 - Update plugin title
+* 1.9.2 - Minor improvements
 * 1.9.0 - Add compatibility mode to fix WooCommerce API response type mismatches for Hippoo app
 * 1.8.6 – Re-release of the stable 1.8.4 codebase after rolling back 1.9.x.
 * 1.8.4 – Performance improvements, plus fixes for role and permission bugs
@@ -91,7 +92,7 @@ Manage your WooCommerce store on the go with Hippoo. Receive real-time order not
 * 1.7.5 – Revert a version to fix critical bug
 * 1.7.4 – Add role and permissions
 * 1.7.3 – Ability to install integrations
-* 1.7.2 –
+* 1.7.2 – Minor fixes
 * 1.7.1 – Add Gemini Support for AI features
 * 1.7.0 – Introducing Hippoo AI for generating product content from photos
 * 1.6.1 – Added REST API troubleshooter and support for customizable invoice templates.
