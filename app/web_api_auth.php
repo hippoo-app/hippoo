@@ -75,7 +75,6 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
         ) );
     }
 
-
     function re_register_external_routes() {
         $server = rest_get_server();
         $endpoints = $server->get_routes();

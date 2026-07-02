@@ -1,0 +1,13 @@
+{
+    "name": "hippoo/hippoo-plugin",
+    "description": "Hippoo Mobile App for WooCommerce",
+    "require": {
+        "picqer/php-barcode-generator": "^2.2",
+        "mobiledetect/mobiledetectlib": "^3.74",
+        "geoip2/geoip2": "^2.13"
+    },
+    "config": {
+        "vendor-dir": "vendor",
+        "optimize-autoloader": true
+    }
+}

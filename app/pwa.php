@@ -58,7 +58,7 @@ class HippooPwa
     public function template_redirect()
     {
         if (get_query_var('hippoo_pwa')) {
-            include HIPPOO_PATH . 'pwa' . DIRECTORY_SEPARATOR . 'index.html';
+            include HIPPOO_PATH . 'pwa/index.html';
             exit;
         }
 
@@ -67,7 +67,7 @@ class HippooPwa
             $file_path  = realpath($base . DIRECTORY_SEPARATOR . $serve_path);
             
             if (!$file_path || strpos($file_path, $base) !== 0) {
-                include $base . DIRECTORY_SEPARATOR . 'index.html';
+                include $base . '/index.html';
                 exit;
             }
 
@@ -78,7 +78,7 @@ class HippooPwa
                 exit;
             }
 
-            include $base . DIRECTORY_SEPARATOR . 'index.html';
+            include $base . '/index.html';
             exit;
         }
 

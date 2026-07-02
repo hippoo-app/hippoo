@@ -8,8 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ///Invoice 
 ///
 
-define( 'HIPPOO_INVOICE_PLUGIN_LANG_DIR', HIPPOO_INVOICE_PLUGIN_PATH . 'languages'. DIRECTORY_SEPARATOR );
-define( 'HIPPOO_INVOICE_PLUGIN_TEMPLATE_PATH', HIPPOO_INVOICE_PLUGIN_PATH . 'templates' . DIRECTORY_SEPARATOR . 'simple' . DIRECTORY_SEPARATOR );
+define( 'HIPPOO_INVOICE_PLUGIN_TEMPLATE_PATH', HIPPOO_INVOICE_PLUGIN_PATH . 'templates/simple/' );
 
 
 
@@ -30,9 +29,6 @@ function hippoo_force_admin_styles() {
 }
 add_action( 'woocommerce_init', 'hippoo_invoice_load' );
 function hippoo_invoice_load() {
-    
-    require_once HIPPOO_INVOICE_PLUGIN_PATH . 'libs/barcode/vendor/autoload.php';
-
     require_once HIPPOO_INVOICE_PLUGIN_PATH . 'helper.php';
     require_once HIPPOO_INVOICE_PLUGIN_PATH . 'api.php';
     require_once HIPPOO_INVOICE_PLUGIN_PATH . 'settings.php';

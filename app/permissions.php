@@ -42,8 +42,11 @@ class HippooPermissions
         // App features
         add_filter('hippoo_system_info_extensions', array($this, 'filter_system_info_response'), 99, 2);
 
-        // Override permission callback for Hippoo extensions
+        // Hippoo extensions
         add_filter('hippoo_extension_permission_check', array($this, 'override_extension_permission_callback'), 10, 3);
+
+        // Hippoo BI
+        add_filter('hippoo_bi_permission_check', array($this, 'override_bi_permission_callback'), 10, 1);
     }
 
     public function add_settings_tab($tabs)
@@ -273,6 +276,12 @@ class HippooPermissions
         // Reports
         elseif (strpos($route, '/wc/v') === 0 && strpos($route, '/reports') !== false) {
             if (!$this->has_role_access('analytics', 'show_sale_analytics')) {
+                return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
+            }
+        }
+        // BI Reports
+        elseif (strpos($route, '/hippoo/v') === 0 && strpos($route, '/bi') !== false) {
+            if (!$this->has_role_access('analytics', 'show_bi_analytics')) {
                 return new WP_Error('rest_forbidden', __('Sorry, you are not allowed to do that.', 'hippoo'), ['status' => 403]);
             }
         }
@@ -640,6 +649,15 @@ class HippooPermissions
         return $default_callback;
     }
 
+    public function override_bi_permission_callback($default_callback)
+    {
+        if (!$this->has_role_access('analytics', 'show_bi_analytics')) {
+            return $default_callback;
+        }
+
+        return '__return_true';
+    }
+
     public static function get_available_roles()
     {
         $wp_roles = wp_roles()->roles;
@@ -797,6 +815,7 @@ class HippooPermissions
         // Reports
         $sanitized['analytics'] = [
             'show_sale_analytics' => isset($data['analytics']['show_sale_analytics']) ? 1 : 0,
+            'show_bi_analytics'   => isset($data['analytics']['show_bi_analytics']) ? 1 : 0,
         ];
 
         // Coupons
@@ -1087,6 +1106,10 @@ class HippooPermissions
                         <label class="checkbox-label">
                             <input type="checkbox" name="hippoo_permissions_settings[<?php echo esc_attr($role_key); ?>][analytics][show_sale_analytics]" <?php checked($role_settings['analytics']['show_sale_analytics'] ?? 0, 1); ?> value="1" class="section-toggle">
                             <?php esc_html_e('Show sale analytics', 'hippoo'); ?>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="hippoo_permissions_settings[<?php echo esc_attr($role_key); ?>][analytics][show_bi_analytics]" <?php checked($role_settings['analytics']['show_bi_analytics'] ?? 0, 1); ?> value="1" class="section-toggle">
+                            <?php esc_html_e('Business intelligence', 'hippoo'); ?>
                         </label>
                     </div>
                     <hr>
