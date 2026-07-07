@@ -92,7 +92,7 @@ Manage your WooCommerce store on the go with Hippoo. Receive real-time order not
 * 1.7.5 – Revert a version to fix critical bug
 * 1.7.4 – Add role and permissions
 * 1.7.3 – Ability to install integrations
-* 1.7.2 –
+* 1.7.2 – Minor fixes
 * 1.7.1 – Add Gemini Support for AI features
 * 1.7.0 – Introducing Hippoo AI for generating product content from photos
 * 1.6.1 – Added REST API troubleshooter and support for customizable invoice templates.
