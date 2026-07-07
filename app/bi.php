@@ -1131,6 +1131,10 @@ class HippooBI
             return;
         }
 
+        if ('shop_order' !== $order->get_type()) {
+            return;
+        }
+
         $order_items = $order->get_items();
         $order_total = (float)$order->get_total();
         $order_refund = (float)$order->get_total_refunded();
