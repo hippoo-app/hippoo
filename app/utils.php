@@ -4,6 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+function hippoo_mask_email($email) {
+    return preg_replace('/^(.{2})(.*)@(.{2})(.*)\.(.+)$/', '$1***@$3***.$5', $email);
+}
+
 function hippoo_get_temp_dir() {
     $wp_upload_dir = wp_upload_dir();
     $temp_dir = implode('/', [$wp_upload_dir['basedir'], 'hippoo', 'tmp']);

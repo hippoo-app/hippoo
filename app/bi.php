@@ -111,6 +111,7 @@ class HippooBI
             customer_id BIGINT(20) UNSIGNED DEFAULT NULL,
             date_created DATETIME NOT NULL,
             total DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+            net DECIMAL(13,2) NOT NULL DEFAULT 0.00,
             refund DECIMAL(13,2) NOT NULL DEFAULT 0.00,
             PRIMARY KEY (order_id),
             KEY idx_customer_id (customer_id),
@@ -423,21 +424,18 @@ class HippooBI
         // NEW vs RETURNING VISITORS
         $visitors = $wpdb->get_row($wpdb->prepare("
             SELECT 
-                COUNT(DISTINCT CASE WHEN first_seen >= %s THEN session_id END) as new_visitors,
-                COUNT(DISTINCT CASE WHEN first_seen < %s THEN session_id END) as returning_visitors
+                SUM(CASE WHEN first_seen >= %s THEN 1 ELSE 0 END) as new_visitors,
+                SUM(CASE WHEN first_seen < %s THEN 1 ELSE 0 END) as returning_visitors
             FROM (
-                SELECT session_id, MIN(created_at) as first_seen
+                SELECT 
+                    session_id,
+                    MIN(created_at) as first_seen
                 FROM $table_pv
                 WHERE created_at <= %s
                 GROUP BY session_id
+                HAVING MAX(created_at) >= %s
             ) as fv
-            WHERE EXISTS (
-                SELECT 1 FROM $table_pv t 
-                WHERE t.session_id = fv.session_id 
-                  AND t.created_at BETWEEN %s AND %s
-                LIMIT 1
-            )
-        ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from'], $date_range['to']));
+        ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from']));
 
         // BOUNCE RATE
         $single_sessions = $wpdb->get_var($wpdb->prepare("
@@ -593,7 +591,10 @@ class HippooBI
 
         // ADD TO CART
         $atc_results = $wpdb->get_results($wpdb->prepare("
-            SELECT product_id, SUM(quantity) as total_atc
+            SELECT 
+                product_id, 
+                SUM(quantity) as total_atc,
+                COUNT(DISTINCT session_id) as atc_sessions
             FROM $table_atc 
             WHERE product_id IN (" . implode(',', array_fill(0, count($product_ids), '%d')) . ")
               AND created_at BETWEEN %s AND %s
@@ -604,8 +605,14 @@ class HippooBI
             $product_id = (int)$row['product_id'];
             if (isset($sales[$product_id])) {
                 $sales[$product_id]['add_to_cart'] = (int)$row['total_atc'];
+                $sales[$product_id]['atc_sessions'] = (int)$row['atc_sessions'];
             } else {
-                $sales[$product_id] = ['orders' => 0, 'revenue' => 0, 'add_to_cart' => (int)$row['total_atc']];
+                $sales[$product_id] = [
+                    'orders' => 0, 
+                    'revenue' => 0, 
+                    'add_to_cart' => (int)$row['total_atc'], 
+                    'atc_sessions' => (int)$row['atc_sessions']
+                ];
             }
         }
 
@@ -616,18 +623,19 @@ class HippooBI
             $product = wc_get_product($product_id);
             if (!$product) continue;
 
-            $s = $sales[$product_id] ?? ['orders' => 0, 'revenue' => 0.0, 'add_to_cart' => 0];
+            $s = $sales[$product_id] ?? ['orders' => 0, 'revenue' => 0, 'add_to_cart' => 0, 'atc_sessions' => 0];
 
             $views = (int)$item['views'];
             $sessions = (int)$item['unique_sessions'];
             $orders = (int)$s['orders'];
             $revenue = (float)$s['revenue'];
             $add_to_cart = (int)$s['add_to_cart'];
+            $atc_sessions = (int)$s['atc_sessions'];
 
             $revenue_per_view = $views > 0 ? round($revenue / $views, 2) : 0;
-            $cart_to_order_rate = $add_to_cart > 0 ? round(($orders / $add_to_cart) * 100, 2) : 0;
+            $cart_to_order_rate = $atc_sessions > 0 ? round(($orders / $atc_sessions) * 100, 2) : 0;
             $conversion_rate = $sessions > 0 ? round(($orders / $sessions) * 100, 2) : 0;
-            $atc_rate = $sessions > 0 ? round(($add_to_cart / $sessions) * 100, 2) : 0;
+            $atc_rate = $sessions > 0 ? round(($atc_sessions / $sessions) * 100, 2) : 0;
 
             $insight = $this->get_insight_tag($views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate);
 
@@ -729,31 +737,47 @@ class HippooBI
 
         // ADD TO CART
         $atc_data = $wpdb->get_row($wpdb->prepare("
-            SELECT SUM(quantity) as total_atc
+            SELECT 
+                SUM(quantity) as total_atc,
+                COUNT(DISTINCT session_id) as atc_sessions
             FROM $table_atc 
             WHERE product_id = %d 
               AND created_at BETWEEN %s AND %s
         ", $product_id, $date_range['from'], $date_range['to']));
 
         // CHART
-        $chart = $wpdb->get_results($wpdb->prepare("
-            SELECT 
-                DATE(pv.created_at) as date,
-                COUNT(pv.id) as views,
-                COUNT(DISTINCT pv.session_id) as sessions,
-                COALESCE(SUM(atc.quantity), 0) as add_to_cart,
-                COALESCE(COUNT(DISTINCT lookup.order_id), 0) as orders,
-                COALESCE(SUM(lookup.revenue), 0) as revenue
-            FROM $table_pv pv
-            LEFT JOIN $table_atc atc 
-                ON atc.product_id = pv.product_id 
-                AND DATE(atc.created_at) = DATE(pv.created_at)
-            LEFT JOIN $table_lookup lookup 
-                ON lookup.product_id = pv.product_id 
-                AND DATE(lookup.date_created) = DATE(pv.created_at)
-            WHERE pv.product_id = %d 
-              AND pv.created_at BETWEEN %s AND %s
-            GROUP BY DATE(pv.created_at)
+        $views_chart = $wpdb->get_results($wpdb->prepare("
+            SELECT
+                DATE(created_at) AS date,
+                COUNT(*) AS views,
+                COUNT(DISTINCT session_id) AS sessions
+            FROM $table_pv
+            WHERE product_id = %d
+            AND created_at BETWEEN %s AND %s
+            GROUP BY DATE(created_at)
+            ORDER BY date ASC
+        ", $product_id, $date_range['from'], $date_range['to']));
+
+        $atc_chart = $wpdb->get_results($wpdb->prepare("
+            SELECT
+                DATE(created_at) AS date,
+                SUM(quantity) AS add_to_cart
+            FROM $table_atc
+            WHERE product_id = %d
+            AND created_at BETWEEN %s AND %s
+            GROUP BY DATE(created_at)
+            ORDER BY date ASC
+        ", $product_id, $date_range['from'], $date_range['to']));
+
+        $sales_chart = $wpdb->get_results($wpdb->prepare("
+            SELECT
+                DATE(date_created) AS date,
+                COUNT(DISTINCT order_id) AS orders,
+                SUM(revenue) AS revenue
+            FROM $table_lookup
+            WHERE product_id = %d
+            AND date_created BETWEEN %s AND %s
+            GROUP BY DATE(date_created)
             ORDER BY date ASC
         ", $product_id, $date_range['from'], $date_range['to']));
 
@@ -763,13 +787,61 @@ class HippooBI
         $orders = (int)($sales_data->orders ?? 0);
         $revenue = (float)($sales_data->revenue ?? 0);
         $add_to_cart = (int)($atc_data->total_atc ?? 0);
+        $atc_sessions = (int)($atc_data->atc_sessions ?? 0);
 
         $revenue_per_view = $views > 0 ? round($revenue / $views, 2) : 0;
-        $cart_to_order_rate = $add_to_cart > 0 ? round(($orders / $add_to_cart) * 100, 2) : 0;
+        $cart_to_order_rate = $atc_sessions > 0 ? round(($orders / $atc_sessions) * 100, 2) : 0;
         $conversion_rate = $sessions > 0 ? round(($orders / $sessions) * 100, 2) : 0;
-        $atc_rate = $sessions > 0 ? round(($add_to_cart / $sessions) * 100, 2) : 0;
+        $atc_rate = $sessions > 0 ? round(($atc_sessions / $sessions) * 100, 2) : 0;
 
         $insight = $this->get_insight_tag($views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate);
+
+        $chart = [];
+
+        foreach ($views_chart as $row) {
+            $chart[$row->date] = [
+                'date'         => $row->date,
+                'views'        => (int)$row->views,
+                'sessions'     => (int)$row->sessions,
+                'add_to_cart'  => 0,
+                'orders'       => 0,
+                'revenue'      => 0,
+            ];
+        }
+
+        foreach ($atc_chart as $row) {
+            if (!isset($chart[$row->date])) {
+                $chart[$row->date] = [
+                    'date' => $row->date,
+                    'views' => 0,
+                    'sessions' => 0,
+                    'add_to_cart' => 0,
+                    'orders' => 0,
+                    'revenue' => 0,
+                ];
+            }
+
+            $chart[$row->date]['add_to_cart'] = (int)$row->add_to_cart;
+        }
+
+        foreach ($sales_chart as $row) {
+            if (!isset($chart[$row->date])) {
+                $chart[$row->date] = [
+                    'date' => $row->date,
+                    'views' => 0,
+                    'sessions' => 0,
+                    'add_to_cart' => 0,
+                    'orders' => 0,
+                    'revenue' => 0,
+                ];
+            }
+
+            $chart[$row->date]['orders'] = (int)$row->orders;
+            $chart[$row->date]['revenue'] = (float)$row->revenue;
+        }
+
+        ksort($chart);
+        $chart = array_values($chart);
 
         $response = [
             'product_id'         => $product_id,
@@ -826,6 +898,7 @@ class HippooBI
             SELECT 
                 COUNT(order_id) as order_count,
                 SUM(total) as total_revenue,
+                SUM(net) as net_revenue,
                 SUM(refund) as total_refund
             FROM $table_stats
             WHERE date_created BETWEEN %s AND %s
@@ -835,9 +908,10 @@ class HippooBI
         $unique_sessions = (int)($traffic_stats->unique_sessions ?? 0);
         $order_count   = (int)($sales_stats->order_count ?? 0);
         $total_revenue = (float)($sales_stats->total_revenue ?? 0);
+        $net_revenue = (float)($sales_stats->net_revenue ?? 0);
         $refund_amount = (float)($sales_stats->total_refund ?? 0);
 
-        $net_revenue = $total_revenue - $refund_amount;
+        $net_revenue = $net_revenue - $refund_amount;
         $avg_order_value = $order_count > 0 ? round($net_revenue / $order_count, 2) : 0;
         $refund_rate = $total_revenue > 0 ? round(($refund_amount / $total_revenue) * 100, 2) : 0;
         $conversion_rate = $unique_sessions > 0 ? round(($order_count / $unique_sessions) * 100, 2) : 0;
@@ -1015,7 +1089,7 @@ class HippooBI
             $user = get_user_by('id', $c->customer_id);
             $name = $user ? $user->display_name : '';
             $email = $user ? $user->user_email : '';
-            $masked = $email ? $this->mask_email($email) : '';
+            $masked = $email ? hippoo_mask_email($email) : '';
 
             $result[] = [
                 'customer_id'          => (int)$c->customer_id,
@@ -1137,6 +1211,7 @@ class HippooBI
 
         $order_items = $order->get_items();
         $order_total = (float)$order->get_total();
+        $order_net = (float)(floatval($order->get_total()) - floatval($order->get_total_tax()) - floatval($order->get_shipping_total()));
         $order_refund = (float)$order->get_total_refunded();
         $customer_id = $order->get_customer_id();
         $date_created = $order->get_date_created()->date('Y-m-d H:i:s');
@@ -1160,6 +1235,7 @@ class HippooBI
             'customer_id'  => $customer_id > 0 ? $customer_id : null,
             'date_created' => $date_created,
             'total'        => $order_total,
+            'net'          => $order_net,
             'refund'       => $order_refund,
         ]);
         
@@ -1181,37 +1257,39 @@ class HippooBI
     public function sync_orders_lookup($batch_size = 500)
     {
         global $wpdb;
-        $lookup_table = $wpdb->prefix . self::TABLE_ORDER_PRODUCT_LOOKUP;
+        $table_stats = $wpdb->prefix . self::TABLE_ORDER_STATS;
 
         $processed_orders = $wpdb->get_col("
-            SELECT DISTINCT order_id FROM $lookup_table
+            SELECT DISTINCT order_id FROM $table_stats
         ");
 
         $args = [
-            'limit'   => $batch_size,
+            'type'    => 'shop_order',
+            'limit'   => -1,
             'orderby' => 'date_created',
             'order'   => 'ASC',
             'return'  => 'ids',
             'status'  => wc_get_is_paid_statuses(),
         ];
 
-        if (!empty($processed_orders)) {
-            $args['exclude'] = $processed_orders;
-        }
-
         $orders = wc_get_orders($args);
 
-        if (empty($orders)) {
+        $unprocessed_orders = array_diff($orders, $processed_orders);
+
+        if (empty($unprocessed_orders)) {
             return;
         }
 
+        $batch_orders = array_slice($unprocessed_orders, 0, $batch_size);
+
         $count = 0;
-        foreach ($orders as $order_id) {
+        foreach ($batch_orders as $order_id) {
             $this->update_order_lookup($order_id);
             $count++;
         }
 
-        if (count($orders) === $batch_size) {
+        $remaining = count($unprocessed_orders) - $count;
+        if ($remaining > 0) {
             wp_schedule_single_event(time() + 10, 'hippoo_bi_sync_lookup', [$batch_size]);
         }
     }
@@ -1388,8 +1466,9 @@ class HippooBI
         }
 
         $sid = substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyz', 8)), 0, 16);
+        $expire = time() + (2 * YEAR_IN_SECONDS);
 
-        setcookie($cookie_name, $sid, time() + 1800, '/', '', is_ssl(), false);
+        setcookie($cookie_name, $sid, $expire, '/', '', is_ssl(), false);
         $_COOKIE[$cookie_name] = $sid;
 
         return $sid;
@@ -1586,7 +1665,8 @@ class HippooBI
         ];
     }
 
-    private function mask_email($email) {
+    private function mask_email($email)
+    {
         return preg_replace('/^(.{2})(.*)@(.{2})(.*)\.(.+)$/', '$1***@$3***.$5', $email);
     }
 }
