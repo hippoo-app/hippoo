@@ -677,15 +677,15 @@ class HippooAI
 
     private function check_rate_limit()
     {
-        $ip = $_SERVER['REMOTE_ADDR'];
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
         $cache_key = 'hippoo_ai_rate_limit_' . $ip;
-        $requests = get_transient($cache_key) ?: 0;
+        $count = get_transient($cache_key) ?: 0;
         
-        if ($requests >= 30) { // 30 requests per minute
+        if ($count >= 30) { // 30 requests per minute
             return false;
         }
         
-        set_transient($cache_key, $requests + 1, MINUTE_IN_SECONDS);
+        set_transient($cache_key, $count + 1, MINUTE_IN_SECONDS);
         return true;
     }
 

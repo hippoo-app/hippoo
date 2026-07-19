@@ -313,8 +313,8 @@ class HippooEventNotificationController {
         global $wpdb;
         $table_name = $wpdb->prefix . $this->table_name;
 
-        $page = max(1, $request['page']);
-        $per_page = max(1, min(100, $request['per_page']));
+        $page = max(1, (int) $request['page']);
+        $per_page = max(1, min(100, (int) $request['per_page']));
         $offset = ($page - 1) * $per_page;
 
         $results = $wpdb->get_results(
@@ -425,8 +425,9 @@ class HippooEventNotificationController {
 
     public function get_all_events($request) {
         $hooks = $this->get_available_hooks();
-        $page = max(1, $request['page']);
-        $per_page = max(1, min(100, $request['per_page']));
+
+        $page = max(1, (int) $request['page']);
+        $per_page = max(1, min(100, (int) $request['per_page']));
         $offset = ($page - 1) * $per_page;
 
         $paged_hooks = array_slice($hooks, $offset, $per_page);

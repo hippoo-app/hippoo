@@ -282,7 +282,6 @@ class HippooIntegrations
         }
 
         set_transient($cache_key, $products, 12 * HOUR_IN_SECONDS);
-
         return $products;
     }
 

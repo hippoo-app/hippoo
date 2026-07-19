@@ -136,6 +136,7 @@ msgid "Invalid provider"
 msgstr "ارائه‌دهنده نامعتبر"
 
 #: app/ai.php:355
+#: app/bi.php:221
 msgid "Too many requests. Please try again later."
 msgstr "درخواست‌های بیش از حد. لطفاً بعداً دوباره امتحان کنید."
 
@@ -329,7 +330,7 @@ msgstr "افزونه با موفقیت غیرفعال شد."
 msgid "Invalid action."
 msgstr "اقدام نامعتبر."
 
-#: app/integrations.php:304
+#: app/integrations.php:303
 msgid "Installation failed."
 msgstr "نصب ناموفق بود."
 
@@ -371,7 +372,7 @@ msgstr "فاکتورهای PDF و برچسب‌های حمل و نقل را بر
 msgid "Enable Hippoo invoice and shipping label"
 msgstr "فعال کردن فاکتور و برچسب حمل هیپو"
 
-#: app/permissions.php:1153
+#: app/permissions.php:1200
 #: app/settings.php:134
 #: invoice/settings.php:75
 msgid "Settings"
@@ -432,35 +433,36 @@ msgid "Settings saved successfully."
 msgstr "تنظیمات با موفقیت ذخیره شد."
 
 #. translators: %s: URL to the Permalink Settings page in wp-admin
-#: app/utils.php:95
+#: app/utils.php:102
+#, php-format
 msgid "Hippoo can’t connect because your WordPress permalinks are set to “Plain”. To enable the WordPress REST API, open your <a href=\"%s\">Permalink Settings</a> and select Post name or Custom Structure, then save changes."
 msgstr "هیپو نمی‌تواند متصل شود زیرا پیوندهای یکتای وردپرس شما روی «ساده» تنظیم شده است. برای فعال کردن REST API وردپرس، <a href=\"%s\">تنظیمات پیوند یکتا</a> را باز کنید و نام نوشته یا ساختار سفارشی را انتخاب کنید، سپس تغییرات را ذخیره کنید."
 
-#: app/utils.php:105
+#: app/utils.php:112
 msgid "Hippoo can’t connect because the WordPress REST API has been disabled by a theme or plugin."
 msgstr "هیپو نمی‌تواند متصل شود زیرا REST API وردپرس توسط یک قالب یا افزونه غیرفعال شده است."
 
-#: app/utils.php:118
+#: app/utils.php:125
 msgid "Hippoo can’t connect to your website because the WordPress REST API is not responding. Please check your firewall or hosting settings."
 msgstr "هیپو نمی‌تواند به وبسایت شما متصل شود زیرا REST API وردپرس پاسخ نمی‌دهد. لطفاً تنظیمات فایروال یا هاستینگ خود را بررسی کنید."
 
-#: app/utils.php:129
+#: app/utils.php:136
 msgid "Hippoo can’t connect to your site because the WordPress REST API is restricted. Please allow public access to the REST API."
 msgstr "هیپو نمی‌تواند به سایت شما متصل شود زیرا REST API وردپرس محدود شده است. لطفاً دسترسی عمومی به REST API را اجازه دهید."
 
-#: app/utils.php:135
+#: app/utils.php:142
 msgid "Hippoo can’t connect because something on your site (like a security plugin or server rule) is blocking access to the WordPress REST API."
 msgstr "هیپو نمی‌تواند متصل شود زیرا چیزی در سایت شما (مانند افزونه امنیتی یا قانون سرور) دسترسی به REST API وردپرس را مسدود کرده است."
 
-#: app/utils.php:141
+#: app/utils.php:148
 msgid "Hippoo can’t connect because the WordPress API endpoint wasn’t found. Please make sure your WordPress installation is complete and .htaccess is correctly configured."
 msgstr "هیپو نمی‌تواند متصل شود زیرا نقطه پایانی API وردپرس یافت نشد. لطفاً مطمئن شوید نصب وردپرس کامل است و فایل .htaccess به درستی پیکربندی شده است."
 
-#: app/utils.php:147
+#: app/utils.php:154
 msgid "Hippoo can’t connect right now because your site returned an internal error when trying to reach the WordPress REST API."
 msgstr "هیپو در حال حاضر نمی‌تواند متصل شود زیرا سایت شما هنگام تلاش برای دسترسی به REST API وردپرس خطای داخلی برگرداند."
 
-#: app/utils.php:157
+#: app/utils.php:164
 msgid "Hippoo can’t connect because essential WordPress API routes are missing. A plugin may have disabled them."
 msgstr "هیپو نمی‌تواند متصل شود زیرا مسیرهای ضروری API وردپرس وجود ندارند. ممکن است یک افزونه آن‌ها را غیرفعال کرده باشد."
 
@@ -523,16 +525,19 @@ msgstr "تصویر یافت نشد!"
 
 #. translators: 1: order ID, 2: order status
 #: app/web_api.php:666
+#, php-format
 msgid "Order %1$d %2$s!"
 msgstr "سفارش %1$d %2$s!"
 
 #. translators: %d: number of items in the order
 #: app/web_api.php:668
+#, php-format
 msgid "%d items"
 msgstr "%d مورد"
 
 #. translators: %s: order status
 #: app/web_api.php:671
+#, php-format
 msgid "Status: %s"
 msgstr "وضعیت: %s"
 
@@ -548,35 +553,35 @@ msgstr "محصول "
 msgid "Array of media item IDs to delete."
 msgstr "آرایه‌ای از شناسه‌های رسانه برای حذف."
 
-#: app/web_api_auth.php:164
+#: app/web_api_auth.php:163
 msgid "Invalid or missing file."
 msgstr "فایل نامعتبر یا گم‌شده."
 
-#: app/web_api_auth.php:175
+#: app/web_api_auth.php:174
 msgid "Failed to read file content."
 msgstr "خواندن محتوای فایل ناموفق بود."
 
-#: app/web_api_auth.php:182
+#: app/web_api_auth.php:181
 msgid "Media upload failed."
 msgstr "آپلود رسانه ناموفق بود."
 
-#: app/web_api_auth.php:197
+#: app/web_api_auth.php:196
 msgid "Failed to create attachment."
 msgstr "ایجاد پیوست ناموفق بود."
 
-#: app/web_api_auth.php:226
+#: app/web_api_auth.php:225
 msgid "Attachment not found."
 msgstr "پیوست یافت نشد."
 
-#: app/web_api_auth.php:232
+#: app/web_api_auth.php:231
 msgid "Error deleting the attachment."
 msgstr "خطا در حذف پیوست."
 
-#: app/web_api_auth.php:241
+#: app/web_api_auth.php:240
 msgid "Attachment(s) deleted successfully."
 msgstr "پیوست(ها) با موفقیت حذف شد."
 
-#: app/web_api_auth.php:249
+#: app/web_api_auth.php:248
 msgid "Nothing to delete."
 msgstr "چیزی برای حذف وجود ندارد."
 
@@ -587,15 +592,16 @@ msgid "Notification not found."
 msgstr "اعلان یافت نشد."
 
 #. translators: %s: missing required field name
-#: app/web_api_notification.php:455
+#: app/web_api_notification.php:456
+#, php-format
 msgid "Missing %s field."
 msgstr "فیلد %s گم‌شده است."
 
-#: app/web_api_notification.php:461
+#: app/web_api_notification.php:462
 msgid "Invalid event hook."
 msgstr "هوک رویداد نامعتبر."
 
-#: invoice/main.php:82
+#: invoice/main.php:78
 msgid "You do not have access to view this order."
 msgstr "شما دسترسی برای مشاهده این سفارش ندارید."
 
@@ -684,7 +690,7 @@ msgstr "لوگوی فروشگاه"
 msgid "Upload Logo"
 msgstr "آپلود لوگو"
 
-#: app/permissions.php:831
+#: app/permissions.php:874
 #: invoice/settings.php:277
 #: invoice/settings.php:420
 msgid "Remove"
@@ -714,7 +720,7 @@ msgstr "اینجا بیشتر بدانید"
 msgid "Setting saved."
 msgstr "تنظیم ذخیره شد."
 
-#: app/permissions.php:930
+#: app/permissions.php:973
 #: invoice/templates/simple/hippoo-factor.php:9
 #: invoice/templates/simple/hippoo-factor.php:168
 #: invoice/templates/simple/hippoo-label.php:119
@@ -738,7 +744,7 @@ msgstr "یادداشت مشتری:"
 msgid "Item"
 msgstr "مورد"
 
-#: app/permissions.php:986
+#: app/permissions.php:1029
 #: invoice/templates/simple/hippoo-factor.php:204
 #: invoice/woocommerce/product.php:28
 msgid "SKU"
@@ -808,304 +814,309 @@ msgstr "بارکد شناسه سفارش"
 msgid "Product Barcode (SKU)"
 msgstr "بارکد محصول (SKU)"
 
-#: app/permissions.php:52
-#: app/permissions.php:67
+#: app/permissions.php:55
+#: app/permissions.php:70
 msgid "Role & permissions"
 msgstr ""
 
-#: app/permissions.php:68
+#: app/permissions.php:71
 msgid "Control what data each user role can see in the Hippoo app, including orders, revenue, customers, and reviews and more. These settings are managed by admins and applied directly at the API level for better data security."
 msgstr ""
 
-#: app/permissions.php:71
+#: app/permissions.php:74
 msgid "Select role"
 msgstr ""
 
-#: app/permissions.php:74
+#: app/permissions.php:77
 msgid "Select role to manage permission"
 msgstr ""
 
 #: app/compatibility.php:214
-#: app/permissions.php:104
-#: app/permissions.php:129
-#: app/permissions.php:148
+#: app/permissions.php:107
+#: app/permissions.php:132
+#: app/permissions.php:151
 msgid "Invalid request."
 msgstr ""
 
-#: app/permissions.php:109
+#: app/permissions.php:112
 msgid "Role already exists."
 msgstr ""
 
 #. translators: %s: role name
-#: app/permissions.php:828
+#: app/permissions.php:871
+#, php-format
 msgid "%s permissions"
 msgstr ""
 
-#: app/permissions.php:844
+#: app/permissions.php:887
 msgid "General"
 msgstr ""
 
-#: app/permissions.php:847
+#: app/permissions.php:890
 msgid "Enable access for this role"
 msgstr ""
 
-#: app/permissions.php:851
+#: app/permissions.php:894
 msgid "Read-only mode"
 msgstr ""
 
-#: app/permissions.php:859
+#: app/permissions.php:902
 msgid "Orders"
 msgstr ""
 
-#: app/permissions.php:861
-#: app/permissions.php:959
-#: app/permissions.php:1028
-#: app/permissions.php:1061
+#: app/permissions.php:904
+#: app/permissions.php:1002
+#: app/permissions.php:1071
+#: app/permissions.php:1104
 msgid "Select all"
 msgstr ""
 
-#: app/permissions.php:863
-#: app/permissions.php:961
-#: app/permissions.php:1030
-#: app/permissions.php:1063
+#: app/permissions.php:906
+#: app/permissions.php:1004
+#: app/permissions.php:1073
+#: app/permissions.php:1106
 msgid "Deselect all"
 msgstr ""
 
-#: app/permissions.php:868
+#: app/permissions.php:911
 msgid "Access orders"
 msgstr ""
 
-#: app/permissions.php:872
+#: app/permissions.php:915
 msgid "Order count"
 msgstr ""
 
-#: app/permissions.php:876
+#: app/permissions.php:919
 msgid "Order totals"
 msgstr ""
 
-#: app/permissions.php:880
+#: app/permissions.php:923
 msgid "Order details"
 msgstr ""
 
-#: app/permissions.php:886
-#: app/permissions.php:1039
+#: app/bi.php:1138
+#: app/permissions.php:929
+#: app/permissions.php:1082
 msgid "Name"
 msgstr ""
 
-#: app/permissions.php:890
+#: app/permissions.php:933
 msgid "Items"
 msgstr ""
 
-#: app/permissions.php:894
+#: app/permissions.php:937
 msgid "Taxes"
 msgstr ""
 
-#: app/permissions.php:898
+#: app/permissions.php:941
 msgid "Shipping info"
 msgstr ""
 
-#: app/permissions.php:902
+#: app/permissions.php:945
 msgid "Order statuses"
 msgstr ""
 
-#: app/permissions.php:906
+#: app/permissions.php:949
 msgid "Coupon info"
 msgstr ""
 
-#: app/permissions.php:910
+#: app/permissions.php:953
 msgid "Payment info"
 msgstr ""
 
-#: app/permissions.php:914
+#: app/permissions.php:957
 msgid "Customer info"
 msgstr ""
 
-#: app/permissions.php:918
+#: app/permissions.php:961
 msgid "Order note"
 msgstr ""
 
-#: app/permissions.php:922
+#: app/permissions.php:965
 msgid "Order custom fields"
 msgstr ""
 
-#: app/permissions.php:926
+#: app/permissions.php:969
 msgid "Customer note"
 msgstr ""
 
-#: app/permissions.php:934
+#: app/permissions.php:977
 msgid "Shipping label"
 msgstr ""
 
-#: app/permissions.php:939
+#: app/permissions.php:982
 msgid "Allowed order status"
 msgstr ""
 
-#: app/permissions.php:957
+#: app/permissions.php:1000
 msgid "Products"
 msgstr ""
 
-#: app/permissions.php:966
+#: app/permissions.php:1009
 msgid "Access products"
 msgstr ""
 
-#: app/permissions.php:970
+#: app/permissions.php:1013
 msgid "Product name"
 msgstr ""
 
-#: app/permissions.php:974
+#: app/permissions.php:1017
 msgid "Prices"
 msgstr ""
 
-#: app/permissions.php:978
+#: app/permissions.php:1021
 msgid "Stock quantity"
 msgstr ""
 
-#: app/permissions.php:982
+#: app/permissions.php:1025
 msgid "Out of stock list"
 msgstr ""
 
-#: app/permissions.php:990
+#: app/bi.php:1141
+#: app/permissions.php:1033
 msgid "Status"
 msgstr ""
 
-#: app/permissions.php:994
+#: app/permissions.php:1037
 msgid "Limit to categories"
 msgstr ""
 
-#: app/permissions.php:1008
+#: app/permissions.php:1051
 msgid "Limit to product type"
 msgstr ""
 
-#: app/permissions.php:1026
+#: app/permissions.php:1069
 msgid "Customers"
 msgstr ""
 
-#: app/permissions.php:1035
+#: app/permissions.php:1078
 msgid "Access customers"
 msgstr ""
 
-#: app/permissions.php:1043
+#: app/permissions.php:1086
 msgid "Address"
 msgstr ""
 
-#: app/permissions.php:1047
+#: app/permissions.php:1090
 msgid "Phone number"
 msgstr ""
 
-#: app/permissions.php:1051
+#: app/bi.php:1139
+#: app/permissions.php:1094
 msgid "Email"
 msgstr ""
 
-#: app/permissions.php:1059
+#: app/permissions.php:1102
 msgid "Reviews"
 msgstr ""
 
-#: app/permissions.php:1068
+#: app/permissions.php:1111
 msgid "Access reviews"
 msgstr ""
 
-#: app/permissions.php:1072
+#: app/permissions.php:1115
 msgid "Reviewer name"
 msgstr ""
 
-#: app/permissions.php:1076
+#: app/permissions.php:1119
 msgid "Review content"
 msgstr ""
 
-#: app/permissions.php:1083
+#: app/permissions.php:1126
 msgid "Sale analytics"
 msgstr ""
 
-#: app/permissions.php:1086
+#: app/permissions.php:1129
 msgid "Show sale analytics"
 msgstr ""
 
-#: app/permissions.php:1093
+#: app/permissions.php:1140
 msgid "Coupons"
 msgstr ""
 
-#: app/permissions.php:1096
+#: app/permissions.php:1143
 msgid "Access coupons"
 msgstr ""
 
-#: app/permissions.php:1103
+#: app/permissions.php:1150
 msgid "Product categories"
 msgstr ""
 
-#: app/permissions.php:1106
+#: app/permissions.php:1153
 msgid "Access product categories"
 msgstr ""
 
-#: app/permissions.php:1113
+#: app/permissions.php:1160
 msgid "Product attributes"
 msgstr ""
 
-#: app/permissions.php:1116
+#: app/permissions.php:1163
 msgid "Access product attributes"
 msgstr ""
 
-#: app/permissions.php:1123
+#: app/permissions.php:1170
 msgid "Product tags"
 msgstr ""
 
-#: app/permissions.php:1126
+#: app/permissions.php:1173
 msgid "Access product tags"
 msgstr ""
 
-#: app/permissions.php:1133
+#: app/permissions.php:1180
 msgid "Product brands"
 msgstr ""
 
-#: app/permissions.php:1136
+#: app/permissions.php:1183
 msgid "Access product brands"
 msgstr ""
 
-#: app/permissions.php:1143
+#: app/permissions.php:1190
 msgid "Product shipping classes"
 msgstr ""
 
-#: app/permissions.php:1146
+#: app/permissions.php:1193
 msgid "Access product shipping classes"
 msgstr ""
 
-#: app/permissions.php:1156
+#: app/permissions.php:1203
 msgid "Show shop settings"
 msgstr ""
 
-#: app/permissions.php:1163
+#: app/permissions.php:1210
 msgid "App features"
 msgstr ""
 
-#: app/permissions.php:1166
+#: app/permissions.php:1213
 msgid "Access extensions"
 msgstr ""
 
-#: app/permissions.php:1170
+#: app/permissions.php:1217
 msgid "Limit to selected extensions"
 msgstr ""
 
-#: app/permissions.php:1188
+#: app/permissions.php:1235
 msgid "Settings updated successfully."
 msgstr ""
 
-#: app/permissions.php:1191
+#: app/permissions.php:1238
 msgid "Save changes"
 msgstr ""
 
 #. translators: %s: role name
-#: app/permissions.php:1202
+#: app/permissions.php:1249
+#, php-format
 msgid "Delete %s role permissions?"
 msgstr ""
 
-#: app/permissions.php:1204
+#: app/permissions.php:1251
 msgid "This will remove all custom access rules for this role. This action can’t be undone."
 msgstr ""
 
-#: app/permissions.php:1206
+#: app/permissions.php:1253
 msgid "Cancel"
 msgstr ""
 
-#: app/permissions.php:1207
+#: app/permissions.php:1254
 msgid "Delete"
 msgstr ""
 
@@ -1114,24 +1125,25 @@ msgstr ""
 msgid "Hippoo Invoice"
 msgstr ""
 
-#: app/permissions.php:187
-#: app/permissions.php:197
-#: app/permissions.php:207
-#: app/permissions.php:217
-#: app/permissions.php:224
-#: app/permissions.php:229
-#: app/permissions.php:234
-#: app/permissions.php:239
-#: app/permissions.php:244
-#: app/permissions.php:249
-#: app/permissions.php:254
-#: app/permissions.php:264
-#: app/permissions.php:270
-#: app/permissions.php:276
-#: app/permissions.php:282
-#: app/permissions.php:288
-#: app/permissions.php:294
-#: app/permissions.php:299
+#: app/permissions.php:190
+#: app/permissions.php:200
+#: app/permissions.php:210
+#: app/permissions.php:220
+#: app/permissions.php:227
+#: app/permissions.php:232
+#: app/permissions.php:237
+#: app/permissions.php:242
+#: app/permissions.php:247
+#: app/permissions.php:252
+#: app/permissions.php:257
+#: app/permissions.php:267
+#: app/permissions.php:273
+#: app/permissions.php:279
+#: app/permissions.php:285
+#: app/permissions.php:291
+#: app/permissions.php:297
+#: app/permissions.php:303
+#: app/permissions.php:308
 msgid "Sorry, you are not allowed to do that."
 msgstr ""
 
@@ -1186,5 +1198,79 @@ msgid "Hippoo API Compatibility Debug Log"
 msgstr ""
 
 #: app/compatibility.php:575
+#, php-format
 msgid "Generated: %s"
+msgstr ""
+
+#: app/bi.php:232
+msgid "Missing product_id parameter."
+msgstr ""
+
+#: app/bi.php:707
+msgid "Product not found."
+msgstr ""
+
+#: app/bi.php:1126
+msgid "No churned customers found."
+msgstr ""
+
+#: app/bi.php:1137
+msgid "Customer ID"
+msgstr ""
+
+#: app/bi.php:1140
+msgid "Churn Score"
+msgstr ""
+
+#: app/bi.php:1142
+msgid "Last Order"
+msgstr ""
+
+#: app/bi.php:1143
+msgid "Days Since"
+msgstr ""
+
+#: app/bi.php:1144
+msgid "Total Orders"
+msgstr ""
+
+#: app/bi.php:1145
+msgid "Total Spent"
+msgstr ""
+
+#: app/bi.php:1146
+msgid "CLV"
+msgstr ""
+
+#: app/bi.php:1619
+msgid "Not enough data for analysis."
+msgstr ""
+
+#: app/bi.php:1626
+msgid "This product has views but zero sales."
+msgstr ""
+
+#: app/bi.php:1633
+msgid "Users add to cart but don't complete checkout — Check checkout process."
+msgstr ""
+
+#: app/bi.php:1640
+msgid "Excellent conversion with low views — This product needs more promotion."
+msgstr ""
+
+#: app/bi.php:1648
+#, php-format
+msgid "%d views, %d sales — Product page needs improvement."
+msgstr ""
+
+#: app/bi.php:1658
+msgid "Strong performer — Replicate this pattern in other products."
+msgstr ""
+
+#: app/bi.php:1664
+msgid "Normal performance."
+msgstr ""
+
+#: app/permissions.php:1133
+msgid "Business intelligence"
 msgstr ""

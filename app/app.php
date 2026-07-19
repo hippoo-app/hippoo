@@ -8,22 +8,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 // add_action('plugins_loaded', 'hippoo_load_textdomain');
 
 function hippoo_page_style( $hook ) {
-    wp_deregister_script('select2');
     wp_deregister_style('select2');
+    wp_deregister_script('select2');
 
     wp_enqueue_style('select2', HIPPOO_URL . 'css/select2.min.css', [], '4.0.13');
     wp_enqueue_script('select2', HIPPOO_URL . 'js/select2.min.js', [ 'jquery' ], '4.0.13', true);
 
-    wp_enqueue_style('hippoo-main-page-style', HIPPOO_URL . 'css/style.css', null, HIPPOO_VERSION);
-    wp_enqueue_style('hippoo-main-admin-style', HIPPOO_URL . 'css/admin-style.css', null, HIPPOO_VERSION);
-
-    wp_enqueue_script('hippoo-main-scripts', HIPPOO_URL . 'js/admin-script.js', [ 'jquery', 'jquery-ui-core', 'jquery-ui-tooltip' ], HIPPOO_VERSION, true);
-    wp_localize_script('hippoo-main-scripts', 'hippoo', [
+    wp_enqueue_style('hippoo-admin-style', HIPPOO_URL . 'css/admin-style.css', null, HIPPOO_VERSION);
+    wp_enqueue_script('hippoo-admin-script', HIPPOO_URL . 'js/admin-script.js', [ 'jquery', 'jquery-ui-core', 'jquery-ui-tooltip' ], HIPPOO_VERSION, true);
+    
+    wp_localize_script('hippoo-admin-script', 'hippoo', [
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('hippoo_nonce')
     ]);
 }
 add_action( 'admin_enqueue_scripts', 'hippoo_page_style' );
+
 
 // Invoice
 define('HIPPOO_INVOICE_PLUGIN_PATH', HIPPOO_PATH . 'invoice/');

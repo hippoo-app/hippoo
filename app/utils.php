@@ -4,9 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+function hippoo_mask_email($email) {
+    return preg_replace('/^(.{2})(.*)@(.{2})(.*)\.(.+)$/', '$1***@$3***.$5', $email);
+}
+
 function hippoo_get_temp_dir() {
     $wp_upload_dir = wp_upload_dir();
-    $temp_dir = implode(DIRECTORY_SEPARATOR, [$wp_upload_dir['basedir'], 'hippoo', 'tmp']) . DIRECTORY_SEPARATOR;
+    $temp_dir = implode('/', [$wp_upload_dir['basedir'], 'hippoo', 'tmp']);
     
     if (!file_exists($temp_dir)) {
         // phpcs:ignore
@@ -18,7 +22,7 @@ function hippoo_get_temp_dir() {
 
 function hippoo_get_log_dir() {
     $wp_upload_dir = wp_upload_dir();
-    $log_dir = implode(DIRECTORY_SEPARATOR, [$wp_upload_dir['basedir'], 'hippoo', 'logs']) . DIRECTORY_SEPARATOR;
+    $log_dir = implode('/', [$wp_upload_dir['basedir'], 'hippoo', 'logs']);
     
     if (!file_exists($log_dir)) {
         wp_mkdir_p($log_dir);
