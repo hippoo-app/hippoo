@@ -271,6 +271,7 @@ function hippoo_config($data) {
             'hippoo' => 'true',
             'hippoo_plugin_version' => $plugin_version,
             'lang' => get_bloginfo('language'),
+            'direction'=> is_rtl() ? 'rtl' : 'ltr',
             'currency' => get_option('woocommerce_currency'),
             'weight_unit' => get_option('woocommerce_weight_unit'),
             'dimension_unit' => get_option('woocommerce_dimension_unit'),
