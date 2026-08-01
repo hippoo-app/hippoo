@@ -190,7 +190,7 @@ function hippoo_show_token($data) {
 
         if (false !== $token) {
             delete_transient($cache_key);
-            return new WP_REST_Response($token, 200);
+            return new WP_REST_Response(hippoo_enrich_token_with_user($token), 200);
         }
 
         // Legacy fallback: file-based token
@@ -199,8 +199,8 @@ function hippoo_show_token($data) {
         if (file_exists($file)) {
             $token = file_get_contents($file);
             wp_delete_file($file);
-            $token_json = json_decode($token);
-            return new WP_REST_Response($token_json, 200);
+            $token_json = json_decode($token, true);
+            return new WP_REST_Response(hippoo_enrich_token_with_user($token_json), 200);
         } else {
             $msg = __('Unauthenticated. No token found. Please reauthenticate.', 'hippoo');
 
@@ -215,6 +215,34 @@ function hippoo_show_token($data) {
 
     $response['Message'] = $msg;
     return new WP_REST_Response($response, 401);
+}
+
+function hippoo_enrich_token_with_user($token) {
+    if (empty($token)) {
+        return $token;
+    }
+    $token = (array) $token;
+    if (empty($token['key_id'])) {
+        return $token;
+    }
+
+    global $wpdb;
+    $wp_user_id = $wpdb->get_var($wpdb->prepare(
+        "SELECT user_id FROM {$wpdb->prefix}woocommerce_api_keys WHERE key_id = %d",
+        (int) $token['key_id']
+    ));
+    if (!$wp_user_id) {
+        return $token;
+    }
+
+    $user = get_user_by('id', (int) $wp_user_id);
+    if (!$user) {
+        return $token;
+    }
+
+    $token['display_name'] = $user->display_name;
+    $token['roles'] = array_values($user->roles);
+    return $token;
 }
 
 function hippoo_returned($data) {
