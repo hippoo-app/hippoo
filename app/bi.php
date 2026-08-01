@@ -359,7 +359,11 @@ class HippooBI
             if ($nodata) $product_highlights['insufficient_data'] = $nodata;
         }
 
+        $current_user = wp_get_current_user();
+
         $response = [
+            'display_name'        => $current_user->display_name,
+            'roles'               => array_values($current_user->roles),
             'net_revenue'         => $sales['net_revenue'] ?? 0,
             'avg_order_value'     => $sales['avg_order_value'] ?? 0,
             'conversion_rate'     => $sales['conversion_rate'] ?? 0,

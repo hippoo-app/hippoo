@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Hippoo Mobile app for WooCommerce
- * Version: 1.10.1
+ * Version: 1.10.2
  * Plugin URI: https://Hippoo.app/
  * Description: Best WooCommerce App Alternative – Manage orders and products on the go with real-time notifications, seamless order and product management, and powerful add-ons. Available for Android & iOS. 🚀.
  * Short Description: Best WooCommerce App Alternative – Manage orders and products on the go with real-time notifications, seamless order and product management, and powerful add-ons. Available for Android & iOS. 🚀.
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define('HIPPOO_VERSION', '1.10.1');
+define('HIPPOO_VERSION', '1.10.2');
 define('HIPPOO_MAIN_FILE_PATH', __FILE__);
 define('HIPPOO_PATH', plugin_dir_path(__FILE__));
 define('HIPPOO_URL', plugin_dir_url(__FILE__) . 'assets/');
