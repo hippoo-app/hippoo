@@ -6,10 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class HippooBI
 {
-    const DB_VERSION = '1.0.0';
+    const DB_VERSION = '1.1.0';
     const TABLE_PAGEVIEWS = 'hippoo_pageviews';
-    const TABLE_CHURN_SCORES = 'hippoo_churn_scores';
     const TABLE_ADD_TO_CARTS = 'hippoo_add_to_carts';
+    const TABLE_CHURN_SCORES = 'hippoo_churn_scores';
     const TABLE_ORDER_PRODUCT_LOOKUP = 'hippoo_order_product_lookup';
     const TABLE_ORDER_STATS = 'hippoo_order_stats';
 
@@ -39,7 +39,8 @@ class HippooBI
 
     public function init_database()
     {
-        if (get_option('hippoo_bi_db_version') === self::DB_VERSION) {
+        $current_version = get_option('hippoo_bi_db_version', '0');
+        if ($current_version === self::DB_VERSION) {
             return;
         }
 
@@ -75,15 +76,19 @@ class HippooBI
 
         $table_churn = $wpdb->prefix . self::TABLE_CHURN_SCORES;
         $sql_churn = "CREATE TABLE IF NOT EXISTS $table_churn (
-            customer_id BIGINT(20) UNSIGNED NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            customer_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
             churn_score TINYINT UNSIGNED NOT NULL DEFAULT 0,
             status ENUM('active','at_risk','high_risk','churned') NOT NULL,
+            first_order_date DATE DEFAULT NULL,
             last_order_date DATE DEFAULT NULL,
             total_orders SMALLINT UNSIGNED DEFAULT 0,
             total_spent DECIMAL(13,2) DEFAULT 0.00,
             clv DECIMAL(13,2) DEFAULT 0.00,
+            avg_days_between DECIMAL(8,1) DEFAULT 0.0,
             calculated_at DATETIME NOT NULL,
-            PRIMARY KEY (customer_id),
+            PRIMARY KEY (email),
+            KEY idx_customer_id (customer_id),
             KEY idx_status (status),
             KEY idx_score (churn_score DESC)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
@@ -109,12 +114,18 @@ class HippooBI
         $sql_stats = "CREATE TABLE IF NOT EXISTS $table_stats (
             order_id BIGINT(20) UNSIGNED NOT NULL,
             customer_id BIGINT(20) UNSIGNED DEFAULT NULL,
+            billing_email VARCHAR(100) DEFAULT NULL,
+            order_status VARCHAR(20) DEFAULT NULL,
             date_created DATETIME NOT NULL,
             total DECIMAL(13,2) NOT NULL DEFAULT 0.00,
             net DECIMAL(13,2) NOT NULL DEFAULT 0.00,
             refund DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+            discount DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+            shipping DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+            tax DECIMAL(13,2) NOT NULL DEFAULT 0.00,
             PRIMARY KEY (order_id),
             KEY idx_customer_id (customer_id),
+            KEY idx_billing_email (billing_email),
             KEY idx_date_created (date_created)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
@@ -125,7 +136,76 @@ class HippooBI
         dbDelta($sql_lookup);
         dbDelta($sql_stats);
 
+        if (version_compare($current_version, '1.1.0', '<')) {
+            $this->migrate_to_110();
+        }
+
         update_option('hippoo_bi_db_version', self::DB_VERSION);
+    }
+
+    private function migrate_to_110()
+    {
+        global $wpdb;
+        $churn  = $wpdb->prefix . self::TABLE_CHURN_SCORES;
+        $stats  = $wpdb->prefix . self::TABLE_ORDER_STATS;
+        $lookup = $wpdb->prefix . self::TABLE_ORDER_PRODUCT_LOOKUP;
+
+        // order_stats: add missing columns
+        $cols = $wpdb->get_col("SHOW COLUMNS FROM $stats", 0);
+        $add = [
+            'billing_email'  => "ADD COLUMN billing_email VARCHAR(100) DEFAULT NULL AFTER customer_id, ADD KEY idx_billing_email (billing_email)",
+            'order_status'   => "ADD COLUMN order_status VARCHAR(20) DEFAULT NULL AFTER billing_email",
+            'discount' => "ADD COLUMN discount DECIMAL(13,2) NOT NULL DEFAULT 0.00 AFTER refund",
+            'shipping' => "ADD COLUMN shipping DECIMAL(13,2) NOT NULL DEFAULT 0.00 AFTER discount",
+            'tax'      => "ADD COLUMN tax DECIMAL(13,2) NOT NULL DEFAULT 0.00 AFTER shipping",
+        ];
+        foreach ($add as $col => $sql) {
+            if (!in_array($col, $cols, true)) {
+                $wpdb->query("ALTER TABLE $stats $sql");
+            }
+        }
+
+        // churn_scores: switch PK to email
+        $churn_cols = $wpdb->get_col("SHOW COLUMNS FROM $churn", 0);
+        if (!in_array('email', $churn_cols, true)) {
+            $wpdb->query("DROP TABLE IF EXISTS $churn");
+            $wpdb->query("CREATE TABLE $churn (
+                email VARCHAR(100) NOT NULL,
+                customer_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+                churn_score TINYINT UNSIGNED NOT NULL DEFAULT 0,
+                status ENUM('active','at_risk','high_risk','churned') NOT NULL,
+                first_order_date DATE DEFAULT NULL,
+                last_order_date DATE DEFAULT NULL,
+                total_orders SMALLINT UNSIGNED DEFAULT 0,
+                total_spent DECIMAL(13,2) DEFAULT 0.00,
+                clv DECIMAL(13,2) DEFAULT 0.00,
+                avg_days_between DECIMAL(8,1) DEFAULT 0.0,
+                calculated_at DATETIME NOT NULL,
+                PRIMARY KEY (email),
+                KEY idx_customer_id (customer_id),
+                KEY idx_status (status),
+                KEY idx_score (churn_score DESC)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } else {
+            if (!in_array('first_order_date', $churn_cols, true)) {
+                $wpdb->query("ALTER TABLE $churn ADD COLUMN first_order_date DATE DEFAULT NULL AFTER status");
+            }
+            if (!in_array('avg_days_between', $churn_cols, true)) {
+                $wpdb->query("ALTER TABLE $churn ADD COLUMN avg_days_between DECIMAL(8,1) DEFAULT 0.0 AFTER clv");
+            }
+        }
+
+
+        // Reset data
+        $wpdb->query("TRUNCATE TABLE $stats");
+        $wpdb->query("TRUNCATE TABLE $lookup");
+        $wpdb->query("TRUNCATE TABLE $churn");
+
+        $this->clear_cron_events();
+        wp_schedule_single_event(time() + 15, 'hippoo_bi_sync_lookup', [300]);
+        wp_schedule_single_event(time() + 120, 'hippoo_bi_daily_churn');
+        $this->schedule_cron_events();
+
     }
 
     public function enqueue_scripts()
@@ -193,6 +273,12 @@ class HippooBI
             'callback'            => [$this, 'rest_churn_export'],
             'permission_callback' => [$this, 'rest_permission_check'],
         ]);
+
+        register_rest_route('hippoo/v1', '/bi/churn/export-status', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'rest_churn_export_status'],
+            'permission_callback' => [$this, 'rest_permission_check'],
+        ]);
     }
 
     public function rest_use_wc_authentication($condition)
@@ -234,7 +320,7 @@ class HippooBI
 
         $data = [
             'session_id'      => sanitize_text_field($params['sid'] ?? $this->get_current_session_id()),
-            'page_url'        => sanitize_text_field($params['url'] ?? ''),
+            'page_url'        => sanitize_url($params['url'] ?? ''),
             'referrer_source' => $this->get_referrer_source($params['ref'] ?? ''),
             'device_type'     => $this->get_device_type(),
             'country'         => $this->get_country_from_ip(),
@@ -256,12 +342,14 @@ class HippooBI
         $traffic_response  = $this->rest_traffic_overview($request);
         $sales_response = $this->rest_sales_overview($request);
         $churn_response = $this->rest_churn_overview($request);
+        
+        $request->set_param('highlights_only', 1);
         $products_response = $this->rest_products_intelligence($request);
 
         $traffic = $traffic_response->get_data();
         $sales = $sales_response->get_data();
         $churn = $churn_response->get_data();
-        $products = $products_response->get_data();
+        $product_highlights = $products_response->get_data();
 
         // CHART
         $chart = [];
@@ -300,64 +388,6 @@ class HippooBI
         usort($chart, function ($a, $b) {
             return strtotime($a['date']) <=> strtotime($b['date']);
         });
-
-        // PRODUCT HIGHLIGHTS
-        $product_highlights = [];
-
-        if (!empty($products)) {
-
-            // Strong Performer
-            $top = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'strong_performer'),
-                fn($carry, $p) => (!$carry || ($p['revenue'] ?? 0) > ($carry['revenue'] ?? 0)) ? $p : $carry
-            );
-            if ($top) $product_highlights['strong_performer'] = $top;
-
-            // High Traffic Low Conversion
-            $needs = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'high_traffic_low_conv'),
-                fn($carry, $p) => (!$carry || 
-                    ($p['views'] ?? 0) > ($carry['views'] ?? 0) ||
-                    (($p['views'] ?? 0) === ($carry['views'] ?? 0) && ($p['conversion_rate'] ?? 100) < ($carry['conversion_rate'] ?? 100))
-                ) ? $p : $carry
-            );
-            if ($needs) $product_highlights['high_traffic_low_conv'] = $needs;
-
-            // Hidden Gem
-            $gem = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'hidden_gem'),
-                fn($carry, $p) => (!$carry || ($p['conversion_rate'] ?? 0) > ($carry['conversion_rate'] ?? 0)) ? $p : $carry
-            );
-            if ($gem) $product_highlights['hidden_gem'] = $gem;
-
-            // Normal
-            $normal = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'normal'),
-                fn($carry, $p) => (!$carry || ($p['conversion_rate'] ?? 0) > ($carry['conversion_rate'] ?? 0)) ? $p : $carry
-            );
-            if ($normal) $product_highlights['normal'] = $normal;
-
-            // Cart Drop
-            $drop = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'cart_drop'),
-                fn($carry, $p) => (!$carry || ($p['cart_to_order_rate'] ?? 100) < ($carry['cart_to_order_rate'] ?? 100)) ? $p : $carry
-            );
-            if ($drop) $product_highlights['cart_drop'] = $drop;
-
-            // Dead Product
-            $dead = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'dead_product'),
-                fn($carry, $p) => (!$carry || ($p['views'] ?? 0) > ($carry['views'] ?? 0)) ? $p : $carry
-            );
-            if ($dead) $product_highlights['dead_product'] = $dead;
-
-            // Insufficient Data
-            $nodata = array_reduce(
-                array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === 'insufficient_data'),
-                fn($carry, $p) => (!$carry || ($p['views'] ?? 0) > ($carry['views'] ?? 0)) ? $p : $carry
-            );
-            if ($nodata) $product_highlights['insufficient_data'] = $nodata;
-        }
 
         $current_user = wp_get_current_user();
 
@@ -442,29 +472,37 @@ class HippooBI
         ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from']));
 
         // BOUNCE RATE
-        $single_sessions = $wpdb->get_var($wpdb->prepare("
-            SELECT COUNT(DISTINCT session_id)
-            FROM $table_pv 
-            WHERE created_at BETWEEN %s AND %s
-            GROUP BY session_id 
-            HAVING COUNT(*) = 1
+        $single_sessions = (int)$wpdb->get_var($wpdb->prepare("
+            SELECT COUNT(*) FROM (
+                SELECT session_id
+                FROM $table_pv 
+                WHERE created_at BETWEEN %s AND %s
+                GROUP BY session_id 
+                HAVING COUNT(*) = 1
+            ) as b
         ", $date_range['from'], $date_range['to']));
 
         $bounce_rate = $stats->unique_sessions > 0 
-            ? round(((int)$single_sessions / $stats->unique_sessions) * 100, 1) 
+            ? round(($single_sessions / $stats->unique_sessions) * 100, 1) 
             : 0;
 
         // TOP PAGES
         $top_pages = $wpdb->get_results($wpdb->prepare("
             SELECT 
                 page_url as url,
-                COUNT(*) as views
+                COUNT(*) as views,
+                MAX(product_id) as product_id
             FROM $table_pv 
             WHERE created_at BETWEEN %s AND %s
             GROUP BY page_url
             ORDER BY views DESC 
             LIMIT 10
         ", $date_range['from'], $date_range['to']));
+
+        $home_url = home_url('/');
+        foreach ($top_pages as &$page) {
+            $page->title = $this->get_page_title($page->url, (int)$page->product_id);
+        }
 
         // TRAFFIC SOURCES
         $sources = $wpdb->get_results($wpdb->prepare("
@@ -536,11 +574,21 @@ class HippooBI
         $min_views = $request->get_param('min_views') ?: 30;
         $limit     = $request->get_param('limit') ?? '';
         $sort_by   = $request->get_param('sort_by') ?: 'conv_rate';
+        $page      = max(1, (int)$request->get_param('page') ?: 1);
+        $per_page  = max(1, min(100, (int)$request->get_param('per_page') ?: 50));
+        $highlights_only = (bool)$request->get_param('highlights_only');
 
-        $cache_key = 'hippoo_bi_products_intel_' . md5($period . $date_from . $date_to . $min_views . $limit . $sort_by);
+        $cache_key = 'hippoo_bi_products_intel_' . md5($period . $date_from . $date_to . $min_views . $limit . $sort_by . $page . $per_page . ($highlights_only ? '1' : '0'));
 
         if ($cached = get_transient($cache_key)) {
-            return rest_ensure_response($cached);
+            if ($highlights_only) {
+                return rest_ensure_response($cached);
+            }
+
+            $response = rest_ensure_response($cached['data']);
+            $response->header('X-WP-Total', $cached['total']);
+            $response->header('X-WP-TotalPages', $cached['total_pages']);
+            return $response;
         }
 
         $date_range = $this->get_date_range($period, $date_from, $date_to);
@@ -627,6 +675,12 @@ class HippooBI
             $product = wc_get_product($product_id);
             if (!$product) continue;
 
+            $thumbnail = '';
+            $image_id = $product->get_image_id();
+            if ($image_id) {
+                $thumbnail = wp_get_attachment_image_url($image_id, 'thumbnail') ?: '';
+            }
+
             $s = $sales[$product_id] ?? ['orders' => 0, 'revenue' => 0, 'add_to_cart' => 0, 'atc_sessions' => 0];
 
             $views = (int)$item['views'];
@@ -647,6 +701,7 @@ class HippooBI
                 'product_id'         => $product_id,
                 'product_name'       => $product->get_name(),
                 'product_url'        => $product->get_permalink(),
+                'thumbnail'          => $thumbnail,
                 'views'              => $views,
                 'unique_sessions'    => $sessions,
                 'add_to_cart'        => $add_to_cart,
@@ -664,11 +719,13 @@ class HippooBI
         usort($result, function ($a, $b) use ($sort_by) {
             switch ($sort_by) {
                 case 'conv_rate':
-                    return $b['conversion_rate'] <=> $a['conversion_rate'];
+                    return ($b['conversion_rate'] ?? 0) <=> ($a['conversion_rate'] ?? 0);
                 case 'revenue_per_view':
-                    return $b['revenue_per_view'] <=> $a['revenue_per_view'];
+                    return ($b['revenue_per_view'] ?? 0) <=> ($a['revenue_per_view'] ?? 0);
                 case 'views':
-                    return $b['views'] <=> $a['views'];
+                    return ($b['views'] ?? 0) <=> ($a['views'] ?? 0);
+                case 'revenue':
+                    return ($b['revenue'] ?? 0) <=> ($a['revenue'] ?? 0);
                 default: // insight_priority - smaller number = higher priority
                     $priority = [
                         'dead_product'          => 1,
@@ -683,13 +740,36 @@ class HippooBI
             }
         });
 
-        $response = $result;
-        if ($limit > 0) {
-            $response = array_slice($response, 0, $limit);
+        // PRODUCT HIGHLIGHTS
+        if ($highlights_only) {
+            $highlights = $this->get_product_highlights($result);
+            set_transient($cache_key, $highlights, 15 * MINUTE_IN_SECONDS);
+            return rest_ensure_response($highlights);
         }
 
-        set_transient($cache_key, $response, 15 * MINUTE_IN_SECONDS);
-        return rest_ensure_response($response);
+        $total = count($result);
+        if ($limit > 0) {
+            $result = array_slice($result, 0, (int)$limit);
+            $total = count($result);
+            $page = 1;
+            $per_page = $total;
+        }
+
+        $total_pages = $per_page > 0 ? (int)ceil($total / $per_page) : 1;
+        $offset = ($page - 1) * $per_page;
+        $paged_result = array_slice($result, $offset, $per_page);
+
+        $cache_data = [
+            'data' => $paged_result,
+            'total' => $total,
+            'total_pages' => $total_pages,
+        ];
+        set_transient($cache_key, $cache_data, 15 * MINUTE_IN_SECONDS);
+        
+        $response = rest_ensure_response($paged_result);
+        $response->header('X-WP-Total', $total);
+        $response->header('X-WP-TotalPages', $total_pages);
+        return $response;
     }
 
     public function rest_product_intelligence($request)
@@ -709,6 +789,12 @@ class HippooBI
 
         if (!$product) {
             return new WP_Error('not_found', __('Product not found.', 'hippoo'), ['status' => 404]);
+        }
+
+        $thumbnail = '';
+        $image_id = $product->get_image_id();
+        if ($image_id) {
+            $thumbnail = wp_get_attachment_image_url($image_id, 'thumbnail') ?: '';
         }
 
         $date_range = $this->get_date_range($period, $date_from, $date_to);
@@ -851,6 +937,7 @@ class HippooBI
             'product_id'         => $product_id,
             'product_name'       => $product->get_name(),
             'product_url'        => $product->get_permalink(),
+            'thumbnail'          => $thumbnail,
             'views'              => $views,
             'unique_sessions'    => $sessions,
             'add_to_cart'        => $add_to_cart,
@@ -922,23 +1009,24 @@ class HippooBI
         $revenue_per_visit = $total_views > 0 ? round($net_revenue / $total_views, 2) : 0;
 
         // NEW vs RETURNING CUSTOMERS
+        // Identity = billing_email when present, otherwise customer_id (covers both registered + guests)
         $customers = $wpdb->get_row($wpdb->prepare("
             SELECT 
-                COUNT(DISTINCT CASE WHEN first_order >= %s THEN customer_id END) as new_customers,
-                COUNT(DISTINCT CASE WHEN first_order < %s THEN customer_id END) as returning_customers
+                COUNT(DISTINCT CASE WHEN first_order >= %s THEN identity END) as new_customers,
+                COUNT(DISTINCT CASE WHEN first_order < %s THEN identity END) as returning_customers
             FROM (
                 SELECT 
-                    customer_id, 
+                    COALESCE(NULLIF(billing_email, ''), CONCAT('uid_', customer_id)) as identity,
                     MIN(date_created) as first_order
                 FROM $table_stats
-                WHERE customer_id IS NOT NULL
-                  AND date_created <= %s
-                GROUP BY customer_id
+                WHERE date_created <= %s
+                  AND (billing_email IS NOT NULL AND billing_email != '' OR customer_id IS NOT NULL)
+                GROUP BY identity
             ) as customer_first
             WHERE EXISTS (
                 SELECT 1 
                 FROM $table_stats t 
-                WHERE t.customer_id = customer_first.customer_id 
+                WHERE COALESCE(NULLIF(t.billing_email, ''), CONCAT('uid_', t.customer_id)) = customer_first.identity
                   AND t.date_created BETWEEN %s AND %s
                 LIMIT 1
             )
@@ -1050,16 +1138,24 @@ class HippooBI
 
     public function rest_churn_customers($request)
     {
+        $lookup_email = sanitize_email($request->get_param('email') ?: '');
+        $lookup_id = absint($request->get_param('customer_id') ?: $request->get_param('id') ?: 0);
         $status   = $request->get_param('status') ?: '';
         $page     = max(1, (int)$request->get_param('page'));
         $per_page = max(1, min(100, (int)$request->get_param('per_page') ?: 50));
+        $offset   = ($page - 1) * $per_page;
 
-        $offset = ($page - 1) * $per_page;
+        if ($lookup_email || $lookup_id) {
+            return $this->rest_churn_customer_detail($lookup_email, $lookup_id);
+        }
 
         $cache_key = 'hippoo_bi_churn_customers_' . md5($status . $page . $per_page);
 
         if ($cached = get_transient($cache_key)) {
-            return rest_ensure_response($cached);
+            $response = rest_ensure_response($cached['data']);
+            $response->header('X-WP-Total', $cached['total']);
+            $response->header('X-WP-TotalPages', $cached['total_pages']);
+            return $response;
         }
 
         global $wpdb;
@@ -1072,15 +1168,20 @@ class HippooBI
             $params[] = $status;
         }
 
+        $total = (int)$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table $where", $params));
+
         $customers = $wpdb->get_results($wpdb->prepare("
             SELECT 
+                email,
                 customer_id,
                 churn_score,
                 status,
+                first_order_date,
                 last_order_date,
                 total_orders,
                 total_spent,
                 clv,
+                avg_days_between,
                 TIMESTAMPDIFF(DAY, last_order_date, CURDATE()) as days_since_last
             FROM $table
             $where
@@ -1090,27 +1191,155 @@ class HippooBI
 
         $result = [];
         foreach ($customers as $c) {
-            $user = get_user_by('id', $c->customer_id);
-            $name = $user ? $user->display_name : '';
-            $email = $user ? $user->user_email : '';
+            $name = '';
+            $email = $c->email ?: '';
+            if ($c->customer_id > 0) {
+                $user = get_user_by('id', $c->customer_id);
+                if ($user) {
+                    $name = $user->display_name;
+                    if (empty($email)) $email = $user->user_email;
+                }
+            } 
             $masked = $email ? hippoo_mask_email($email) : '';
+            $aov = $c->total_orders > 0 ? round((float)$c->total_spent / $c->total_orders, 2) : 0;
 
             $result[] = [
-                'customer_id'          => (int)$c->customer_id,
-                'email'                => $masked,
-                'name'                 => $name,
-                'churn_score'          => (int)$c->churn_score,
-                'status'               => $c->status,
-                'total_orders'         => (int)$c->total_orders,
-                'total_spent'          => round((float)$c->total_spent),
-                'last_order_date'      => $c->last_order_date,
-                'days_since_last_order'=> (int)($c->days_since_last ?? 0),
-                'clv'                  => round((float)$c->clv),
+                'customer_id'           => (int)$c->customer_id,
+                'email'                 => $masked,
+                'name'                  => $name,
+                'churn_score'           => (int)$c->churn_score,
+                'status'                => $c->status,
+                'total_orders'          => (int)$c->total_orders,
+                'total_spent'           => round((float)$c->total_spent),
+                'first_order_date'      => $c->first_order_date,
+                'last_order_date'       => $c->last_order_date,
+                'days_since_last_order' => (int)($c->days_since_last ?? 0),
+                'clv'                   => round((float)$c->clv),
+                'aov'                   => $aov,
+                'avg_days_between'      => (float)$c->avg_days_between,
             ];
         }
 
-        set_transient($cache_key, $result, HOUR_IN_SECONDS);
-        return rest_ensure_response($result);
+        $total_pages = $per_page > 0 ? (int)ceil($total / $per_page) : 1;
+        $cache_data = [
+            'data' => $result,
+            'total' => $total,
+            'total_pages' => $total_pages,
+        ];
+        set_transient($cache_key, $cache_data, HOUR_IN_SECONDS);
+
+        $response = rest_ensure_response($result);
+        $response->header('X-WP-Total', $total);
+        $response->header('X-WP-TotalPages', $total_pages);
+        return $response;
+    }
+
+    private function rest_churn_customer_detail($email, $customer_id)
+    {
+        global $wpdb;
+        $table_churn = $wpdb->prefix . self::TABLE_CHURN_SCORES;
+        $table_stats = $wpdb->prefix . self::TABLE_ORDER_STATS;
+        $table_lookup = $wpdb->prefix . self::TABLE_ORDER_PRODUCT_LOOKUP;
+
+        $c = null;
+        if ($email) {
+            $c = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_churn WHERE email = %s", $email));
+        }
+        if (!$c && $customer_id > 0) {
+            $c = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_churn WHERE customer_id = %d LIMIT 1", $customer_id));
+        }
+        if (!$c) {
+            return new WP_Error('not_found', __('Customer not found.', 'hippoo'), ['status' => 404]);
+        }
+
+        $email = $c->email;
+        $cid   = (int)$c->customer_id;
+        $name  = '';
+        if ($cid > 0) {
+            $user = get_user_by('id', $cid);
+            if ($user) $name = $user->display_name;
+        }
+        $masked = $email ? hippoo_mask_email($email) : '';
+        $aov = $c->total_orders > 0 ? round((float)$c->total_spent / $c->total_orders, 2) : 0;
+        $days_since = $c->last_order_date ? (int)$wpdb->get_var($wpdb->prepare("SELECT TIMESTAMPDIFF(DAY, %s, CURDATE())", $c->last_order_date)) : 0;
+
+        // Revenue breakdown
+        $where_rev = $email ? $wpdb->prepare("billing_email = %s", $email) : $wpdb->prepare("customer_id = %d", $cid);
+        $rev = $wpdb->get_row("
+            SELECT 
+                COALESCE(SUM(total), 0) as gross_sales,
+                COALESCE(SUM(discount), 0) as discounts,
+                COALESCE(SUM(refund), 0) as refunds,
+                COALESCE(SUM(shipping), 0) as shipping,
+                COALESCE(SUM(tax), 0) as tax,
+                COALESCE(SUM(net), 0) as net_revenue
+            FROM $table_stats
+            WHERE $where_rev
+        ");
+
+        // Favorite product
+        $fav = $wpdb->get_row("
+            SELECT product_id, SUM(quantity) as qty
+            FROM $table_lookup
+            WHERE " . ($email
+                ? $wpdb->prepare("order_id IN (SELECT order_id FROM $table_stats WHERE billing_email = %s)", $email)
+                : $wpdb->prepare("customer_id = %d", $cid)
+            ) . "
+            GROUP BY product_id
+            ORDER BY qty DESC
+            LIMIT 1
+        ");
+        $favorite_product = null;
+        if ($fav && $fav->product_id) {
+            $p = wc_get_product($fav->product_id);
+            $favorite_product = [
+                'product_id' => (int)$fav->product_id,
+                'name'       => $p ? $p->get_name() : '',
+                'quantity'   => (int)$fav->qty,
+            ];
+        }
+
+        // Order status summary
+        $status_rows = $wpdb->get_results("
+            SELECT order_status, COUNT(*) as cnt
+            FROM $table_stats
+            WHERE $where_rev
+            GROUP BY order_status
+        ");
+        $order_status_summary = [];
+        foreach ($status_rows as $sr) {
+            if ($sr->order_status) {
+                $order_status_summary[$sr->order_status] = (int)$sr->cnt;
+            }
+        }
+
+        $response = [
+            'customer_id'           => $cid,
+            'email'                 => $masked,
+            'name'                  => $name,
+            'churn_score'           => (int)$c->churn_score,
+            'status'                => $c->status,
+            'total_orders'          => (int)$c->total_orders,
+            'total_spent'           => round((float)$c->total_spent),
+            'first_order_date'      => $c->first_order_date,
+            'last_order_date'       => $c->last_order_date,
+            'days_since_last_order' => $days_since,
+            'clv'                   => round((float)$c->clv),
+            'aov'                   => $aov,
+            'avg_days_between'      => (float)$c->avg_days_between,
+            'revenue_breakdown'     => [
+                'gross_sales'  => round((float)($rev->gross_sales ?? 0)),
+                'discounts'    => round((float)($rev->discounts ?? 0)),
+                'refunds'      => round((float)($rev->refunds ?? 0)),
+                'shipping'     => round((float)($rev->shipping ?? 0)),
+                'tax'          => round((float)($rev->tax ?? 0)),
+                'net_revenue'  => round((float)($rev->net_revenue ?? 0)),
+            ],
+            'favorite_product'      => $favorite_product,
+            'order_status_summary'  => $order_status_summary,
+        ];
+
+        return rest_ensure_response($response);
     }
 
     public function rest_churn_export($request)
@@ -1119,7 +1348,8 @@ class HippooBI
         $table = $wpdb->prefix . self::TABLE_CHURN_SCORES;
 
         $customers = $wpdb->get_results("
-            SELECT c.*, u.user_email, u.display_name 
+            SELECT c.*, u.display_name,
+                   TIMESTAMPDIFF(DAY, c.last_order_date, CURDATE()) as days_since_last 
             FROM $table c
             LEFT JOIN {$wpdb->users} u ON u.ID = c.customer_id
             WHERE c.status = 'churned'
@@ -1147,13 +1377,15 @@ class HippooBI
             __('Days Since', 'hippoo'),
             __('Total Orders', 'hippoo'),
             __('Total Spent', 'hippoo'),
-            __('CLV', 'hippoo')
+            __('CLV', 'hippoo'),
+            __('Avg Order Value', 'hippoo'),
+            __('Avg Days Between', 'hippoo'),
         ], ',', '"', '\\');
 
         foreach ($customers as $c) {
-            $user = get_user_by('id', $c->customer_id);
-            $name = $user ? $user->display_name : '';
-            $email = $user ? $user->user_email : '';
+            $name = $c->display_name ?: '';
+            $email = $c->email ?: '';
+            $aov = $c->total_orders > 0 ? round((float)$c->total_spent / $c->total_orders, 2) : 0;
 
             fputcsv($output, [
                 $c->customer_id,
@@ -1165,7 +1397,83 @@ class HippooBI
                 $c->days_since_last ?? 0,
                 $c->total_orders,
                 $c->total_spent,
-                $c->clv
+                $c->clv,
+                $aov,
+                $c->avg_days_between ?? 0,
+            ], ',', '"', '\\');
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    public function rest_churn_export_status($request)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . self::TABLE_CHURN_SCORES;
+        $status = sanitize_text_field($request->get_param('status') ?: '');
+
+        $where = '';
+        $params = [];
+        if (in_array($status, ['active', 'at_risk', 'high_risk', 'churned'], true)) {
+            $where = " WHERE c.status = %s";
+            $params[] = $status;
+        }
+
+        $sql = "
+            SELECT c.*, u.display_name,
+                   TIMESTAMPDIFF(DAY, c.last_order_date, CURDATE()) as days_since_last 
+            FROM $table c
+            LEFT JOIN {$wpdb->users} u ON u.ID = c.customer_id
+            $where
+            ORDER BY c.churn_score DESC
+        ";
+        $customers = $params ? $wpdb->get_results($wpdb->prepare($sql, $params)) : $wpdb->get_results($sql);
+
+        if (empty($customers)) {
+            return new WP_Error('not_found', __('No customers found for the selected status.', 'hippoo'), ['status' => 404]);
+        }
+
+        $filename = 'churn-customers-' . ($status ?: 'all') . '-' . date('Y-m-d') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        $output = fopen('php://output', 'w');
+        
+        fputcsv($output, [
+            __('Customer ID', 'hippoo'),
+            __('Name', 'hippoo'),
+            __('Email', 'hippoo'),
+            __('Churn Score', 'hippoo'),
+            __('Status', 'hippoo'),
+            __('Last Order', 'hippoo'),
+            __('Days Since', 'hippoo'),
+            __('Total Orders', 'hippoo'),
+            __('Total Spent', 'hippoo'),
+            __('CLV', 'hippoo'),
+            __('Avg Order Value', 'hippoo'),
+            __('Avg Days Between', 'hippoo'),
+        ], ',', '"', '\\');
+
+        foreach ($customers as $c) {
+            $name = $c->display_name ?: '';
+            $email = $c->email ?: '';
+            $aov = $c->total_orders > 0 ? round((float)$c->total_spent / $c->total_orders, 2) : 0;
+
+            fputcsv($output, [
+                $c->customer_id,
+                $name,
+                $email,
+                $c->churn_score,
+                $c->status,
+                $c->last_order_date,
+                $c->days_since_last ?? 0,
+                $c->total_orders,
+                $c->total_spent,
+                $c->clv,
+                $aov,
+                $c->avg_days_between ?? 0,
             ], ',', '"', '\\');
         }
 
@@ -1205,7 +1513,8 @@ class HippooBI
         $wpdb->delete($table_lookup, ['order_id' => $order_id]);
         $wpdb->delete($table_stats, ['order_id' => $order_id]);
 
-        if (!in_array($order->get_status(), wc_get_is_paid_statuses(), true)) {
+        $included_statuses = $this->get_report_order_statuses();
+        if (!in_array($order->get_status(), $included_statuses, true)) {
             return;
         }
 
@@ -1214,11 +1523,16 @@ class HippooBI
         }
 
         $order_items = $order->get_items();
-        $order_total = (float)$order->get_total();
-        $order_net = (float)(floatval($order->get_total()) - floatval($order->get_total_tax()) - floatval($order->get_shipping_total()));
-        $order_refund = (float)$order->get_total_refunded();
-        $customer_id = $order->get_customer_id();
-        $date_created = $order->get_date_created()->date('Y-m-d H:i:s');
+        $order_total   = (float)$order->get_total();
+        $order_tax     = (float)$order->get_total_tax();
+        $order_ship    = (float)$order->get_shipping_total();
+        $order_disc    = (float)$order->get_discount_total();
+        $order_net     = (float)($order_total - $order_tax - $order_ship);
+        $order_refund  = (float)$order->get_total_refunded();
+        $customer_id   = $order->get_customer_id();
+        $billing_email = $order->get_billing_email() ?: '';
+        $order_status  = $order->get_status();
+        $date_created  = $order->get_date_created()->date('Y-m-d H:i:s');
 
         foreach ($order_items as $item) {
             $product_id = $item->get_product_id();
@@ -1235,12 +1549,17 @@ class HippooBI
         }
 
         $wpdb->insert($table_stats, [
-            'order_id'     => $order_id,
-            'customer_id'  => $customer_id > 0 ? $customer_id : null,
-            'date_created' => $date_created,
-            'total'        => $order_total,
-            'net'          => $order_net,
-            'refund'       => $order_refund,
+            'order_id'        => $order_id,
+            'customer_id'     => $customer_id > 0 ? $customer_id : null,
+            'billing_email'   => $billing_email ?: null,
+            'order_status'    => $order_status,
+            'date_created'    => $date_created,
+            'total'           => $order_total,
+            'net'             => $order_net,
+            'refund'          => $order_refund,
+            'discount'        => $order_disc,
+            'shipping'        => $order_ship,
+            'tax'             => $order_tax,
         ]);
         
         $this->clear_bi_caches();
@@ -1273,7 +1592,7 @@ class HippooBI
             'orderby' => 'date_created',
             'order'   => 'ASC',
             'return'  => 'ids',
-            'status'  => wc_get_is_paid_statuses(),
+            'status'  => $this->get_report_order_statuses(),
         ];
 
         $orders = wc_get_orders($args);
@@ -1304,18 +1623,21 @@ class HippooBI
         $table_churn = $wpdb->prefix . self::TABLE_CHURN_SCORES;
         $table_stats = $wpdb->prefix . self::TABLE_ORDER_STATS;
 
-        $customer_orders = $wpdb->get_results($wpdb->prepare("
+        // Identity = billing_email when present, otherwise uid_{customer_id}
+        $customer_orders = $wpdb->get_results("
             SELECT 
-                customer_id,
+                COALESCE(NULLIF(billing_email, ''), CONCAT('uid_', customer_id)) as identity,
+                MAX(customer_id) as customer_id,
+                MAX(NULLIF(billing_email, '')) as email,
                 COUNT(order_id) as total_orders,
                 SUM(total) as total_spent,
                 MIN(date_created) as first_order,
                 MAX(date_created) as last_order
             FROM $table_stats
-            WHERE customer_id IS NOT NULL
-            GROUP BY customer_id
+            WHERE (billing_email IS NOT NULL AND billing_email != '') OR customer_id IS NOT NULL
+            GROUP BY identity
             ORDER BY last_order DESC
-        "));
+        ");
 
         if (empty($customer_orders)) {
             return;
@@ -1323,10 +1645,27 @@ class HippooBI
 
         $customer_data = [];
         foreach ($customer_orders as $row) {
-            $cid = (int)$row->customer_id;
-            if ($cid <= 0) continue;
+            $identity = $row->identity;
+            if (empty($identity)) continue;
 
-            $customer_data[$cid] = [
+            $email = $row->email ?: '';
+            $cid = (int)$row->customer_id;
+            
+            if (empty($email) && $cid > 0) {
+                $user = get_user_by('id', $cid);
+                $email = $user ? $user->user_email : '';
+            }
+            // Guests must have an email; skip otherwise
+            if (empty($email) && strpos($identity, 'uid_') === 0) {
+                continue;
+            }
+            if (empty($email)) {
+                $email = $identity;
+            }
+
+            $customer_data[$email] = [
+                'customer_id'  => $cid,
+                'email'        => $email,
                 'total_orders' => (int)$row->total_orders,
                 'total_spent'  => (float)$row->total_spent,
                 'first_order'  => $row->first_order,
@@ -1338,7 +1677,7 @@ class HippooBI
         $max_orders = !empty($customer_data) ? max(wp_list_pluck($customer_data, 'total_orders')) : 1;
         $avg_spent = !empty($all_spent) ? array_sum($all_spent) / count($all_spent) : 1;
 
-        foreach ($customer_data as $cid => $data) {
+        foreach ($customer_data as $email => $data) {
             $days_since_last = (time() - strtotime($data['last_order'])) / DAY_IN_SECONDS;
 
             $first_ts = strtotime($data['first_order']);
@@ -1346,8 +1685,8 @@ class HippooBI
             $span_days = max(1, ($last_ts - $first_ts) / DAY_IN_SECONDS);
 
             $avg_days_between = $data['total_orders'] > 1 
-                ? $span_days / ($data['total_orders'] - 1) 
-                : $span_days;
+                ? round($span_days / ($data['total_orders'] - 1), 1) 
+                : round($span_days, 1);
 
             $freq_score = min(1, $avg_days_between / 45);
 
@@ -1369,18 +1708,21 @@ class HippooBI
                 $status = 'at_risk';
             }
 
-            $aov = $data['total_orders'] > 0 ? $data['total_spent'] / $data['total_orders'] : $data['total_spent'];
+            $aov = $data['total_orders'] > 0 ? round((float)$data['total_spent'] / $data['total_orders'], 2) : 0;
             $clv = round(($aov * ($data['total_orders'] / max(1, $span_days / 365)) * 1.2), 2);
 
             $wpdb->replace($table_churn, [
-                'customer_id'     => $cid,
-                'churn_score'     => $final_score,
-                'status'          => $status,
-                'last_order_date' => $data['last_order'],
-                'total_orders'    => $data['total_orders'],
-                'total_spent'     => $data['total_spent'],
-                'clv'             => $clv,
-                'calculated_at'   => current_time('mysql'),
+                'email'            => $email,
+                'customer_id'      => $data['customer_id'],
+                'churn_score'      => $final_score,
+                'status'           => $status,
+                'first_order_date' => $data['first_order'],
+                'last_order_date'  => $data['last_order'],
+                'total_orders'     => $data['total_orders'],
+                'total_spent'      => $data['total_spent'],
+                'clv'              => $clv,
+                'avg_days_between' => $avg_days_between,
+                'calculated_at'    => current_time('mysql'),
             ]);
         }
     }
@@ -1528,6 +1870,56 @@ class HippooBI
         }
     }
 
+    private function get_page_title($url, $product_id = 0)
+    {
+        if ($product_id > 0) {
+            $product = wc_get_product($product_id);
+            if ($product) {
+                return $product->get_name();
+            }
+        }
+
+        if ($url) {
+            $post_id = url_to_postid($url);
+            if ($post_id) {
+                $title = get_the_title($post_id);
+                if ($title !== '') {
+                    return $title;
+                }
+            }
+
+            $path = parse_url($url, PHP_URL_PATH);
+            if ($path) {
+                return basename($path);
+            }
+        }
+
+        return $url ?: '';
+    }
+
+    private function get_report_order_statuses()
+    {
+        $excluded = [];
+        if (class_exists('\WC_Admin_Settings')) {
+            $excluded = \WC_Admin_Settings::get_option('woocommerce_excluded_report_order_statuses', ['pending', 'failed', 'cancelled']);
+        } else {
+            $excluded = get_option('woocommerce_excluded_report_order_statuses', ['pending', 'failed', 'cancelled']);
+        }
+        $excluded = apply_filters('woocommerce_analytics_excluded_order_statuses', $excluded);
+        $excluded = array_map(function ($s) {
+            return str_replace('wc-', '', $s);
+        }, (array) $excluded);
+
+        $all = array_map(function ($s) {
+            return str_replace('wc-', '', $s);
+        }, array_keys(wc_get_order_statuses()));
+
+        $included = array_values(array_diff($all, $excluded));
+        // Always exclude auto-draft/trash
+        $included = array_diff($included, ['auto-draft', 'trash']);
+        return $included ?: wc_get_is_paid_statuses();
+    }
+
     private function get_date_range($period, $date_from = null, $date_to = null)
     {
         $period = sanitize_text_field(strtolower($period));
@@ -1615,6 +2007,46 @@ class HippooBI
         ];
     }
 
+    private function get_product_highlights($products)
+    {
+        if (empty($products)) {
+            return [];
+        }
+
+        $pick = function (string $tag, callable $better) use ($products) {
+            $items = array_values(array_filter($products, fn($p) => ($p['insight_tag'] ?? '') === $tag));
+            return $items ? array_reduce($items, $better) : null;
+        };
+
+        $out = [];
+
+        $top = $pick('strong_performer', fn($a, $b) => (!$a || ($b['revenue'] ?? 0) > ($a['revenue'] ?? 0)) ? $b : $a);
+        if ($top) $out['strong_performer'] = $top;
+
+        $needs = $pick('high_traffic_low_conv', fn($a, $b) => (!$a
+            || ($b['views'] ?? 0) > ($a['views'] ?? 0)
+            || (($b['views'] ?? 0) === ($a['views'] ?? 0) && ($b['conversion_rate'] ?? 100) < ($a['conversion_rate'] ?? 100))
+        ) ? $b : $a);
+        if ($needs) $out['high_traffic_low_conv'] = $needs;
+
+        $gem = $pick('hidden_gem', fn($a, $b) => (!$a || ($b['conversion_rate'] ?? 0) > ($a['conversion_rate'] ?? 0)) ? $b : $a);
+        if ($gem) $out['hidden_gem'] = $gem;
+
+        $normal = $pick('normal', fn($a, $b) => (!$a || ($b['conversion_rate'] ?? 0) > ($a['conversion_rate'] ?? 0)) ? $b : $a);
+        if ($normal) $out['normal'] = $normal;
+
+        $drop = $pick('cart_drop', fn($a, $b) => (!$a || ($b['cart_to_order_rate'] ?? 100) < ($a['cart_to_order_rate'] ?? 100)) ? $b : $a);
+        if ($drop) $out['cart_drop'] = $drop;
+
+        $dead = $pick('dead_product', fn($a, $b) => (!$a || ($b['views'] ?? 0) > ($a['views'] ?? 0)) ? $b : $a);
+        if ($dead) $out['dead_product'] = $dead;
+
+        $nodata = $pick('insufficient_data', fn($a, $b) => (!$a || ($b['views'] ?? 0) > ($a['views'] ?? 0)) ? $b : $a);
+        if ($nodata) $out['insufficient_data'] = $nodata;
+
+        return $out;
+    }
+
     private function get_insight_tag($views, $orders, $conv_rate, $atc_rate, $checkout_rate)
     {
         if ($views < 50) {
@@ -1667,11 +2099,6 @@ class HippooBI
             'tag'     => 'normal',
             'message' => __('Normal performance.', 'hippoo')
         ];
-    }
-
-    private function mask_email($email)
-    {
-        return preg_replace('/^(.{2})(.*)@(.{2})(.*)\.(.+)$/', '$1***@$3***.$5', $email);
     }
 }
 
