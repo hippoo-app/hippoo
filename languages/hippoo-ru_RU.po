@@ -136,7 +136,7 @@ msgid "Invalid provider"
 msgstr "Недействительный провайдер"
 
 #: app/ai.php:355
-#: app/bi.php:221
+#: app/bi.php:307
 msgid "Too many requests. Please try again later."
 msgstr "Слишком много запросов. Попробуйте позже."
 
@@ -503,49 +503,49 @@ msgstr "Данные можно получить здесь"
 msgid "Unauthenticated, No Token Data"
 msgstr "Не аутентифицирован, данных токена нет"
 
-#: app/web_api.php:353
+#: app/web_api.php:354
 msgid "Country code must be a valid two-letter uppercase code."
 msgstr "Код страны должен быть действительным двухбуквенным кодом в верхнем регистре."
 
-#: app/web_api.php:358
+#: app/web_api.php:359
 msgid "Invalid or unauthorized country code."
 msgstr "Недействительный или неавторизованный код страны."
 
-#: app/web_api.php:425
+#: app/web_api.php:426
 msgid "Image saved successfully."
 msgstr "Изображение успешно сохранено."
 
-#: app/web_api.php:438
+#: app/web_api.php:439
 msgid "Image deleted successfully."
 msgstr "Изображение успешно удалено."
 
-#: app/web_api.php:440
+#: app/web_api.php:441
 msgid "Image not found!"
 msgstr "Изображение не найдено!"
 
 #. translators: 1: order ID, 2: order status
-#: app/web_api.php:666
+#: app/web_api.php:667
 #, php-format
 msgid "Order %1$d %2$s!"
 msgstr "Заказ %1$d %2$s!"
 
 #. translators: %d: number of items in the order
-#: app/web_api.php:668
+#: app/web_api.php:669
 #, php-format
 msgid "%d items"
 msgstr "%d позиций"
 
 #. translators: %s: order status
-#: app/web_api.php:671
+#: app/web_api.php:672
 #, php-format
 msgid "Status: %s"
 msgstr "Статус: %s"
 
-#: app/web_api.php:706
+#: app/web_api.php:707
 msgid "Product is out of stock!"
 msgstr "Товар отсутствует на складе!"
 
-#: app/web_api.php:707
+#: app/web_api.php:708
 msgid "Product "
 msgstr "Товар "
 
@@ -894,7 +894,8 @@ msgstr ""
 msgid "Order details"
 msgstr ""
 
-#: app/bi.php:1138
+#: app/bi.php:1372
+#: app/bi.php:1446
 #: app/permissions.php:929
 #: app/permissions.php:1082
 msgid "Name"
@@ -972,7 +973,8 @@ msgstr ""
 msgid "Out of stock list"
 msgstr ""
 
-#: app/bi.php:1141
+#: app/bi.php:1375
+#: app/bi.php:1449
 #: app/permissions.php:1033
 msgid "Status"
 msgstr ""
@@ -1001,7 +1003,8 @@ msgstr ""
 msgid "Phone number"
 msgstr ""
 
-#: app/bi.php:1139
+#: app/bi.php:1373
+#: app/bi.php:1447
 #: app/permissions.php:1094
 msgid "Email"
 msgstr ""
@@ -1202,75 +1205,100 @@ msgstr ""
 msgid "Generated: %s"
 msgstr ""
 
-#: app/bi.php:232
+#: app/bi.php:318
 msgid "Missing product_id parameter."
 msgstr ""
 
-#: app/bi.php:707
+#: app/bi.php:791
 msgid "Product not found."
 msgstr ""
 
-#: app/bi.php:1126
+#: app/bi.php:1360
 msgid "No churned customers found."
 msgstr ""
 
-#: app/bi.php:1137
+#: app/bi.php:1371
+#: app/bi.php:1445
 msgid "Customer ID"
 msgstr ""
 
-#: app/bi.php:1140
+#: app/bi.php:1374
+#: app/bi.php:1448
 msgid "Churn Score"
 msgstr ""
 
-#: app/bi.php:1142
+#: app/bi.php:1376
+#: app/bi.php:1450
 msgid "Last Order"
 msgstr ""
 
-#: app/bi.php:1143
+#: app/bi.php:1377
+#: app/bi.php:1451
 msgid "Days Since"
 msgstr ""
 
-#: app/bi.php:1144
+#: app/bi.php:1378
+#: app/bi.php:1452
 msgid "Total Orders"
 msgstr ""
 
-#: app/bi.php:1145
+#: app/bi.php:1379
+#: app/bi.php:1453
 msgid "Total Spent"
 msgstr ""
 
-#: app/bi.php:1146
+#: app/bi.php:1380
+#: app/bi.php:1454
 msgid "CLV"
 msgstr ""
 
-#: app/bi.php:1619
+#: app/bi.php:2055
 msgid "Not enough data for analysis."
 msgstr ""
 
-#: app/bi.php:1626
+#: app/bi.php:2062
 msgid "This product has views but zero sales."
 msgstr ""
 
-#: app/bi.php:1633
+#: app/bi.php:2069
 msgid "Users add to cart but don't complete checkout — Check checkout process."
 msgstr ""
 
-#: app/bi.php:1640
+#: app/bi.php:2076
 msgid "Excellent conversion with low views — This product needs more promotion."
 msgstr ""
 
-#: app/bi.php:1648
+#: app/bi.php:2084
 #, php-format
 msgid "%d views, %d sales — Product page needs improvement."
 msgstr ""
 
-#: app/bi.php:1658
+#: app/bi.php:2094
 msgid "Strong performer — Replicate this pattern in other products."
 msgstr ""
 
-#: app/bi.php:1664
+#: app/bi.php:2100
 msgid "Normal performance."
 msgstr ""
 
 #: app/permissions.php:1133
 msgid "Business intelligence"
+msgstr ""
+
+#: app/bi.php:1252
+msgid "Customer not found."
+msgstr ""
+
+#: app/bi.php:1381
+#: app/bi.php:1455
+msgid "Avg Order Value"
+msgstr ""
+
+#: app/bi.php:1382
+#: app/bi.php:1456
+msgid "Avg Days Between"
+msgstr ""
+
+#: app/bi.php:1434
+msgid "No customers found for the selected status."
 msgstr ""
