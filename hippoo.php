@@ -41,6 +41,8 @@ require_once ABSPATH . 'wp-admin/includes/image.php';
 require_once HIPPOO_PATH . 'vendor/autoload.php';
 include_once HIPPOO_PATH . 'app/utils.php';
 include_once HIPPOO_PATH . 'app/web_api.php';
+include_once HIPPOO_PATH . 'app/ability_catalog.php';
+include_once HIPPOO_PATH . 'app/ability.php';
 include_once HIPPOO_PATH . 'app/settings.php';
 include_once HIPPOO_PATH . 'app/pwa.php';
 include_once HIPPOO_PATH . 'app/ai.php';
