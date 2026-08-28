@@ -27,7 +27,7 @@ function hippoo_ability_date_range( $period, $from = null, $to = null ) {
             $start = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $from, $tz );
             $end   = DateTimeImmutable::createFromFormat( '!Y-m-d', (string) $to, $tz );
             $end   = $end ? $end->setTime( 23, 59, 59 ) : $now;
-            return array( 'from' => $start ? $start->getTimestamp() : 0, 'to' => $end->getTimestamp() );
+            return array( 'from' => $start ? $start->getTimestamp() : $now->getTimestamp(), 'to' => $end->getTimestamp() );
         default:
             $start = $now->setTime( 0, 0, 0 );
     }

@@ -96,6 +96,17 @@ function hippoo_ability_validate_get_sales_summary( $in ) {
     foreach ( array( 'date_from', 'date_to' ) as $d ) {
         if ( isset( $in[ $d ] ) && ( ! is_string( $in[ $d ] ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $in[ $d ] ) ) ) {
             $errors[] = $d . ' must be a YYYY-MM-DD date';
+        } elseif ( isset( $in[ $d ] ) && is_string( $in[ $d ] ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $in[ $d ] ) ) {
+            // Shape is valid; now check if it's a real calendar date.
+            $parts = explode( '-', $in[ $d ] );
+            if ( count( $parts ) === 3 ) {
+                $y = (int) $parts[0];
+                $m = (int) $parts[1];
+                $d_val = (int) $parts[2];
+                if ( ! checkdate( $m, $d_val, $y ) ) {
+                    $errors[] = $d . ' is not a valid calendar date';
+                }
+            }
         }
     }
     // Decision 4: custom period requires both dates.
