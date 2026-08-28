@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["currency", "gross_sales", "net_sales", "order_count"],
+  "properties": {
+    "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+    "gross_sales": { "type": "number" },
+    "net_sales": { "type": "number" },
+    "order_count": { "type": "integer", "minimum": 0 }
+  }
+}

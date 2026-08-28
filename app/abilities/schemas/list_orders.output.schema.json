@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["orders", "total", "page"],
+  "properties": {
+    "orders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "total", "currency", "date_created"],
+        "properties": {
+          "id": { "type": "integer" },
+          "status": { "type": "string" },
+          "total": { "type": "string" },
+          "currency": { "type": "string" },
+          "date_created": { "type": "string" },
+          "customer_name": { "type": "string" }
+        }
+      }
+    },
+    "total": { "type": "integer", "minimum": 0 },
+    "page": { "type": "integer", "minimum": 1 }
+  }
+}
