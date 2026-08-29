@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "sku", "price", "stock_status"],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "sku": { "type": "string" },
+    "price": { "type": "string" },
+    "stock_status": { "enum": ["instock", "outofstock", "onbackorder"] },
+    "stock_quantity": { "type": ["integer", "null"] }
+  }
+}

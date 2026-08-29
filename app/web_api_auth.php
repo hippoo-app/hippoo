@@ -73,6 +73,20 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
                 'permission_callback' => array( $this, 'get_items_permissions_check' ),
             ),
         ) );
+
+        #
+        register_rest_route($this->hippoo_namespace, '/ability/list', array(
+            'methods'             => 'GET',
+            'callback'            => array($this, 'ability_list'),
+            'permission_callback' => array($this, 'get_items_permissions_check'),
+        ));
+
+        #
+        register_rest_route($this->hippoo_namespace, '/ability/execute', array(
+            'methods'             => 'POST',
+            'callback'            => array($this, 'ability_execute'),
+            'permission_callback' => array($this, 'get_items_permissions_check'),
+        ));
     }
 
     function re_register_external_routes() {
@@ -356,6 +370,23 @@ class HippooControllerWithAuth extends WC_REST_Customers_Controller
     
         update_option('hippoo_settings', $settings);
         return rest_ensure_response($settings);
+    }
+
+    function ability_list($request) {
+        return new WP_REST_Response(hippoo_ability_catalog_for_list(), 200);
+    }
+
+    function ability_execute($request) {
+        $body = json_decode($request->get_body(), true);
+        if (!is_array($body) || !isset($body['name']) || !is_string($body['name'])) {
+            return new WP_REST_Response(array('ok' => false, 'error' => 'name is required'), 400);
+        }
+        $name      = $body['name'];
+        $input     = (isset($body['input']) && is_array($body['input'])) ? $body['input'] : array();
+        $confirmed = (isset($body['confirmed']) && $body['confirmed'] === true);
+
+        $result = hippoo_ability_execute($name, $input, $confirmed);
+        return new WP_REST_Response($result['body'], $result['status']);
     }
 
     function is_user_wordpress_admin(){
