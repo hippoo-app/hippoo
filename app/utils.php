@@ -4,17 +4,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-function hippoo_mask_email($email) {
-    return preg_replace('/^(.{2})(.*)@(.{2})(.*)\.(.+)$/', '$1***@$3***.$5', $email);
+function hippoo_mask_email( $email ) {
+    return preg_replace( '/^(.{2})(.*)@(.{2})(.*)\.(.+)$/', '$1***@$3***.$5', $email );
 }
 
 function hippoo_get_temp_dir() {
     $wp_upload_dir = wp_upload_dir();
-    $temp_dir = implode('/', [$wp_upload_dir['basedir'], 'hippoo', 'tmp']);
+    $temp_dir = implode( '/', [ $wp_upload_dir['basedir'], 'hippoo', 'tmp' ] );
     
-    if (!file_exists($temp_dir)) {
+    if ( ! file_exists( $temp_dir ) ) {
         // phpcs:ignore
-        mkdir($temp_dir, 0755, true);
+        mkdir( $temp_dir, 0755, true );
     }
 
     return $temp_dir;
@@ -22,10 +22,10 @@ function hippoo_get_temp_dir() {
 
 function hippoo_get_log_dir() {
     $wp_upload_dir = wp_upload_dir();
-    $log_dir = implode('/', [$wp_upload_dir['basedir'], 'hippoo', 'logs']);
+    $log_dir = implode( '/', [ $wp_upload_dir['basedir'], 'hippoo', 'logs' ] );
     
-    if (!file_exists($log_dir)) {
-        wp_mkdir_p($log_dir);
+    if ( ! file_exists( $log_dir ) ) {
+        wp_mkdir_p( $log_dir );
         
         // Protect directory from direct access
         $htaccess_content = 'deny from all';
@@ -34,45 +34,46 @@ function hippoo_get_log_dir() {
         $htaccess_file = $log_dir . '.htaccess';
         $index_file = $log_dir . 'index.html';
         
-        if (!file_exists($htaccess_file)) {
-            file_put_contents($htaccess_file, $htaccess_content);
+        if ( ! file_exists( $htaccess_file ) ) {
+            file_put_contents( $htaccess_file, $htaccess_content );
         }
         
-        if (!file_exists($index_file)) {
-            file_put_contents($index_file, $index_content);
+        if ( ! file_exists( $index_file ) ) {
+            file_put_contents( $index_file, $index_content );
         }
     }
     
     return $log_dir;
 }
 
-function hippoo_get_log_content($filename) {
+function hippoo_get_log_content( $filename ) {
     $log_dir = hippoo_get_log_dir();
-    $log_file = $log_dir . basename($filename);
+    $log_file = $log_dir . basename( $filename );
     
-    if (!file_exists($log_file)) {
+    if ( ! file_exists( $log_file ) ) {
         return '';
     }
     
-    return file_get_contents($log_file);
+    return file_get_contents( $log_file );
 }
 
-function hippoo_put_log_content($filename, $content) {
+function hippoo_put_log_content( $filename, $content ) {
     $log_dir = hippoo_get_log_dir();
-    $log_file = $log_dir . basename($filename);
-    
-    file_put_contents($log_file, $content, LOCK_EX);
+    $log_file = $log_dir . basename( $filename );
+    file_put_contents( $log_file, $content, LOCK_EX );
 }
 
 function hippoo_get_product_by_slug( $products, $name ) {
     if ( ! is_array( $products ) ) {
         return null;
     }
+
     foreach ( $products as $product ) {
         if ( is_array( $product ) && isset( $product['slug'] ) && strcasecmp( $product['slug'], $name ) === 0 ) {
             return $product;
         }
     }
+
     return null;
 }
 
@@ -80,88 +81,90 @@ function hippoo_get_available_image_sizes() {
     $sizes = [];
     $all_sizes = wp_get_registered_image_subsizes();
     
-    foreach ($all_sizes as $size => $dimensions) {
+    foreach ( $all_sizes as $size => $dimensions ) {
         $sizes[$size] = [
             'width' => $dimensions['width'],
             'height' => $dimensions['height']
         ];
     }
 
-    $sizes['original'] = ['width' => 'Original', 'height' => 'Original'];
-    
+    $sizes['original'] = [ 'width' => 'Original', 'height' => 'Original' ];
     return $sizes;
 }
 
 function hippoo_check_rest_api_status() {
-    $permalink_structure = get_option('permalink_structure');
-    if (empty($permalink_structure)) {
+    $permalink_structure = get_option( 'permalink_structure' );
+    if ( empty( $permalink_structure ) ) {
         return [
             'status' => 'error',
             'message' => sprintf(
                 /* translators: %s: URL to the Permalink Settings page in wp-admin */
-                __('Hippoo can’t connect because your WordPress permalinks are set to “Plain”. To enable the WordPress REST API, open your <a href="%s">Permalink Settings</a> and select Post name or Custom Structure, then save changes.', 'hippoo'),
-                esc_url(admin_url('options-permalink.php'))
+                __( 'Hippoo can’t connect because your WordPress permalinks are set to “Plain”. To enable the WordPress REST API, open your <a href="%s">Permalink Settings</a> and select Post name or Custom Structure, then save changes.', 'hippoo' ),
+                esc_url( admin_url( 'options-permalink.php' ) )
             ),
             'code' => 'plain_permalinks'
         ];
     }
 
-    if (!apply_filters('rest_enabled', true)) {
+    if ( ! apply_filters( 'rest_enabled', true ) ) {
         return [
             'status' => 'error',
-            'message' => __('Hippoo can’t connect because the WordPress REST API has been disabled by a theme or plugin.', 'hippoo'),
+            'message' => __( 'Hippoo can’t connect because the WordPress REST API has been disabled by a theme or plugin.', 'hippoo' ),
             'code' => 'rest_api_disabled'
         ];
     }
 
-    $response = wp_remote_get(rest_url('wp/v2/posts'), [
-        'timeout' => 30,
-        'sslverify' => false,
-    ]);
+    $response = wp_remote_get(
+        rest_url( 'wp/v2/posts' ),
+        array(
+            'timeout' => 30,
+            'sslverify' => false,
+        )
+    );
 
-    if (is_wp_error($response)) {
+    if ( is_wp_error( $response ) ) {
         return [
             'status' => 'error',
-            'message' => __('Hippoo can’t connect to your website because the WordPress REST API is not responding. Please check your firewall or hosting settings.', 'hippoo'),
+            'message' => __( 'Hippoo can’t connect to your website because the WordPress REST API is not responding. Please check your firewall or hosting settings.', 'hippoo' ),
             'code' => 'connection_error'
         ];
     }
 
-    $status_code = wp_remote_retrieve_response_code($response);
+    $status_code = wp_remote_retrieve_response_code( $response );
 
-    switch ($status_code) {
+    switch ( $status_code ) {
         case 401:
             return [
                 'status' => 'error',
-                'message' => __('Hippoo can’t connect to your site because the WordPress REST API is restricted. Please allow public access to the REST API.', 'hippoo'),
+                'message' => __( 'Hippoo can’t connect to your site because the WordPress REST API is restricted. Please allow public access to the REST API.', 'hippoo' ),
                 'code' => 'unauthorized'
             ];
         case 403:
             return [
                 'status' => 'error',
-                'message' => __('Hippoo can’t connect because something on your site (like a security plugin or server rule) is blocking access to the WordPress REST API.', 'hippoo'),
+                'message' => __( 'Hippoo can’t connect because something on your site (like a security plugin or server rule) is blocking access to the WordPress REST API.', 'hippoo' ),
                 'code' => 'forbidden'
             ];
         case 404:
             return [
                 'status' => 'error',
-                'message' => __('Hippoo can’t connect because the WordPress API endpoint wasn’t found. Please make sure your WordPress installation is complete and .htaccess is correctly configured.', 'hippoo'),
+                'message' => __( 'Hippoo can’t connect because the WordPress API endpoint wasn’t found. Please make sure your WordPress installation is complete and .htaccess is correctly configured.', 'hippoo' ),
                 'code' => 'not_found'
             ];
         case 500:
             return [
                 'status' => 'error',
-                'message' => __('Hippoo can’t connect right now because your site returned an internal error when trying to reach the WordPress REST API.', 'hippoo'),
+                'message' => __( 'Hippoo can’t connect right now because your site returned an internal error when trying to reach the WordPress REST API.', 'hippoo' ),
                 'code' => 'internal_server_error'
             ];
     }
 
     $server = rest_get_server();
-    $routes = array_keys($server->get_routes());
-    if (!in_array('/wp/v2/posts', $routes)) {
+    $routes = array_keys( $server->get_routes() );
+    if ( ! in_array( '/wp/v2/posts', $routes ) ) {
         return [
             'status' => 'error',
-            'message' => __('Hippoo can’t connect because essential WordPress API routes are missing. A plugin may have disabled them.', 'hippoo'),
+            'message' => __( 'Hippoo can’t connect because essential WordPress API routes are missing. A plugin may have disabled them.', 'hippoo' ),
             'code' => 'core_routes_missing'
         ];
     }
@@ -174,56 +177,56 @@ function hippoo_check_rest_api_status() {
 
 function hippoo_check_user_license() {
     $cache_key = 'hippoo_license_status';
-    $license   = get_transient($cache_key);
+    $license   = get_transient( $cache_key );
 
-    if ($license !== false) {
+    if ( $license !== false ) {
         return $license;
     }
 
-    $email = get_option('admin_email'); 
+    $email = get_option( 'admin_email' ); 
     $hostname = home_url();
 
-    if (!$email) {
-        set_transient($cache_key, 'basic', HOUR_IN_SECONDS);
+    if ( ! $email ) {
+        set_transient( $cache_key, 'basic', HOUR_IN_SECONDS );
         return 'basic';
     }
 
     $url = "https://hippoo.app/wp-json/woohouse/v1/get_licenses_by_cs_hostname";
     $args = [
         'timeout' => 30,
-        'headers' => ['Content-Type' => 'application/json'],
-        'body' => json_encode([
+        'headers' => [ 'Content-Type' => 'application/json' ],
+        'body' => json_encode( [
             'email' => $email,
             'cs_hostname' => $hostname
-        ])
+        ] )
     ];
 
-    $response = wp_remote_post($url, $args);
+    $response = wp_remote_post( $url, $args );
 
-    if (is_wp_error($response)) {
-        set_transient($cache_key, 'basic', HOUR_IN_SECONDS);
+    if ( is_wp_error( $response ) ) {
+        set_transient( $cache_key, 'basic', HOUR_IN_SECONDS );
         return 'basic';
     }
 
-    $data = json_decode(wp_remote_retrieve_body($response), true);
+    $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
-    if (!isset($data['Licenses'])) {
-        set_transient($cache_key, 'basic', HOUR_IN_SECONDS);
+    if ( ! isset( $data['Licenses'] ) ) {
+        set_transient( $cache_key, 'basic', HOUR_IN_SECONDS );
         return 'basic';
     }
 
-    $licenses = wp_list_pluck($data['Licenses'], 'Sku');
+    $licenses = wp_list_pluck( $data['Licenses'], 'Sku' );
 
     // Premium SKUs
-    $premium_skus = ['premium', 'hippoopremium', 'hippoo_premium', '14-days-trial'];
+    $premium_skus = [ 'premium', 'hippoopremium', 'hippoo_premium', '14-days-trial' ];
 
-    foreach ($licenses as $sku) {
-        if (in_array($sku, $premium_skus)) {
-            set_transient($cache_key, 'premium', 12 * HOUR_IN_SECONDS);
+    foreach ( $licenses as $sku ) {
+        if ( in_array( $sku, $premium_skus ) ) {
+            set_transient( $cache_key, 'premium', 12 * HOUR_IN_SECONDS );
             return 'premium';
         }
     }
 
-    set_transient($cache_key, 'basic', HOUR_IN_SECONDS);
+    set_transient( $cache_key, 'basic', HOUR_IN_SECONDS );
     return 'basic';
 }

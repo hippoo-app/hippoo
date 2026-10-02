@@ -200,7 +200,7 @@ jQuery(document).ready(function($) {
             url: hippoo.ajax_url,
             method: 'POST',
             data: {
-                action: 'hippoo_dismiss_api_error',
+                action: 'hippoo_dismiss_rest_api_error',
                 nonce: hippoo.nonce
             },
             success: function(response) {
@@ -218,7 +218,7 @@ jQuery(document).ready(function($) {
             url: hippoo.ajax_url,
             method: 'POST',
             data: {
-                action: 'hippoo_retry_api_check',
+                action: 'hippoo_retry_rest_api_check',
                 nonce: hippoo.nonce
             },
             success: function(response) {

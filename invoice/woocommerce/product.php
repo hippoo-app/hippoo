@@ -19,7 +19,7 @@ class Hippoo_Ticket_Woo_Product {
     }
 
     function product_sku_column( $columns ) {
-        $settings = get_option( 'hippoo_invoice_settings', [] );
+        $settings = get_option( 'hippoo_invoice_settings', array() );
         if ( ! $settings['show_barcode_products_list'] ) {
             return $columns;
         }
@@ -45,7 +45,7 @@ class Hippoo_Ticket_Woo_Product {
     }
 
     function add_meta_boxes() {
-        $settings = get_option( 'hippoo_invoice_settings', [] );
+        $settings = get_option( 'hippoo_invoice_settings', array() );
         if ( isset( $settings['show_barcode_products_details'] ) && $settings['show_barcode_products_details'] ) {
             add_meta_box(
                 'product_barcode_meta',
