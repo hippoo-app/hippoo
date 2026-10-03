@@ -72,7 +72,6 @@ function hippoo_bi_get_churn_summary() {
     );
 
     set_transient( $cache_key, $response, HOUR_IN_SECONDS );
-
     return $response;
 }
 
@@ -177,7 +176,6 @@ function hippoo_bi_get_churn_customers( $args = array() ) {
     );
 
     set_transient( $cache_key, $response, HOUR_IN_SECONDS );
-
     return $response;
 }
 

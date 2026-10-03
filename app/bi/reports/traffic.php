@@ -38,7 +38,6 @@ function hippoo_bi_get_traffic_overview( $args = array() ) {
     );
 
     set_transient( $cache_key, $result, 5 * MINUTE_IN_SECONDS );
-
     return $result;
 }
 
@@ -95,7 +94,6 @@ function hippoo_bi_get_traffic_summary( $args = array() ) {
     );
 
     set_transient( $cache_key, $result, 5 * MINUTE_IN_SECONDS );
-
     return $result;
 }
 

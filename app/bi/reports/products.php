@@ -155,7 +155,6 @@ function hippoo_bi_get_products_overview( $args = array() ) {
     );
 
     set_transient( $cache_key, $response, 15 * MINUTE_IN_SECONDS );
-
     return $response;
 }
 
@@ -249,7 +248,6 @@ function hippoo_bi_get_product_overview( $args = array() ) {
     );
 
     set_transient( $cache_key, $response, 15 * MINUTE_IN_SECONDS );
-
     return $response;
 }
 
@@ -395,7 +393,6 @@ function hippoo_bi_get_product_highlights( $args = array() ) {
     unset( $item );
 
     set_transient( $cache_key, $highlights, 15 * MINUTE_IN_SECONDS );
-
     return $highlights;
 }
 

@@ -109,6 +109,9 @@ function hippoo_bi_get_sales_summary( $args = array() ) {
     $net_revenue   = (float) ( $sales_stats->net_revenue ?? 0 );
     $refund_amount = (float) ( $sales_stats->total_refund ?? 0 );
 
+    $new_customers = (int) ( $customers->new_customers ?? 0 );
+    $returning_customers = (int) ( $customers->returning_customers ?? 0 );
+
     $net_revenue = $net_revenue - $refund_amount;
 
     $avg_order_value   = $order_count > 0 ? round( $net_revenue / $order_count, 2 ) : 0;
@@ -129,8 +132,8 @@ function hippoo_bi_get_sales_summary( $args = array() ) {
         'refund_rate'         => $refund_rate,
         'conversion_rate'     => $conversion_rate,
         'revenue_per_visit'   => $revenue_per_visit,
-        'new_customers'       => $customers->new_customers,
-        'returning_customers' => $customers->returning_customers,
+        'new_customers'       => $new_customers,
+        'returning_customers' => $returning_customers,
         'comparison'          => array(
             'vs_previous_period' => ( $change >= 0 ? '+' : '' ) . $change . '%',
             'previous_revenue'   => round( $prev_revenue ),
@@ -223,7 +226,7 @@ function hippoo_bi_get_customer_summary( $args = array() ) {
             LIMIT 1
         )
     ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from'], $date_range['to'] ) );
-
+    
     return $customers;
 }
 
