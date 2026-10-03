@@ -159,7 +159,7 @@ function hippoo_bi_rest_products_intelligence( $request ) {
         return $response;
     }
 
-    $response = rest_ensure_response( $response );
+    $response = rest_ensure_response( $response->data['data'] );
 
     if ( isset( $response->data['total'] ) ) {
         $response->header( 'X-WP-Total', $response->data['total'] );
@@ -213,7 +213,7 @@ function hippoo_bi_rest_churn_customers( $request ) {
         return $response;
     }
 
-    $response = rest_ensure_response( $response );
+    $response = rest_ensure_response( $response->data['data'] );
 
     if ( isset( $response->data['total'] ) ) {
         $response->header( 'X-WP-Total', $response->data['total'] );
@@ -234,10 +234,7 @@ function hippoo_bi_rest_churn_export( $request ) {
         return $response;
     }
 
-    return hippoo_bi_rest_output_churn_csv(
-        $response['customers'],
-        $response['filename']
-    );
+    return hippoo_bi_rest_output_churn_csv( $response['customers'], $response['filename'] );
 }
 
 /** Export churn customers by status through REST. */
@@ -252,10 +249,7 @@ function hippoo_bi_rest_churn_export_status( $request ) {
         return $response;
     }
 
-    return hippoo_bi_rest_output_churn_csv(
-        $response['customers'],
-        $response['filename']
-    );
+    return hippoo_bi_rest_output_churn_csv( $response['customers'], $response['filename'] );
 }
 
 

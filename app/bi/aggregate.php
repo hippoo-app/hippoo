@@ -71,6 +71,22 @@ function hippoo_bi_get_site_stats_from_summary( $from, $to ) {
         WHERE date BETWEEN %s AND %s
     ", $from_date, $to_date ) );
 
+    if ( ! $result ) {
+        return null;
+    }
+
+    $result->total_views          = (int) $result->total_views;
+    $result->unique_sessions      = (int) $result->unique_sessions;
+    $result->new_visitors         = (int) $result->new_visitors;
+    $result->returning_visitors   = (int) $result->returning_visitors;
+    $result->bounce_sessions      = (int) $result->bounce_sessions;
+    $result->order_count          = (int) $result->order_count;
+    $result->total_revenue        = (float) $result->total_revenue;
+    $result->net_revenue          = (float) $result->net_revenue;
+    $result->total_refund         = (float) $result->total_refund;
+    $result->new_customers        = (int) $result->new_customers;
+    $result->returning_customers  = (int) $result->returning_customers;
+
     return $result;
 }
 
