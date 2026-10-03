@@ -128,3 +128,18 @@ function hippoo_bi_get_report_order_statuses() {
 
     return $included ?: wc_get_is_paid_statuses();
 }
+
+/** Clear cached BI report data. */
+function hippoo_bi_clear_report_caches() {
+    global $wpdb;
+
+    $wpdb->query( "
+        DELETE FROM {$wpdb->options}
+        WHERE option_name LIKE '_transient_hippoo_bi_%'
+    " );
+
+    $wpdb->query( "
+        DELETE FROM {$wpdb->options}
+        WHERE option_name LIKE '_transient_timeout_hippoo_bi_%'
+    " );
+}

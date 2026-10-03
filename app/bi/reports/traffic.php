@@ -55,6 +55,27 @@ function hippoo_bi_get_traffic_summary( $args = array() ) {
         return $cached;
     }
 
+    $date_range = hippoo_bi_get_date_range( $period, $date_from, $date_to );
+
+    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
+        $stats = hippoo_bi_get_site_stats_from_summary( $date_range['from'], $date_range['to'] );
+
+        $unique_sessions = (int) ( $stats->unique_sessions ?? 0 );
+        $bounce_sessions = (int) ( $stats->bounce_sessions ?? 0 );
+        $bounce_rate     = $unique_sessions > 0 ? round( ( $bounce_sessions / $unique_sessions ) * 100, 1 ) : 0;
+
+        $result = array(
+            'total_views'        => (int) ( $stats->total_views ?? 0 ),
+            'unique_sessions'    => $unique_sessions,
+            'new_visitors'       => (int) ( $stats->new_visitors ?? 0 ),
+            'returning_visitors' => (int) ( $stats->returning_visitors ?? 0 ),
+            'bounce_rate'        => $bounce_rate,
+        );
+
+        set_transient( $cache_key, $result, HOUR_IN_SECONDS );
+        return $result;
+    }
+
     $stats = hippoo_bi_get_traffic_stats( $args );
 
     $visitors = hippoo_bi_get_visitors( $args );
@@ -258,6 +279,19 @@ function hippoo_bi_get_traffic_chart( $args = array() ) {
         $args['date_from'] ?? '',
         $args['date_to'] ?? ''
     );
+
+    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
+        $rows  = hippoo_bi_get_site_chart_from_summary( $date_range['from'], $date_range['to'] );
+        $chart = array();
+        foreach ( $rows as $row ) {
+            $chart[] = (object) array(
+                'date'     => $row->date,
+                'views'    => (int) $row->views,
+                'sessions' => (int) $row->sessions,
+            );
+        }
+        return $chart;
+    }
 
     global $wpdb;
 

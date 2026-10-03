@@ -11,13 +11,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Database constants
 // ---------------------------------------------------------------------------
 
-define( 'HIPPOO_BI_DB_VERSION', '1.1.0' );
+define( 'HIPPOO_BI_DB_VERSION', '1.2.0' );
 
 define( 'HIPPOO_BI_TABLE_PAGEVIEWS', 'hippoo_pageviews' );
 define( 'HIPPOO_BI_TABLE_ADD_TO_CARTS', 'hippoo_add_to_carts' );
 define( 'HIPPOO_BI_TABLE_CHURN_SCORES', 'hippoo_churn_scores' );
+
 define( 'HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP', 'hippoo_order_product_lookup' );
 define( 'HIPPOO_BI_TABLE_ORDER_STATS', 'hippoo_order_stats' );
+
+define( 'HIPPOO_BI_TABLE_DAILY_STATS', 'hippoo_daily_stats' );
+define( 'HIPPOO_BI_TABLE_DAILY_PRODUCT_STATS', 'hippoo_daily_product_stats' );
 
 
 // ---------------------------------------------------------------------------
@@ -38,14 +42,14 @@ function hippoo_bi_init_database() {
 
     $table_pageviews = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
     $sql_pageviews = "CREATE TABLE IF NOT EXISTS $table_pageviews (
-        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        session_id CHAR(16) NOT NULL,
-        page_url VARCHAR(500) NOT NULL,
-        referrer_source VARCHAR(100) DEFAULT NULL,
-        device_type ENUM('m','t','d') DEFAULT 'd',
-        country CHAR(2) DEFAULT NULL,
-        product_id BIGINT(20) UNSIGNED DEFAULT NULL,
-        created_at DATETIME NOT NULL,
+        id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        session_id          CHAR(16) NOT NULL,
+        page_url            VARCHAR(500) NOT NULL,
+        referrer_source     VARCHAR(100) DEFAULT NULL,
+        device_type         ENUM('m','t','d') DEFAULT 'd',
+        country             CHAR(2) DEFAULT NULL,
+        product_id          BIGINT(20) UNSIGNED DEFAULT NULL,
+        created_at          DATETIME NOT NULL,
         PRIMARY KEY (id),
         KEY idx_created (created_at),
         KEY idx_product (product_id, created_at),
@@ -54,11 +58,11 @@ function hippoo_bi_init_database() {
 
     $table_atc = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
     $sql_atc = "CREATE TABLE IF NOT EXISTS $table_atc (
-        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        session_id CHAR(16) NOT NULL,
-        product_id BIGINT(20) UNSIGNED NOT NULL,
-        quantity INT UNSIGNED NOT NULL DEFAULT 1,
-        created_at DATETIME NOT NULL,
+        id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        session_id          CHAR(16) NOT NULL,
+        product_id          BIGINT(20) UNSIGNED NOT NULL,
+        quantity            INT UNSIGNED NOT NULL DEFAULT 1,
+        created_at          DATETIME NOT NULL,
         PRIMARY KEY (id),
         KEY idx_product (product_id, created_at),
         KEY idx_session (session_id)
@@ -66,17 +70,17 @@ function hippoo_bi_init_database() {
 
     $table_churn = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
     $sql_churn = "CREATE TABLE IF NOT EXISTS $table_churn (
-        email VARCHAR(100) NOT NULL,
-        customer_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-        churn_score TINYINT UNSIGNED NOT NULL DEFAULT 0,
-        status ENUM('active','at_risk','high_risk','churned') NOT NULL,
-        first_order_date DATE DEFAULT NULL,
-        last_order_date DATE DEFAULT NULL,
-        total_orders SMALLINT UNSIGNED DEFAULT 0,
-        total_spent DECIMAL(13,2) DEFAULT 0.00,
-        clv DECIMAL(13,2) DEFAULT 0.00,
-        avg_days_between DECIMAL(8,1) DEFAULT 0.0,
-        calculated_at DATETIME NOT NULL,
+        email               VARCHAR(100) NOT NULL,
+        customer_id         BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+        churn_score         TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        status              ENUM('active','at_risk','high_risk','churned') NOT NULL,
+        first_order_date    DATE DEFAULT NULL,
+        last_order_date     DATE DEFAULT NULL,
+        total_orders        SMALLINT UNSIGNED DEFAULT 0,
+        total_spent         DECIMAL(13,2) DEFAULT 0.00,
+        clv DECIMAL(13,2)   DEFAULT 0.00,
+        avg_days_between    DECIMAL(8,1) DEFAULT 0.0,
+        calculated_at       DATETIME NOT NULL,
         PRIMARY KEY (email),
         KEY idx_customer_id (customer_id),
         KEY idx_status (status),
@@ -85,13 +89,13 @@ function hippoo_bi_init_database() {
 
     $table_lookup = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
     $sql_lookup = "CREATE TABLE IF NOT EXISTS $table_lookup (
-        id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        order_id BIGINT(20) UNSIGNED NOT NULL,
-        product_id BIGINT(20) UNSIGNED NOT NULL,
-        customer_id BIGINT(20) UNSIGNED DEFAULT NULL,
-        date_created DATETIME NOT NULL,
-        quantity INT UNSIGNED NOT NULL DEFAULT 1,
-        revenue DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        order_id            BIGINT(20) UNSIGNED NOT NULL,
+        product_id          BIGINT(20) UNSIGNED NOT NULL,
+        customer_id         BIGINT(20) UNSIGNED DEFAULT NULL,
+        date_created        DATETIME NOT NULL,
+        quantity            INT UNSIGNED NOT NULL DEFAULT 1,
+        revenue             DECIMAL(13,2) NOT NULL DEFAULT 0.00,
         PRIMARY KEY (id),
         KEY idx_order_id (order_id),
         KEY idx_product_id (product_id),
@@ -102,21 +106,55 @@ function hippoo_bi_init_database() {
 
     $table_stats = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_STATS;
     $sql_stats = "CREATE TABLE IF NOT EXISTS $table_stats (
-        order_id BIGINT(20) UNSIGNED NOT NULL,
-        customer_id BIGINT(20) UNSIGNED DEFAULT NULL,
-        billing_email VARCHAR(100) DEFAULT NULL,
-        order_status VARCHAR(20) DEFAULT NULL,
-        date_created DATETIME NOT NULL,
-        total DECIMAL(13,2) NOT NULL DEFAULT 0.00,
-        net DECIMAL(13,2) NOT NULL DEFAULT 0.00,
-        refund DECIMAL(13,2) NOT NULL DEFAULT 0.00,
-        discount DECIMAL(13,2) NOT NULL DEFAULT 0.00,
-        shipping DECIMAL(13,2) NOT NULL DEFAULT 0.00,
-        tax DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        order_id            BIGINT(20) UNSIGNED NOT NULL,
+        customer_id         BIGINT(20) UNSIGNED DEFAULT NULL,
+        billing_email       VARCHAR(100) DEFAULT NULL,
+        order_status        VARCHAR(20) DEFAULT NULL,
+        date_created        DATETIME NOT NULL,
+        total               DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        net                 DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        refund              DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        discount            DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        shipping            DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        tax                 DECIMAL(13,2) NOT NULL DEFAULT 0.00,
         PRIMARY KEY (order_id),
         KEY idx_customer_id (customer_id),
         KEY idx_billing_email (billing_email),
         KEY idx_date_created (date_created)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+    $table_daily = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_STATS;
+    $sql_daily = "CREATE TABLE IF NOT EXISTS $table_daily (
+        date                DATE NOT NULL,
+        views               INT UNSIGNED NOT NULL DEFAULT 0,
+        unique_sessions     INT UNSIGNED NOT NULL DEFAULT 0,
+        new_visitors        INT UNSIGNED NOT NULL DEFAULT 0,
+        returning_visitors  INT UNSIGNED NOT NULL DEFAULT 0,
+        bounce_sessions     INT UNSIGNED NOT NULL DEFAULT 0,
+        orders              INT UNSIGNED NOT NULL DEFAULT 0,
+        total               DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        net                 DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        refund              DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        new_customers       INT UNSIGNED NOT NULL DEFAULT 0,
+        returning_customers INT UNSIGNED NOT NULL DEFAULT 0,
+        calculated_at       DATETIME NOT NULL,
+        PRIMARY KEY (date)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+    $table_daily_product = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_PRODUCT_STATS;
+    $sql_daily_product = "CREATE TABLE IF NOT EXISTS $table_daily_product (
+        date                DATE NOT NULL,
+        product_id          BIGINT(20) UNSIGNED NOT NULL,
+        views               INT UNSIGNED NOT NULL DEFAULT 0,
+        unique_sessions     INT UNSIGNED NOT NULL DEFAULT 0,
+        add_to_cart         INT UNSIGNED NOT NULL DEFAULT 0,
+        atc_sessions        INT UNSIGNED NOT NULL DEFAULT 0,
+        orders              INT UNSIGNED NOT NULL DEFAULT 0,
+        revenue             DECIMAL(13,2) NOT NULL DEFAULT 0.00,
+        calculated_at       DATETIME NOT NULL,
+        PRIMARY KEY (date, product_id),
+        KEY idx_product_date (product_id, date),
+        KEY idx_date (date)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -126,10 +164,15 @@ function hippoo_bi_init_database() {
     dbDelta( $sql_churn );
     dbDelta( $sql_lookup );
     dbDelta( $sql_stats );
+    dbDelta( $sql_daily );
+    dbDelta( $sql_daily_product );
 
     // Migrations
     if ( version_compare( $current_version, '1.1.0', '<' ) ) {
         hippoo_bi_migrate_to_110();
+    }
+    if ( version_compare( $current_version, '1.2.0', '<' ) ) {
+        hippoo_bi_migrate_to_120();
     }
 
     update_option( 'hippoo_bi_db_version', HIPPOO_BI_DB_VERSION );
@@ -199,4 +242,9 @@ function hippoo_bi_migrate_to_110() {
     $wpdb->query( "TRUNCATE TABLE $stats" );
     $wpdb->query( "TRUNCATE TABLE $lookup" );
     $wpdb->query( "TRUNCATE TABLE $churn" );
+}
+
+/** Migrate BI database to version 1.2.0 – daily stats tables. */
+function hippoo_bi_migrate_to_120() {
+    // Intentionally empty – Kept for consistency with other migrate_* helpers;
 }

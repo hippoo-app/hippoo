@@ -23,6 +23,14 @@ function hippoo_bi_schedule_cron_events() {
         wp_schedule_event( $timestamp, 'daily', 'hippoo_bi_daily_churn' );
     }
 
+    if ( ! wp_next_scheduled( 'hippoo_bi_daily_aggregate' ) ) {
+        $timezone = wp_timezone();
+        $datetime = new DateTime( 'tomorrow 3:00 AM', $timezone );
+        $timestamp = $datetime->getTimestamp();
+
+        wp_schedule_event( $timestamp, 'daily', 'hippoo_bi_daily_aggregate' );
+    }
+
     if ( ! wp_next_scheduled( 'hippoo_bi_weekly_pruning' ) ) {
         wp_schedule_event( time(), 'weekly', 'hippoo_bi_weekly_pruning' );
     }
@@ -38,6 +46,7 @@ register_deactivation_hook( HIPPOO_MAIN_FILE_PATH, 'hippoo_bi_clear_cron_events'
 function hippoo_bi_clear_cron_events() {
     $hooks = array(
         'hippoo_bi_daily_churn',
+        'hippoo_bi_daily_aggregate',
         'hippoo_bi_weekly_pruning',
         'hippoo_bi_sync_lookup',
     );
@@ -45,18 +54,20 @@ function hippoo_bi_clear_cron_events() {
     foreach ( $hooks as $hook ) {
         $timestamp = wp_next_scheduled( $hook );
 
-        if ( $timestamp ) {
+        while ( $timestamp ) {
             wp_unschedule_event( $timestamp, $hook );
+            $timestamp = wp_next_scheduled( $hook );
         }
     }
 }
 
 /** Rebuild BI background tasks after database migration. */
-add_action( 'hippoo_bi_database_migrated', 'hippoo_bi_handle_database_migration', 10, 2 );
+add_action( 'hippoo_bi_database_migrated', 'hippoo_bi_rebuild_cron_events', 10, 2 );
 
-function hippoo_bi_handle_database_migration( $version, $previous_version ) {
+function hippoo_bi_rebuild_cron_events( $version, $previous_version ) {
     hippoo_bi_clear_cron_events();
     wp_schedule_single_event( time() + 15, 'hippoo_bi_sync_lookup', array( 300 ) );
+    wp_schedule_single_event( time() + 60, 'hippoo_bi_daily_aggregate' );
     wp_schedule_single_event( time() + 120, 'hippoo_bi_daily_churn' );
     hippoo_bi_schedule_cron_events();
 }
@@ -231,7 +242,7 @@ function hippoo_bi_sync_orders_lookup( $batch_size = 500 ) {
         'type'    => 'shop_order',
         'limit'   => -1,
         'orderby' => 'date_created',
-        'order'   => 'ASC',
+        'order'   => 'DESC',
         'return'  => 'ids',
         'status'  => hippoo_bi_get_report_order_statuses(),
     );
@@ -332,7 +343,7 @@ function hippoo_bi_update_order_lookup( $order_id ) {
         'tax'           => $order_tax,
     ) );
 
-    hippoo_bi_clear_bi_caches();
+    hippoo_bi_clear_report_caches();
 }
 
 /** Delete BI order lookup data for an order. */
@@ -347,20 +358,12 @@ function hippoo_bi_delete_order_lookup( $order_id ) {
     $wpdb->delete( $table_lookup, array( 'order_id' => $order_id ) );
     $wpdb->delete( $table_stats, array( 'order_id' => $order_id ) );
 
-    hippoo_bi_clear_bi_caches();
+    hippoo_bi_clear_report_caches();
 }
 
-/** Clear cached BI report data. */
-function hippoo_bi_clear_bi_caches() {
-    global $wpdb;
 
-    $wpdb->query( "
-        DELETE FROM {$wpdb->options}
-        WHERE option_name LIKE '_transient_hippoo_bi_%'
-    " );
+// ---------------------------------------------------------------------------
+// Daily aggregate hooks (logic in aggregate.php)
+// ---------------------------------------------------------------------------
 
-    $wpdb->query( "
-        DELETE FROM {$wpdb->options}
-        WHERE option_name LIKE '_transient_timeout_hippoo_bi_%'
-    " );
-}
+add_action( 'hippoo_bi_daily_aggregate', 'hippoo_bi_run_daily_aggregate' );

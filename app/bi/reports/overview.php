@@ -48,7 +48,13 @@ function hippoo_bi_get_general_overview( $args = array() ) {
         'returning_visitors'  => $traffic_summary['returning_visitors'] ?? 0,
         'bounce_rate'         => $traffic_summary['bounce_rate'] ?? 0,
         'chart'               => hippoo_bi_get_overview_chart( $args ),
-        'churn_summary'       => $churn_summary,
+        'churn_summary' => [
+            'churn_rate'      => $churn_summary['churn_rate'] ?? 0,
+            'active_count'    => $churn_summary['active_customers'] ?? 0,
+            'at_risk_count'   => $churn_summary['at_risk_customers'] ?? 0,
+            'high_risk_count' => $churn_summary['high_risk_customers'] ?? 0,
+            'churned_count'   => $churn_summary['churned_customers'] ?? 0,
+        ],
         'product_highlights'  => $product_highlights,
         'comparison'          => $sales_summary['comparison'] ?? array(
             'vs_previous_period' => '+0%',

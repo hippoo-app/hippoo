@@ -35,7 +35,6 @@ function hippoo_bi_get_sales_overview( $args = array() ) {
     );
 
     set_transient( $cache_key, $result, 15 * MINUTE_IN_SECONDS );
-
     return $result;
 }
 
@@ -50,6 +49,51 @@ function hippoo_bi_get_sales_summary( $args = array() ) {
 
     if ( false !== $cached ) {
         return $cached;
+    }
+
+    $date_range = hippoo_bi_get_date_range( $period, $date_from, $date_to );
+
+    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
+        $stats = hippoo_bi_get_site_stats_from_summary( $date_range['from'], $date_range['to'] );
+
+        $total_views         = (int) ( $stats->total_views ?? 0 );
+        $unique_sessions     = (int) ( $stats->unique_sessions ?? 0 );
+        $order_count         = (int) ( $stats->order_count ?? 0 );
+        $total_revenue       = (float) ( $stats->total_revenue ?? 0 );
+        $net_revenue         = (float) ( $stats->net_revenue ?? 0 );
+        $refund_amount       = (float) ( $stats->total_refund ?? 0 );
+        $new_customers       = (int) ( $stats->new_customers ?? 0 );
+        $returning_customers = (int) ( $stats->returning_customers ?? 0 );
+
+        $avg_order_value   = $order_count > 0 ? round( $net_revenue / $order_count, 2 ) : 0;
+        $refund_rate       = $total_revenue > 0 ? round( ( $refund_amount / $total_revenue ) * 100, 2 ) : 0;
+        $conversion_rate   = $unique_sessions > 0 ? round( ( $order_count / $unique_sessions ) * 100, 2 ) : 0;
+        $revenue_per_visit = $total_views > 0 ? round( $net_revenue / $total_views, 2 ) : 0;
+
+        $prev_revenue = hippoo_bi_get_previous_sales_revenue( $args );
+        $change = $prev_revenue > 0
+            ? round( ( ( $total_revenue - $prev_revenue ) / $prev_revenue ) * 100, 1 )
+            : ( $total_revenue > 0 ? 100 : 0 );
+
+        $response = array(
+            'total_revenue'       => round( $total_revenue ),
+            'net_revenue'         => round( $net_revenue ),
+            'refund_amount'       => round( $refund_amount ),
+            'order_count'         => $order_count,
+            'avg_order_value'     => round( $avg_order_value ),
+            'refund_rate'         => $refund_rate,
+            'conversion_rate'     => $conversion_rate,
+            'revenue_per_visit'   => $revenue_per_visit,
+            'new_customers'       => $new_customers,
+            'returning_customers' => $returning_customers,
+            'comparison'          => array(
+                'vs_previous_period' => ( $change >= 0 ? '+' : '' ) . $change . '%',
+                'previous_revenue'   => round( $prev_revenue ),
+            ),
+        );
+
+        set_transient( $cache_key, $response, HOUR_IN_SECONDS );
+        return $response;
     }
 
     $sales_stats   = hippoo_bi_get_sales_stats( $args );
@@ -94,7 +138,6 @@ function hippoo_bi_get_sales_summary( $args = array() ) {
     );
 
     set_transient( $cache_key, $response, 15 * MINUTE_IN_SECONDS );
-
     return $response;
 }
 
@@ -212,6 +255,19 @@ function hippoo_bi_get_sales_chart( $args = array() ) {
         $args['date_from'] ?? '',
         $args['date_to'] ?? ''
     );
+
+    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
+        $rows  = hippoo_bi_get_site_chart_from_summary( $date_range['from'], $date_range['to'] );
+        $chart = array();
+        foreach ( $rows as $row ) {
+            $chart[] = (object) array(
+                'date'    => $row->date,
+                'revenue' => (float) $row->revenue,
+                'orders'  => (int) $row->orders,
+            );
+        }
+        return $chart;
+    }
 
     global $wpdb;
 
