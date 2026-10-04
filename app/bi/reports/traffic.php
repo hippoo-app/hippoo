@@ -284,8 +284,8 @@ function hippoo_bi_get_traffic_chart( $args = array() ) {
         foreach ( $rows as $row ) {
             $chart[] = (object) array(
                 'date'     => $row->date,
-                'views'    => (int) $row->views,
-                'sessions' => (int) $row->sessions,
+                'views'    => (int) ( $row->views ?? 0 ),
+                'sessions' => (int) ( $row->sessions ?? 0 ),
             );
         }
         return $chart;

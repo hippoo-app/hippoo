@@ -160,7 +160,7 @@ function hippoo_bi_get_products_overview( $args = array() ) {
 
 /** Build the BI report for a single product. */
 function hippoo_bi_get_product_overview( $args = array() ) {
-    $product_id = absint( $args['id'] ?? 0 );
+    $product_id = $args['id'];
     $period     = ! empty( $args['period'] ) ? $args['period'] : 'this_month';
     $date_from  = $args['date_from'] ?? '';
     $date_to    = $args['date_to'] ?? '';
@@ -184,7 +184,7 @@ function hippoo_bi_get_product_overview( $args = array() ) {
         'unique_sessions' => 0,
     );
     foreach ( $traffic as $item ) {
-        if ( (int) $item['product_id'] === $product_id ) {
+        if ( (int) $item['product_id'] === (int) $product_id ) {
             $traffic_data = array(
                 'views'           => (int) $item['views'],
                 'unique_sessions' => (int) $item['unique_sessions'],

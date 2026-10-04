@@ -153,20 +153,20 @@ function hippoo_bi_rest_traffic_overview( $request ) {
 
 /** Return product intelligence through REST. */
 function hippoo_bi_rest_products_intelligence( $request ) {
-    $response = hippoo_bi_get_products_overview( $request->get_params() );
+    $result = hippoo_bi_get_products_overview( $request->get_params() );
 
-    if ( is_wp_error( $response ) ) {
-        return $response;
+    if ( is_wp_error( $result ) ) {
+        return $result;
     }
 
-    $response = rest_ensure_response( $response->data['data'] );
+    $response = rest_ensure_response( $result['data'] );
 
-    if ( isset( $response->data['total'] ) ) {
-        $response->header( 'X-WP-Total', $response->data['total'] );
+    if ( isset( $result['total'] ) ) {
+        $response->header( 'X-WP-Total', $result['total'] );
     }
 
-    if ( isset( $response->data['total_pages'] ) ) {
-        $response->header( 'X-WP-TotalPages', $response->data['total_pages'] );
+    if ( isset( $result['total_pages'] ) ) {
+        $response->header( 'X-WP-TotalPages', $result['total_pages'] );
     }
 
     return $response;
@@ -207,20 +207,20 @@ function hippoo_bi_rest_churn_overview( $request ) {
 
 /** Return churn customers through REST. */
 function hippoo_bi_rest_churn_customers( $request ) {
-    $response = hippoo_bi_get_churn_customers( $request->get_params() );
+    $result = hippoo_bi_get_churn_customers( $request->get_params() );
 
-    if ( is_wp_error( $response ) ) {
-        return $response;
+    if ( is_wp_error( $result ) ) {
+        return $result;
     }
 
-    $response = rest_ensure_response( $response->data['data'] );
+    $response = rest_ensure_response( $result['data'] );
 
-    if ( isset( $response->data['total'] ) ) {
-        $response->header( 'X-WP-Total', $response->data['total'] );
+    if ( isset( $result['total'] ) ) {
+        $response->header( 'X-WP-Total', $result['total'] );
     }
 
-    if ( isset( $response->data['total_pages'] ) ) {
-        $response->header( 'X-WP-TotalPages', $response->data['total_pages'] );
+    if ( isset( $result['total_pages'] ) ) {
+        $response->header( 'X-WP-TotalPages', $result['total_pages'] );
     }
 
     return $response;
