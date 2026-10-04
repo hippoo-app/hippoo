@@ -85,7 +85,13 @@ function hippoo_bi_get_churn_customers( $args = array() ) {
     $offset       = ( $page - 1 ) * $per_page;
 
     if ( $lookup_email || $lookup_id ) {
-        return hippoo_bi_get_churn_customer_detail( $lookup_email, $lookup_id );
+        $customer = hippoo_bi_get_churn_customer_detail( $lookup_email, $lookup_id );
+        $response = array(
+            'data'        => $customer,
+            'total'       => 1,
+            'total_pages' => 1,
+        );
+        return $response;
     }
 
     $cache_key = 'hippoo_bi_churn_customers_' . md5( $status . $page . $per_page );

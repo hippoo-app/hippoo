@@ -96,7 +96,7 @@ function hippoo_bi_register_rest_routes() {
 
 /** Store a pageview received through REST. */
 function hippoo_bi_rest_track_pageview( $request ) {
-    if ( ! hippoo_bi_rest_check_rate_limit() ) {
+    if ( ! hippoo_bi_rest_rate_limit() ) {
         return new WP_Error( 'rate_limited', __( 'Too many requests. Please try again later.', 'hippoo' ), array( 'status' => 429 ) );
     }
 

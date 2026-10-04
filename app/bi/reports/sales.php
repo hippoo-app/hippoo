@@ -97,7 +97,7 @@ function hippoo_bi_get_sales_summary( $args = array() ) {
     }
 
     $sales_stats   = hippoo_bi_get_sales_stats( $args );
-    $traffic_stats = hippoo_bi_get_sales_traffic_stats( $args );
+    $traffic_stats = hippoo_bi_get_traffic_stats( $args );
     $customers     = hippoo_bi_get_customer_summary( $args );
     $prev_revenue  = hippoo_bi_get_previous_sales_revenue( $args );
 
@@ -164,29 +164,6 @@ function hippoo_bi_get_sales_stats( $args = array() ) {
             SUM(refund) as total_refund
         FROM $table
         WHERE date_created BETWEEN %s AND %s
-    ", $date_range['from'], $date_range['to'] ) );
-
-    return $stats;
-}
-
-/** Get traffic metrics required by sales reports. */
-function hippoo_bi_get_sales_traffic_stats( $args = array() ) {
-    $date_range = hippoo_bi_get_date_range(
-        $args['period'] ?? 'this_month',
-        $args['date_from'] ?? '',
-        $args['date_to'] ?? ''
-    );
-
-    global $wpdb;
-
-    $table = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
-
-    $stats = $wpdb->get_row( $wpdb->prepare( "
-        SELECT 
-            COUNT(*) as total_views,
-            COUNT(DISTINCT session_id) as unique_sessions
-        FROM $table 
-        WHERE created_at BETWEEN %s AND %s
     ", $date_range['from'], $date_range['to'] ) );
 
     return $stats;

@@ -76,9 +76,7 @@ function hippoo_bi_get_traffic_summary( $args = array() ) {
     }
 
     $stats = hippoo_bi_get_traffic_stats( $args );
-
     $visitors = hippoo_bi_get_visitors( $args );
-
     $single_sessions = hippoo_bi_get_single_sessions_count( $args );
 
     $unique_sessions = (int) ( $stats->unique_sessions ?? 0 );
