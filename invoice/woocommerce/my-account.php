@@ -13,7 +13,7 @@ class Hippoo_Ticket_Woo_My_Account {
     }
 
     function enqueue_scripts() {
-        wp_enqueue_style ( 'hippoo-css', HIPPOO_INVOICE_PLUGIN_URL . 'assets/css/style.css', [], HIPPOO_VERSION );
+        wp_enqueue_style ( 'hippoo-css', HIPPOO_INVOICE_PLUGIN_URL . 'assets/css/style.css', array(), HIPPOO_VERSION );
         wp_enqueue_script( 'hippoo-js', HIPPOO_INVOICE_PLUGIN_URL . 'assets/js/admin-script.js', array( 'jquery' ), HIPPOO_VERSION, true ); // Enqueue script with dependencies
     }
 

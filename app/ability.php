@@ -7,8 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-require_once __DIR__ . '/ability_catalog.php';
-
 /** Resolve a period + optional custom dates to a [from,to] unix-timestamp window. */
 function hippoo_ability_date_range( $period, $from = null, $to = null ) {
     $tz  = function_exists( 'wp_timezone' ) ? wp_timezone() : new DateTimeZone( 'UTC' );

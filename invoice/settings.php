@@ -47,7 +47,7 @@ class HippooInvoiceSettings {
     }
 
     public function sanitize_invoice_settings($input) {
-        $sanitized = array();
+        $sanitized = [];
         
         foreach ($input as $key => $value) {
             if (is_array($value)) {
