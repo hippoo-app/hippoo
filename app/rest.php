@@ -406,7 +406,7 @@ function hippoo_rest_token_return( $request ) {
         <title>{{TITLE}}</title>
         <script type="text/javascript">
             window.onload = function() {
-            window.location.href = "{{LINK}}";
+            window.location.href = {{LINK}};
             };
         </script>
         </head>
@@ -417,12 +417,27 @@ function hippoo_rest_token_return( $request ) {
         </body>
         </html>';
 
-    $html = str_replace( array( '{{TITLE}}', '{{DESC}}' ), array( $title, $desc ), $html );
+    $html = str_replace(
+        array( '{{TITLE}}', '{{DESC}}' ),
+        array( esc_html( $title ), esc_html( $desc ) ),
+        $html
+    );
 
-    if ( ! empty( $request['token_id'] ) ) {
+    $url_params = $request->get_url_params();
+    $token_id   = isset( $url_params['token_id'] ) ? $url_params['token_id'] : '';
+
+    if ( ! preg_match( '/^[a-zA-Z0-9_-]+$/', $token_id ) ) {
+        return new WP_REST_Response( array( 'Message' => __( 'Invalid token.', 'hippoo' ) ), 400 );
+    }
+    
+    if ( ! empty( $token_id ) ) {
         $msg  = __( 'You can get the data from here', 'hippoo' );
-        $link = 'hippoo://app/login/?token=' . $request['token_id'];
-        $html = str_replace( array( '{{LINK}}', '{{MSG}}' ), array( $link, $msg ), $html );
+        $link = 'hippoo://app/login/?token=' . $token_id;
+        $html = str_replace(
+            array( '{{LINK}}', '{{MSG}}' ),
+            array( wp_json_encode( $link ), esc_html( $msg ) ),
+            $html
+        );
     } else {
         $html = str_replace( '{{MSG}}', __( 'Unauthenticated, No Token Data', 'hippoo' ), $html );
     }
