@@ -627,7 +627,7 @@ function hippoo_rest_media_upload() {
 
     // Prepare attachment data
     $attachment = array(
-        'post_mime_type' => $file_mime_type,
+        'post_mime_type' => $file_mime,
         'post_title'     => pathinfo( $file_name, PATHINFO_FILENAME ),
         'post_content'   => '',
         'post_status'    => 'inherit'
