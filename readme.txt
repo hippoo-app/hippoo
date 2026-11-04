@@ -77,7 +77,7 @@ Manage your WooCommerce store on the go with Hippoo. Receive real-time order not
 7. Advanced sale analytics and top selling products
 
 == Changelog ==
-* 1.12.2 - Fix images uploaded from the app having no thumbnails and being rejected as product images, and repair images already affected
+* 1.12.2 - Fix images uploaded from the app having no thumbnails and being rejected as product images
 * 1.12.1 - Security bug fix
 * 1.12.0 - Add weekly sales notifications, optimize BI overview and reports, and improve the plugin architecture, performance, and code organization
 * 1.11.0 - Add chatbot ability layer: wc-hippoo/v1/ability/list and ability/execute with read abilities (sales summary, orders, product/stock) and a confirmed-write guard

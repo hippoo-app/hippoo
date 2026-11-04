@@ -45,7 +45,6 @@ require_once HIPPOO_PATH . 'app/ability.php';
 require_once HIPPOO_PATH . 'app/settings.php';
 require_once HIPPOO_PATH . 'app/notifications.php';
 require_once HIPPOO_PATH . 'app/rest.php';
-require_once HIPPOO_PATH . 'app/media-repair.php';
 require_once HIPPOO_PATH . 'app/app.php';
 
 // Feature modules
