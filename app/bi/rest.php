@@ -111,10 +111,6 @@ function hippoo_bi_rest_track_pageview( $request ) {
         $params = array();
     }
 
-    if ( empty( $params['pid'] ) ) {
-        return new WP_Error( 'missing_pid', __( 'Missing post_id parameter.', 'hippoo' ), array( 'status' => 400 ) );
-    }
-
     $result = hippoo_bi_track_pageview( array(
         'session_id' => $params['sid'] ?? '',
         'page_url'   => $params['url'] ?? '',

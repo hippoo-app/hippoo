@@ -9,7 +9,7 @@
 
     let sid = document.cookie.match(/hpbi=([^;]+)/)?.[1];
 
-    if (!sid || !/^[a-z0-9]{16}$/i.test(sid)) {
+    if (!sid || !/^[a-z0-9]+$/i.test(sid)) {
         sid = Math.random().toString(36).substring(2, 18).toLowerCase();
         while (sid.length < 16) {
             sid += Math.random().toString(36).substring(2);

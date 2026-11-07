@@ -2,14 +2,14 @@
 # This file is distributed under the GPL3.
 msgid ""
 msgstr ""
-"Project-Id-Version: Hippoo Mobile app for WooCommerce 1.12.2\n"
+"Project-Id-Version: Hippoo Mobile app for WooCommerce 1.13.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/hippoo\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-07T07:58:18+00:00\n"
+"POT-Creation-Date: 2026-11-07T20:14:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: hippoo\n"
@@ -333,67 +333,63 @@ msgstr ""
 msgid "Normal performance."
 msgstr ""
 
-#: app/bi/rest.php:115
-msgid "Missing post_id parameter."
-msgstr ""
-
-#: app/bi/rest.php:126
+#: app/bi/rest.php:122
 msgid "Unable to store tracking data."
 msgstr ""
 
-#: app/bi/rest.php:289
+#: app/bi/rest.php:285
 msgid "Unable to generate CSV export."
 msgstr ""
 
-#: app/bi/rest.php:298
+#: app/bi/rest.php:294
 msgid "Customer ID"
 msgstr ""
 
-#: app/bi/rest.php:299
+#: app/bi/rest.php:295
 #: app/permissions/admin.php:324
 #: app/permissions/admin.php:477
 msgid "Name"
 msgstr ""
 
-#: app/bi/rest.php:300
+#: app/bi/rest.php:296
 #: app/permissions/admin.php:489
 msgid "Email"
 msgstr ""
 
-#: app/bi/rest.php:301
+#: app/bi/rest.php:297
 msgid "Churn Score"
 msgstr ""
 
-#: app/bi/rest.php:302
+#: app/bi/rest.php:298
 #: app/permissions/admin.php:428
 msgid "Status"
 msgstr ""
 
-#: app/bi/rest.php:303
+#: app/bi/rest.php:299
 msgid "Last Order"
 msgstr ""
 
-#: app/bi/rest.php:304
+#: app/bi/rest.php:300
 msgid "Days Since"
 msgstr ""
 
-#: app/bi/rest.php:305
+#: app/bi/rest.php:301
 msgid "Total Orders"
 msgstr ""
 
-#: app/bi/rest.php:306
+#: app/bi/rest.php:302
 msgid "Total Spent"
 msgstr ""
 
-#: app/bi/rest.php:307
+#: app/bi/rest.php:303
 msgid "CLV"
 msgstr ""
 
-#: app/bi/rest.php:308
+#: app/bi/rest.php:304
 msgid "Avg Order Value"
 msgstr ""
 
-#: app/bi/rest.php:309
+#: app/bi/rest.php:305
 msgid "Avg Days Between"
 msgstr ""
 

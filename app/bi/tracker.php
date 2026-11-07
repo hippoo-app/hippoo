@@ -166,8 +166,8 @@ function hippoo_bi_get_session_id( $session_id = '' ) {
     $expire      = time() + ( 2 * YEAR_IN_SECONDS );
     $session_id  = strtolower( sanitize_text_field( (string) $session_id ) );
 
-    // Valid id from JS, persist cookie and use it.
-    if ( ! empty( $session_id ) && preg_match( '/^[a-z0-9]{16}$/', $session_id ) ) {
+    // Use and persist a valid id from JS.
+    if ( ! empty( $session_id ) && preg_match( '/^[a-z0-9]+$/', $session_id ) ) {
         if ( empty( $_COOKIE[ $cookie_name ] ) || $_COOKIE[ $cookie_name ] !== $session_id ) {
             if ( ! headers_sent() ) {
                 setcookie( $cookie_name, $session_id, $expire, '/', '', is_ssl(), false );
@@ -180,7 +180,7 @@ function hippoo_bi_get_session_id( $session_id = '' ) {
     // Fallback to an existing valid cookie.
     if ( ! empty( $_COOKIE[ $cookie_name ] ) ) {
         $cookie_id = strtolower( sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) ) );
-        if ( preg_match( '/^[a-z0-9]{16}$/', $cookie_id ) ) {
+        if ( preg_match( '/^[a-z0-9]+$/', $cookie_id ) ) {
             return $cookie_id;
         }
     }
