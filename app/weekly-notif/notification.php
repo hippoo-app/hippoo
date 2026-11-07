@@ -7,57 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// ---------------------------------------------------------------------------
-// Cron registration
-// ---------------------------------------------------------------------------
-
-/** Register the weekly notification cron event. */
-add_action( 'init', 'hippoo_weekly_notif_schedule_cron' );
-
-function hippoo_weekly_notif_schedule_cron() {
-    if ( wp_next_scheduled( 'hippoo_weekly_notif_cron' ) ) {
-        return;
-    }
-
-    hippoo_weekly_notif_schedule_next();
-}
-
-/** Schedule the next Monday notification at 11:00 in the site timezone. */
-function hippoo_weekly_notif_schedule_next() {
-    $timezone = wp_timezone();
-    $now      = new DateTime( 'now', $timezone );
-    $next     = new DateTime( 'monday this week 11:00:00', $timezone );
-
-    if ( $next <= $now ) {
-        $next->modify( '+1 week' );
-    }
-
-    wp_schedule_single_event( $next->getTimestamp(), 'hippoo_weekly_notif_cron' );
-}
-
-/** Clear the weekly notification cron event. */
-register_deactivation_hook( HIPPOO_MAIN_FILE_PATH, 'hippoo_weekly_notif_clear_cron' );
-
-function hippoo_weekly_notif_clear_cron() {
-    $timestamp = wp_next_scheduled( 'hippoo_weekly_notif_cron' );
-
-    if ( $timestamp ) {
-        wp_unschedule_event( $timestamp, 'hippoo_weekly_notif_cron' );
-    }
-}
-
-
-// ---------------------------------------------------------------------------
-// Notification
-// ---------------------------------------------------------------------------
-
 /** Send the weekly sales notification. */
-add_action( 'hippoo_weekly_notif_cron', 'hippoo_weekly_notif_run' );
+add_action( 'hippoo_weekly_notif', 'hippoo_weekly_notif_run' );
 
 function hippoo_weekly_notif_run() {
-    hippoo_weekly_notif_schedule_next();
-
-    if ( ! get_option( 'hippoo_weekly_notif', '1' ) ) {
+    if ( ! hippoo_weekly_notif_is_enabled() ) {
         return;
     }
 
@@ -133,4 +87,9 @@ function hippoo_weekly_notif_build_body( $data ) {
 /** Truncate text and append an ellipsis when needed. */
 function hippoo_weekly_notif_truncate( $text, $max ) {
     return mb_strlen( $text ) > $max ? mb_substr( $text, 0, $max ) . '...' : $text;
+}
+
+/** Check whether the Weekly Notification is enabled. */
+function hippoo_weekly_notif_is_enabled() {
+    return get_option( 'hippoo_weekly_notif', '1' );
 }

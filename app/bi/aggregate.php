@@ -7,347 +7,210 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// ---------------------------------------------------------------------------
-// Switch helpers
-// ---------------------------------------------------------------------------
+/** Backfill incomplete dates in batches and refresh today/yesterday hourly. */
+add_action( 'hippoo_bi_aggregate_stats', 'hippoo_bi_aggregate_stats_run' );
 
-/**
- * Whether reports should read from daily summary tables.
- * Threshold: ranges longer than 90 days.
- */
-function hippoo_bi_use_summary( $from, $to ) {
-    $from_ts = strtotime( $from );
-    $to_ts   = strtotime( $to );
+function hippoo_bi_aggregate_stats_run() {
+    $chunk = 50;
+    $missing = hippoo_bi_aggregate_missing_dates( $chunk );
 
-    if ( ! $from_ts || ! $to_ts ) {
-        return false;
+    foreach ( $missing as $day ) {
+        hippoo_bi_aggregate_date( $day );
     }
 
-    return ( $to_ts - $from_ts ) > ( 90 * DAY_IN_SECONDS );
-}
-
-/** True when at least one daily_stats row exists in the range. */
-function hippoo_bi_summary_is_ready( $from, $to ) {
-    global $wpdb;
-
-    $table     = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_STATS;
-    $from_date = date( 'Y-m-d', strtotime( $from ) );
-    $to_date   = date( 'Y-m-d', strtotime( $to ) );
-
-    $count = (int) $wpdb->get_var( $wpdb->prepare( "
-        SELECT COUNT(*) FROM $table WHERE date BETWEEN %s AND %s
-    ", $from_date, $to_date ) );
-
-    return $count > 0;
-}
-
-
-// ---------------------------------------------------------------------------
-// Read helpers
-// ---------------------------------------------------------------------------
-
-/** Sum site-wide daily rows for a range. */
-function hippoo_bi_get_site_stats_from_summary( $from, $to ) {
-    global $wpdb;
-
-    $table     = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_STATS;
-    $from_date = date( 'Y-m-d', strtotime( $from ) );
-    $to_date   = date( 'Y-m-d', strtotime( $to ) );
-
-    $result = $wpdb->get_row( $wpdb->prepare( "
-        SELECT
-            SUM(views) as total_views,
-            SUM(unique_sessions) as unique_sessions,
-            SUM(new_visitors) as new_visitors,
-            SUM(returning_visitors) as returning_visitors,
-            SUM(bounce_sessions) as bounce_sessions,
-            SUM(orders) as order_count,
-            SUM(total) as total_revenue,
-            SUM(net) as net_revenue,
-            SUM(refund) as total_refund,
-            SUM(new_customers) as new_customers,
-            SUM(returning_customers) as returning_customers
-        FROM $table
-        WHERE date BETWEEN %s AND %s
-    ", $from_date, $to_date ) );
-
-    if ( ! $result ) {
-        return null;
+    if ( count( $missing ) >= $chunk ) {
+        // Still more raw days without a site_stats row — continue shortly.
+        wp_schedule_single_event( time() + 5, 'hippoo_bi_aggregate_stats' );
+        return;
     }
 
-    $result->total_views          = (int) $result->total_views;
-    $result->unique_sessions      = (int) $result->unique_sessions;
-    $result->new_visitors         = (int) $result->new_visitors;
-    $result->returning_visitors   = (int) $result->returning_visitors;
-    $result->bounce_sessions      = (int) $result->bounce_sessions;
-    $result->order_count          = (int) $result->order_count;
-    $result->total_revenue        = (float) $result->total_revenue;
-    $result->net_revenue          = (float) $result->net_revenue;
-    $result->total_refund         = (float) $result->total_refund;
-    $result->new_customers        = (int) $result->new_customers;
-    $result->returning_customers  = (int) $result->returning_customers;
-
-    return $result;
+    $tz = wp_timezone();
+    hippoo_bi_aggregate_date( ( new DateTimeImmutable( 'yesterday', $tz ) )->format( 'Y-m-d' ) );
+    hippoo_bi_aggregate_date( ( new DateTimeImmutable( 'today', $tz ) )->format( 'Y-m-d' ) );
 }
 
-/** Daily chart rows from site summary. */
-function hippoo_bi_get_site_chart_from_summary( $from, $to ) {
+/** Calendar days that exist in pageviews or order_stats but not yet in site_stats. */
+function hippoo_bi_aggregate_missing_dates( $limit = 50 ) {
     global $wpdb;
 
-    $table     = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_STATS;
-    $from_date = date( 'Y-m-d', strtotime( $from ) );
-    $to_date   = date( 'Y-m-d', strtotime( $to ) );
+    $table_pv   = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_os = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_STATS;
+    $table_ss  = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
 
-    $rows = $wpdb->get_results( $wpdb->prepare( "
-        SELECT
-            date,
-            views,
-            unique_sessions as sessions,
-            orders,
-            net as revenue
-        FROM $table
-        WHERE date BETWEEN %s AND %s
-        ORDER BY date ASC
-    ", $from_date, $to_date ) );
+    $yesterday = ( new DateTimeImmutable( 'yesterday', wp_timezone() ) )->format( 'Y-m-d' );
 
-    return $rows ?: array();
-}
-
-/** Product metrics aggregated from daily product stats. */
-function hippoo_bi_get_product_stats_from_summary( $from, $to, $product_ids = array() ) {
-    global $wpdb;
-
-    $table     = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_PRODUCT_STATS;
-    $from_date = date( 'Y-m-d', strtotime( $from ) );
-    $to_date   = date( 'Y-m-d', strtotime( $to ) );
-
-    $sql    = "
-        SELECT
-            product_id,
-            SUM(views) as views,
-            SUM(unique_sessions) as unique_sessions,
-            SUM(add_to_cart) as add_to_cart,
-            SUM(atc_sessions) as atc_sessions,
-            SUM(orders) as orders,
-            SUM(revenue) as revenue
-        FROM $table
-        WHERE date BETWEEN %s AND %s
+    $sql = "
+        SELECT dates.d
+        FROM (
+            SELECT DATE(created_at) AS d FROM $table_pv GROUP BY DATE(created_at)
+            UNION
+            SELECT DATE(date_created) AS d FROM $table_os GROUP BY DATE(date_created)
+        ) dates
+        LEFT JOIN $table_ss s ON s.date = dates.d
+        WHERE s.date IS NULL
+          AND dates.d <= %s
+        ORDER BY dates.d DESC
     ";
-    $params = array( $from_date, $to_date );
 
-    if ( ! empty( $product_ids ) ) {
-        $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
-        $sql         .= " AND product_id IN ($placeholders)";
-        $params       = array_merge( $params, array_map( 'intval', $product_ids ) );
+    $params = array( $yesterday );
+    $limit  = absint( $limit );
+
+    if ( $limit > 0 ) {
+        $sql     .= ' LIMIT %d';
+        $params[] = $limit;
     }
 
-    $sql .= ' GROUP BY product_id';
+    $rows = $wpdb->get_col( $wpdb->prepare( $sql, $params ) );
 
-    $rows   = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
-    $result = array();
-
-    foreach ( $rows as $row ) {
-        $pid            = (int) $row['product_id'];
-        $result[ $pid ] = array(
-            'views'           => (int) $row['views'],
-            'unique_sessions' => (int) $row['unique_sessions'],
-            'add_to_cart'     => (int) $row['add_to_cart'],
-            'atc_sessions'    => (int) $row['atc_sessions'],
-            'orders'          => (int) $row['orders'],
-            'revenue'         => (float) $row['revenue'],
-        );
-    }
-
-    return $result;
+    return is_array( $rows ) ? $rows : array();
 }
 
-/** Per-day chart for one product from summary. */
-function hippoo_bi_get_product_chart_from_summary( $from, $to, $product_id ) {
-    global $wpdb;
-
-    $table     = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_PRODUCT_STATS;
-    $from_date = date( 'Y-m-d', strtotime( $from ) );
-    $to_date   = date( 'Y-m-d', strtotime( $to ) );
-
-    $rows = $wpdb->get_results( $wpdb->prepare( "
-        SELECT
-            date,
-            views,
-            unique_sessions as sessions,
-            add_to_cart,
-            orders,
-            revenue
-        FROM $table
-        WHERE product_id = %d
-          AND date BETWEEN %s AND %s
-        ORDER BY date ASC
-    ", $product_id, $from_date, $to_date ) );
-
-    return $rows ?: array();
-}
-
-
-// ---------------------------------------------------------------------------
-// Write helpers
-// ---------------------------------------------------------------------------
-
-/** Fill missing daily stats from earliest data to yesterday, in batches. */
-function hippoo_bi_run_daily_aggregate( $batch_days = 30 ) {
-    global $wpdb;
-
-    $table_pv    = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
-    $table_stats = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_STATS;
-    $table_daily = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_STATS;
-
-    $earliest_pv = $wpdb->get_var( "SELECT MIN(DATE(created_at)) FROM $table_pv" );
-    $earliest_or = $wpdb->get_var( "SELECT MIN(DATE(date_created)) FROM $table_stats" );
-
-    $candidates = array_filter( array( $earliest_pv, $earliest_or ) );
-    if ( empty( $candidates ) ) {
-        return;
-    }
-
-    $start = min( $candidates );
-    $end   = ( new DateTimeImmutable( 'yesterday', wp_timezone() ) )->format( 'Y-m-d' );
-
-    
-    if ( $start > $end ) {
-        return;
-    }
-
-    // Existing dates already in daily_stats within the full range
-    $existing = $wpdb->get_col( $wpdb->prepare( "
-        SELECT date FROM $table_daily WHERE date BETWEEN %s AND %s
-    ", $start, $end ) );
-    $existing = array_flip( $existing );
-
-    // Build ordered list of missing days
-    $missing  = array();
-    $current  = new DateTimeImmutable( $end );
-    $start_obj = new DateTimeImmutable( $start );
-
-    while ( $current >= $start_obj ) {
-        $day = $current->format( 'Y-m-d' );
-        if ( ! isset( $existing[ $day ] ) ) {
-            $missing[] = $day;
-        }
-        $current = $current->modify( '-1 day' );
-    }
-
-    if ( empty( $missing ) ) {
-        return;
-    }
-
-    $batch_days  = max( 1, absint( $batch_days ) );
-    $batch       = array_slice( $missing, 0, $batch_days );
-
-    foreach ( $batch as $day ) {
-        hippoo_bi_aggregate_day( $day );
-    }
-
-    $remaining = count( $missing ) - count( $batch );
-
-    if ( $remaining > 0 ) {
-        wp_schedule_single_event( time() + 5, 'hippoo_bi_daily_aggregate', array( $batch_days ) );
-        return;
-    }
-
-    hippoo_bi_clear_report_caches();
-}
-
-/** Aggregate site + product metrics for one day into daily tables. */
-function hippoo_bi_aggregate_day( $date ) {
+/** Aggregate one calendar day into site_stats + post_stats. */
+function hippoo_bi_aggregate_date( $date ) {
     if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
         return;
     }
 
-    $day_args = array(
-        'period'    => 'custom',
-        'date_from' => $date,
-        'date_to'   => $date,
-    );
-
-    hippoo_bi_aggregate_site_day( $date, $day_args );
-    hippoo_bi_aggregate_product_day( $date, $day_args );
+    hippoo_bi_aggregate_site_stats( $date );
+    hippoo_bi_aggregate_post_stats( $date );
 }
 
-/** Upsert one row in hippoo_daily_stats using report helpers. */
-function hippoo_bi_aggregate_site_day( $date, $day_args ) {
+/** Upsert one site_stats row from raw pageviews + order_stats. */
+function hippoo_bi_aggregate_site_stats( $date ) {
     global $wpdb;
 
-    $table = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_STATS;
+    $table_pv = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_os = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_STATS;
+    $table_ss = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
 
-    $traffic  = hippoo_bi_get_traffic_stats( $day_args );
-    $views    = (int) ( $traffic->total_views ?? 0 );
-    $sessions = (int) ( $traffic->unique_sessions ?? 0 );
+    $from = $date . ' 00:00:00';
+    $to   = $date . ' 23:59:59';
 
-    $bounce_sessions = (int) hippoo_bi_get_single_sessions_count( $day_args );
+    $traffic = $wpdb->get_row( $wpdb->prepare( "
+        SELECT
+            COUNT(*) as total_views,
+            COUNT(DISTINCT session_id) as unique_sessions,
+            SUM(CASE WHEN device_type = 'm' THEN 1 ELSE 0 END) as mobile_views,
+            SUM(CASE WHEN device_type = 't' THEN 1 ELSE 0 END) as tablet_views,
+            SUM(CASE WHEN device_type = 'd' THEN 1 ELSE 0 END) as desktop_views
+        FROM $table_pv
+        WHERE created_at BETWEEN %s AND %s
+    ", $from, $to ) );
 
-    $visitors           = hippoo_bi_get_visitors( $day_args );
-    $new_visitors       = (int) ( $visitors->new_visitors ?? 0 );
-    $returning_visitors = (int) ( $visitors->returning_visitors ?? 0 );
+    $bounce = (int) $wpdb->get_var( $wpdb->prepare( "
+        SELECT COUNT(*) FROM (
+            SELECT session_id
+            FROM $table_pv
+            WHERE created_at BETWEEN %s AND %s
+            GROUP BY session_id
+            HAVING COUNT(*) = 1
+        ) b
+    ", $from, $to ) );
 
-    $sales         = hippoo_bi_get_sales_stats( $day_args );
-    $orders        = (int) ( $sales->order_count ?? 0 );
-    $total_revenue = (float) ( $sales->total_revenue ?? 0 );
-    $net_revenue   = (float) ( $sales->net_revenue ?? 0 );
-    $refund_amount = (float) ( $sales->total_refund ?? 0 );
+    $sales = $wpdb->get_row( $wpdb->prepare( "
+        SELECT
+            COUNT(order_id) as order_count,
+            COALESCE(SUM(total), 0) as total_revenue,
+            COALESCE(SUM(net), 0) as net_revenue,
+            COALESCE(SUM(refund), 0) as total_refund
+        FROM $table_os
+        WHERE date_created BETWEEN %s AND %s
+    ", $from, $to ) );
 
-    $customers           = hippoo_bi_get_customer_summary( $day_args );
-    $new_customers       = (int) ( $customers->new_customers ?? 0 );
-    $returning_customers = (int) ( $customers->returning_customers ?? 0 );
-
-    $wpdb->replace( $table, array(
+    $wpdb->replace( $table_ss, array(
         'date'                => $date,
-        'views'               => $views,
-        'unique_sessions'     => $sessions,
-        'new_visitors'        => $new_visitors,
-        'returning_visitors'  => $returning_visitors,
-        'bounce_sessions'     => $bounce_sessions,
-        'orders'              => $orders,
-        'total'               => $total_revenue,
-        'net'                 => $net_revenue,
-        'refund'              => $refund_amount,
-        'new_customers'       => $new_customers,
-        'returning_customers' => $returning_customers,
-        'calculated_at'       => current_time( 'mysql' ),
+        'views'               => (int) ( $traffic->total_views ?? 0 ),
+        'unique_sessions'     => (int) ( $traffic->unique_sessions ?? 0 ),
+        'bounce_sessions'     => $bounce,
+        'orders'              => (int) ( $sales->order_count ?? 0 ),
+        'total'               => (float) ( $sales->total_revenue ?? 0 ),
+        'net'                 => (float) ( $sales->net_revenue ?? 0 ),
+        'refund'              => (float) ( $sales->total_refund ?? 0 ),
+        'mobile_views'        => (int) ( $traffic->mobile_views ?? 0 ),
+        'tablet_views'        => (int) ( $traffic->tablet_views ?? 0 ),
+        'desktop_views'       => (int) ( $traffic->desktop_views ?? 0 ),
     ) );
 }
 
-/** Replace all product rows for one day using report helpers. */
-function hippoo_bi_aggregate_product_day( $date, $day_args ) {
+/** Replace all post_stats rows for one day from raw pageviews / ATC / orders. */
+function hippoo_bi_aggregate_post_stats( $date ) {
     global $wpdb;
 
-    $table = $wpdb->prefix . HIPPOO_BI_TABLE_DAILY_PRODUCT_STATS;
+    $table_pv  = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_atc = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
+    $table_ol  = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
+    $table_ps  = $wpdb->prefix . HIPPOO_BI_TABLE_POST_STATS;
 
-    $wpdb->delete( $table, array( 'date' => $date ) );
+    $from = $date . ' 00:00:00';
+    $to   = $date . ' 23:59:59';
 
-    $traffic_args = array_merge( $day_args, array( 'min_views' => 0 ) );
-    $traffic_rows = hippoo_bi_get_product_traffic_stats( $traffic_args );
+    $wpdb->delete( $table_ps, array( 'date' => $date ) );
+    $products = array();
 
-    if ( empty( $traffic_rows ) ) {
-        return;
-    }
-
-    $product_ids = array_map( 'intval', wp_list_pluck( $traffic_rows, 'product_id' ) );
-    $sales_all   = hippoo_bi_get_product_sales_stats( $day_args, $product_ids );
-    $atc_all     = hippoo_bi_get_product_atc_stats( $day_args, $product_ids );
-
-    $now = current_time( 'mysql' );
+    $traffic_rows = $wpdb->get_results( $wpdb->prepare( "
+        SELECT
+            post_id,
+            MAX(path_id) as path_id,
+            COUNT(*) as views,
+            COUNT(DISTINCT session_id) as unique_sessions
+        FROM $table_pv
+        WHERE created_at BETWEEN %s AND %s
+          AND post_id > 0
+          AND path_id > 0
+        GROUP BY post_id
+    ", $from, $to ), ARRAY_A );
 
     foreach ( $traffic_rows as $row ) {
-        $pid = (int) $row['product_id'];
+        $products[ $row['post_id'] ] = $row;
+    }
 
-        $wpdb->insert( $table, array(
+    $atc_rows = $wpdb->get_results( $wpdb->prepare( "
+        SELECT
+            product_id,
+            COUNT(*) as add_to_cart,
+            COUNT(DISTINCT session_id) as atc_sessions
+        FROM $table_atc
+        WHERE created_at BETWEEN %s AND %s
+        GROUP BY product_id
+    ", $from, $to ), ARRAY_A );
+
+    foreach ( $atc_rows as $row ) {
+        $post_id = (int) $row['product_id'];
+
+        $products[ $post_id ]['post_id']      = $post_id;
+        $products[ $post_id ]['add_to_cart']  = (int) $row['add_to_cart'];
+        $products[ $post_id ]['atc_sessions'] = (int) $row['atc_sessions'];
+    }
+
+    $sales_rows = $wpdb->get_results( $wpdb->prepare( "
+        SELECT
+            product_id,
+            COUNT(DISTINCT order_id) as orders,
+            SUM(revenue) as revenue
+        FROM $table_ol
+        WHERE date_created BETWEEN %s AND %s
+        GROUP BY product_id
+    ", $from, $to ), ARRAY_A );
+
+    foreach ( $sales_rows as $row ) {
+        $post_id = (int) $row['product_id'];
+
+        $products[ $post_id ]['post_id'] = $post_id;
+        $products[ $post_id ]['orders']  = (int) $row['orders'];
+        $products[ $post_id ]['revenue'] = (float) $row['revenue'];
+    }
+
+    foreach ( $products as $post_id => $row ) {
+        $wpdb->insert( $table_ps, array(
             'date'            => $date,
-            'product_id'      => $pid,
-            'views'           => (int) $row['views'],
-            'unique_sessions' => (int) $row['unique_sessions'],
-            'add_to_cart'     => (int) ( $atc_all[ $pid ]['add_to_cart'] ?? 0 ),
-            'atc_sessions'    => (int) ( $atc_all[ $pid ]['atc_sessions'] ?? 0 ),
-            'orders'          => (int) ( $sales_all[ $pid ]['orders'] ?? 0 ),
-            'revenue'         => (float) ( $sales_all[ $pid ]['revenue'] ?? 0 ),
-            'calculated_at'   => $now,
+            'post_id'         => $post_id,
+            'path_id'         => (int) ( $row['path_id'] ?? 0 ),
+            'views'           => (int) ( $row['views'] ?? 0 ),
+            'unique_sessions' => (int) ( $row['unique_sessions'] ?? 0 ),
+            'add_to_cart'     => (int) ( $row['add_to_cart'] ?? 0 ),
+            'atc_sessions'    => (int) ( $row['atc_sessions'] ?? 0 ),
+            'orders'          => (int) ( $row['orders'] ?? 0 ),
+            'revenue'         => (float) ( $row['revenue'] ?? 0 ),
         ) );
     }
 }
