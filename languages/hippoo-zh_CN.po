@@ -463,6 +463,7 @@ msgstr "Hippoo 无法连接，因为缺少必要的 WordPress API 路由。某�
 
 #: app/rest.php:346
 #: app/rest.php:378
+#: app/rest.php:430
 msgid "Invalid token."
 msgstr "无效令牌。"
 
@@ -486,32 +487,32 @@ msgstr "自动重定向"
 msgid "This page will automatically redirect in a few seconds..."
 msgstr "此页面将在几秒钟后自动重定向..."
 
-#: app/rest.php:423
+#: app/rest.php:434
 msgid "You can get the data from here"
 msgstr "您可以从这里获取数据"
 
-#: app/rest.php:427
+#: app/rest.php:442
 msgid "Unauthenticated, No Token Data"
 msgstr "未认证，无令牌数据"
 
-#: app/rest.php:522
+#: app/rest.php:537
 msgid "Country code must be a valid two-letter uppercase code."
 msgstr "国家代码必须是有效的两个大写字母代码。"
 
-#: app/rest.php:527
+#: app/rest.php:542
 msgid "Invalid or unauthorized country code."
 msgstr "无效或未授权的国家代码。"
 
-#: app/rest.php:805
+#: app/rest.php:820
 msgid "Image saved successfully."
 msgstr "图像保存成功。"
 
-#: app/rest.php:812
-#: app/rest.php:821
+#: app/rest.php:827
+#: app/rest.php:836
 msgid "Image deleted successfully."
 msgstr "图像删除成功。"
 
-#: app/rest.php:824
+#: app/rest.php:839
 msgid "Image not found!"
 msgstr "未找到图像！"
 
@@ -545,35 +546,35 @@ msgstr "商品 "
 msgid "Array of media item IDs to delete."
 msgstr "要删除的媒体项目 ID 数组。"
 
-#: app/rest.php:594
+#: app/rest.php:609
 msgid "Invalid or missing file."
 msgstr "无效或缺失的文件。"
 
-#: app/rest.php:604
+#: app/rest.php:619
 msgid "Failed to read file content."
 msgstr "读取文件内容失败。"
 
-#: app/rest.php:610
+#: app/rest.php:625
 msgid "Media upload failed."
 msgstr "媒体上传失败。"
 
-#: app/rest.php:625
+#: app/rest.php:640
 msgid "Failed to create attachment."
 msgstr "创建附件失败。"
 
-#: app/rest.php:657
+#: app/rest.php:672
 msgid "Attachment not found."
 msgstr "未找到附件。"
 
-#: app/rest.php:660
+#: app/rest.php:675
 msgid "Error deleting the attachment."
 msgstr "删除附件时出错。"
 
-#: app/rest.php:667
+#: app/rest.php:682
 msgid "Attachment(s) deleted successfully."
 msgstr "附件删除成功。"
 
-#: app/rest.php:652
+#: app/rest.php:667
 msgid "Nothing to delete."
 msgstr "无内容可删除。"
 
@@ -886,7 +887,7 @@ msgstr ""
 msgid "Order details"
 msgstr ""
 
-#: app/bi/rest.php:305
+#: app/bi/rest.php:299
 #: app/permissions/admin.php:324
 #: app/permissions/admin.php:477
 msgid "Name"
@@ -964,7 +965,7 @@ msgstr ""
 msgid "Out of stock list"
 msgstr ""
 
-#: app/bi/rest.php:308
+#: app/bi/rest.php:302
 #: app/permissions/admin.php:428
 msgid "Status"
 msgstr ""
@@ -993,7 +994,7 @@ msgstr ""
 msgid "Phone number"
 msgstr ""
 
-#: app/bi/rest.php:306
+#: app/bi/rest.php:300
 #: app/permissions/admin.php:489
 msgid "Email"
 msgstr ""
@@ -1199,72 +1200,68 @@ msgstr ""
 msgid "Generated: %s"
 msgstr ""
 
-#: app/bi/rest.php:115
-msgid "Missing product_id parameter."
-msgstr ""
-
-#: app/bi/reports/products.php:179
+#: app/bi/reports/products.php:156
 msgid "Product not found."
 msgstr ""
 
-#: app/bi/reports/churn.php:333
+#: app/bi/reports/churn.php:330
 msgid "No churned customers found."
 msgstr ""
 
-#: app/bi/rest.php:304
+#: app/bi/rest.php:298
 msgid "Customer ID"
 msgstr ""
 
-#: app/bi/rest.php:307
+#: app/bi/rest.php:301
 msgid "Churn Score"
 msgstr ""
 
-#: app/bi/rest.php:309
+#: app/bi/rest.php:303
 msgid "Last Order"
 msgstr ""
 
-#: app/bi/rest.php:310
+#: app/bi/rest.php:304
 msgid "Days Since"
 msgstr ""
 
-#: app/bi/rest.php:311
+#: app/bi/rest.php:305
 msgid "Total Orders"
 msgstr ""
 
-#: app/bi/rest.php:312
+#: app/bi/rest.php:306
 msgid "Total Spent"
 msgstr ""
 
-#: app/bi/rest.php:313
+#: app/bi/rest.php:307
 msgid "CLV"
 msgstr ""
 
-#: app/bi/reports/products.php:635
+#: app/bi/reports/products.php:454
 msgid "Not enough data for analysis."
 msgstr ""
 
-#: app/bi/reports/products.php:642
+#: app/bi/reports/products.php:461
 msgid "This product has views but zero sales."
 msgstr ""
 
-#: app/bi/reports/products.php:649
+#: app/bi/reports/products.php:468
 msgid "Users add to cart but don't complete checkout — Check checkout process."
 msgstr ""
 
-#: app/bi/reports/products.php:656
+#: app/bi/reports/products.php:475
 msgid "Excellent conversion with low views — This product needs more promotion."
 msgstr ""
 
-#: app/bi/reports/products.php:664
+#: app/bi/reports/products.php:483
 #, php-format
 msgid "%d views, %d sales — Product page needs improvement."
 msgstr ""
 
-#: app/bi/reports/products.php:674
+#: app/bi/reports/products.php:493
 msgid "Strong performer — Replicate this pattern in other products."
 msgstr ""
 
-#: app/bi/reports/products.php:680
+#: app/bi/reports/products.php:499
 msgid "Normal performance."
 msgstr ""
 
@@ -1272,19 +1269,19 @@ msgstr ""
 msgid "Business intelligence"
 msgstr ""
 
-#: app/bi/reports/churn.php:207
+#: app/bi/reports/churn.php:205
 msgid "Customer not found."
 msgstr ""
 
-#: app/bi/rest.php:314
+#: app/bi/rest.php:308
 msgid "Avg Order Value"
 msgstr ""
 
-#: app/bi/rest.php:315
+#: app/bi/rest.php:309
 msgid "Avg Days Between"
 msgstr ""
 
-#: app/bi/reports/churn.php:370
+#: app/bi/reports/churn.php:367
 msgid "No customers found for the selected status."
 msgstr ""
 
@@ -1292,7 +1289,7 @@ msgstr ""
 msgid "Unable to store tracking data."
 msgstr ""
 
-#: app/bi/rest.php:295
+#: app/bi/rest.php:289
 msgid "Unable to generate CSV export."
 msgstr ""
 
@@ -1328,10 +1325,14 @@ msgstr ""
 msgid "Sorry, you are not allowed to delete resources."
 msgstr ""
 
-#: app/rest.php:786
+#: app/rest.php:801
 msgid "There is not any images!"
 msgstr ""
 
 #: app/weekly-notif/admin.php:37
 msgid "Weekly sales notification"
+msgstr ""
+
+#: app/bi/rest.php:115
+msgid "Missing post_id parameter."
 msgstr ""

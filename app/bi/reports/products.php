@@ -7,9 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-
 /** Build the BI product overview report. */
-function hippoo_bi_get_products_overview( $args = array() ) {
+function hippoo_bi_reports_products_overview( $args = array() ) {
     $period    = ! empty( $args['period'] ) ? $args['period'] : 'this_month';
     $date_from = $args['date_from'] ?? '';
     $date_to   = $args['date_to'] ?? '';
@@ -20,16 +19,15 @@ function hippoo_bi_get_products_overview( $args = array() ) {
     $per_page  = max( 1, min( 100, (int) ( $args['per_page'] ?? 50 ) ) );
 
     $cache_key = 'hippoo_bi_products_intel_' . md5( $period . $date_from . $date_to . $min_views . $limit . $sort_by . $page . $per_page );
-
     $cached = get_transient( $cache_key );
 
     if ( false !== $cached ) {
         return $cached;
     }
 
-    $traffic = hippoo_bi_get_product_traffic_stats( $args );
+    $stats = hippoo_bi_reports_products_stats( $args );
 
-    if ( empty( $traffic ) ) {
+    if ( empty( $stats ) ) {
         $response = array(
             'data'        => array(),
             'total'       => 0,
@@ -40,49 +38,31 @@ function hippoo_bi_get_products_overview( $args = array() ) {
         return $response;
     }
 
-    $product_ids = array_map( 'intval', wp_list_pluck( $traffic, 'product_id' ) );
-
-    $sales = hippoo_bi_get_product_sales_stats( $args, $product_ids );
-    $atc   = hippoo_bi_get_product_atc_stats( $args, $product_ids );
-
     $products = array();
 
-    foreach ( $traffic as $item ) {
-        $product_id = (int) $item['product_id'];
-
-        $sales_data = $sales[ $product_id ] ?? array(
-            'orders'  => 0,
-            'revenue' => 0,
-        );
-
-        $atc_data = $atc[ $product_id ] ?? array(
-            'add_to_cart'  => 0,
-            'atc_sessions' => 0,
-        );
-
+    foreach ( $stats as $item ) {
+        $product_id   = (int) $item['product_id'];
         $views        = (int) $item['views'];
         $sessions     = (int) $item['unique_sessions'];
-        $orders       = (int) $sales_data['orders'];
-        $revenue      = (float) $sales_data['revenue'];
-        $add_to_cart  = (int) $atc_data['add_to_cart'];
-        $atc_sessions = (int) $atc_data['atc_sessions'];
+        $orders       = (int) $item['orders'];
+        $revenue      = (float) $item['revenue'];
+        $add_to_cart  = (int) $item['add_to_cart'];
+        $atc_sessions = (int) $item['atc_sessions'];
 
         $revenue_per_view   = $views > 0 ? round( $revenue / $views, 2 ) : 0;
         $cart_to_order_rate = $atc_sessions > 0 ? round( ( $orders / $atc_sessions ) * 100, 2 ) : 0;
         $conversion_rate    = $sessions > 0 ? round( ( $orders / $sessions ) * 100, 2 ) : 0;
         $atc_rate           = $sessions > 0 ? round( ( $atc_sessions / $sessions ) * 100, 2 ) : 0;
 
-        $insight = hippoo_bi_get_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
-
         $product = wc_get_product( $product_id );
-
         if ( ! $product ) {
             continue;
         }
 
+        $insight = hippoo_bi_reports_products_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
+
         $thumbnail = '';
         $image_id  = $product->get_image_id();
-
         if ( $image_id ) {
             $thumbnail = wp_get_attachment_image_url( $image_id, 'thumbnail' ) ?: '';
         }
@@ -130,7 +110,6 @@ function hippoo_bi_get_products_overview( $args = array() ) {
                     'normal'                => 6,
                     'insufficient_data'     => 7,
                 );
-
                 return ( $priority[ $a['insight_tag'] ] ?? 99 ) <=> ( $priority[ $b['insight_tag'] ] ?? 99 );
         }
     } );
@@ -138,10 +117,10 @@ function hippoo_bi_get_products_overview( $args = array() ) {
     $total = count( $products );
 
     if ( $limit > 0 ) {
-        $products   = array_slice( $products, 0, $limit );
-        $total      = count( $products );
-        $page       = 1;
-        $per_page   = $total;
+        $products  = array_slice( $products, 0, $limit );
+        $total     = count( $products );
+        $page      = 1;
+        $per_page  = $total;
     }
 
     $total_pages = $per_page > 0 ? (int) ceil( $total / $per_page ) : 1;
@@ -159,8 +138,8 @@ function hippoo_bi_get_products_overview( $args = array() ) {
 }
 
 /** Build the BI report for a single product. */
-function hippoo_bi_get_product_overview( $args = array() ) {
-    $product_id = $args['id'];
+function hippoo_bi_reports_product_overview( $args = array() ) {
+    $product_id = (int) ( $args['id'] ?? 0 );
     $period     = ! empty( $args['period'] ) ? $args['period'] : 'this_month';
     $date_from  = $args['date_from'] ?? '';
     $date_to    = $args['date_to'] ?? '';
@@ -173,63 +152,43 @@ function hippoo_bi_get_product_overview( $args = array() ) {
     }
 
     $product = wc_get_product( $product_id );
-
     if ( ! $product ) {
         return new WP_Error( 'not_found', __( 'Product not found.', 'hippoo' ), array( 'status' => 404 ) );
     }
 
-    $traffic = hippoo_bi_get_product_traffic_stats( array_merge( $args, array( 'min_views' => 0 ) ) );
-    $traffic_data = array(
+    $stats = hippoo_bi_reports_products_stats( array_merge( $args, array( 'min_views' => 0, 'product_ids' => array( $product_id ) ) ) );
+    $item  = $stats[0] ?? array(
         'views'           => 0,
         'unique_sessions' => 0,
-    );
-    foreach ( $traffic as $item ) {
-        if ( (int) $item['product_id'] === (int) $product_id ) {
-            $traffic_data = array(
-                'views'           => (int) $item['views'],
-                'unique_sessions' => (int) $item['unique_sessions'],
-            );
-            break;
-        }
-    }
-
-    $sales = hippoo_bi_get_product_sales_stats( $args, array( $product_id ) );
-    $sales_data = $sales[ $product_id ] ?? array(
-        'orders'  => 0,
-        'revenue' => 0,
+        'orders'          => 0,
+        'revenue'         => 0,
+        'add_to_cart'     => 0,
+        'atc_sessions'    => 0,
     );
 
-    $atc = hippoo_bi_get_product_atc_stats( $args, array( $product_id ) );
-    $atc_data = $atc[ $product_id ] ?? array(
-        'add_to_cart'  => 0,
-        'atc_sessions' => 0,
-    );
-
-    $views        = (int) $traffic_data['views'];
-    $sessions     = (int) $traffic_data['unique_sessions'];
-    $orders       = (int) $sales_data['orders'];
-    $revenue      = (float) $sales_data['revenue'];
-    $add_to_cart  = (int) $atc_data['add_to_cart'];
-    $atc_sessions = (int) $atc_data['atc_sessions'];
+    $views        = (int) $item['views'];
+    $sessions     = (int) $item['unique_sessions'];
+    $orders       = (int) $item['orders'];
+    $revenue      = (float) $item['revenue'];
+    $add_to_cart  = (int) $item['add_to_cart'];
+    $atc_sessions = (int) $item['atc_sessions'];
 
     $revenue_per_view   = $views > 0 ? round( $revenue / $views, 2 ) : 0;
     $cart_to_order_rate = $atc_sessions > 0 ? round( ( $orders / $atc_sessions ) * 100, 2 ) : 0;
     $conversion_rate    = $sessions > 0 ? round( ( $orders / $sessions ) * 100, 2 ) : 0;
     $atc_rate           = $sessions > 0 ? round( ( $atc_sessions / $sessions ) * 100, 2 ) : 0;
 
-    $insight = hippoo_bi_get_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
-
-    $chart = hippoo_bi_get_product_chart( $args, $product_id );
+    $insight = hippoo_bi_reports_products_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
+    $chart   = hippoo_bi_reports_product_chart( $args, $product_id );
 
     $thumbnail = '';
     $image_id  = $product->get_image_id();
-
     if ( $image_id ) {
         $thumbnail = wp_get_attachment_image_url( $image_id, 'thumbnail' ) ?: '';
     }
 
     $response = array(
-        'product_id'         => $product_id,
+        'product_id'         => (string) $product_id,
         'product_name'       => $product->get_name(),
         'product_url'        => $product->get_permalink(),
         'thumbnail'          => $thumbnail,
@@ -252,7 +211,7 @@ function hippoo_bi_get_product_overview( $args = array() ) {
 }
 
 /** Build the BI product highlights report. */
-function hippoo_bi_get_product_highlights( $args = array() ) {
+function hippoo_bi_reports_products_highlights( $args = array() ) {
     $period    = ! empty( $args['period'] ) ? $args['period'] : 'this_month';
     $date_from = $args['date_from'] ?? '';
     $date_to   = $args['date_to'] ?? '';
@@ -264,46 +223,30 @@ function hippoo_bi_get_product_highlights( $args = array() ) {
         return $cached;
     }
 
-    $traffic = hippoo_bi_get_product_traffic_stats( $args );
+    $stats = hippoo_bi_reports_products_stats( $args );
 
-    if ( empty( $traffic ) ) {
+    if ( empty( $stats ) ) {
         set_transient( $cache_key, array(), 15 * MINUTE_IN_SECONDS );
         return array();
     }
 
-    $product_ids = array_map( 'intval', wp_list_pluck( $traffic, 'product_id' ) );
-
-    $sales = hippoo_bi_get_product_sales_stats( $args, $product_ids );
-    $atc   = hippoo_bi_get_product_atc_stats( $args, $product_ids );
-
     $highlights = array();
 
-    foreach ( $traffic as $item ) {
-        $product_id = (int) $item['product_id'];
-
-        $sales_data = $sales[ $product_id ] ?? array(
-            'orders'  => 0,
-            'revenue' => 0,
-        );
-
-        $atc_data = $atc[ $product_id ] ?? array(
-            'add_to_cart'  => 0,
-            'atc_sessions' => 0,
-        );
-
+    foreach ( $stats as $item ) {
+        $product_id   = (int) $item['product_id'];
         $views        = (int) $item['views'];
         $sessions     = (int) $item['unique_sessions'];
-        $orders       = (int) $sales_data['orders'];
-        $revenue      = (float) $sales_data['revenue'];
-        $add_to_cart  = (int) $atc_data['add_to_cart'];
-        $atc_sessions = (int) $atc_data['atc_sessions'];
+        $orders       = (int) $item['orders'];
+        $revenue      = (float) $item['revenue'];
+        $add_to_cart  = (int) $item['add_to_cart'];
+        $atc_sessions = (int) $item['atc_sessions'];
 
-        $revenue_per_view = $views > 0 ? round( $revenue / $views, 2 ) : 0;
+        $revenue_per_view   = $views > 0 ? round( $revenue / $views, 2 ) : 0;
         $cart_to_order_rate = $atc_sessions > 0 ? round( ( $orders / $atc_sessions ) * 100, 2 ) : 0;
-        $conversion_rate = $sessions > 0 ? round( ( $orders / $sessions ) * 100, 2 ) : 0;
-        $atc_rate = $sessions > 0 ? round( ( $atc_sessions / $sessions ) * 100, 2 ) : 0;
+        $conversion_rate    = $sessions > 0 ? round( ( $orders / $sessions ) * 100, 2 ) : 0;
+        $atc_rate           = $sessions > 0 ? round( ( $atc_sessions / $sessions ) * 100, 2 ) : 0;
 
-        $insight = hippoo_bi_get_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
+        $insight = hippoo_bi_reports_products_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
 
         $product = array(
             'product_id'         => $product_id,
@@ -372,7 +315,6 @@ function hippoo_bi_get_product_highlights( $args = array() ) {
 
     foreach ( $highlights as $tag => &$item ) {
         $product = wc_get_product( (int) $item['product_id'] );
-
         if ( ! $product ) {
             unset( $highlights[ $tag ] );
             continue;
@@ -380,7 +322,6 @@ function hippoo_bi_get_product_highlights( $args = array() ) {
 
         $thumbnail = '';
         $image_id  = $product->get_image_id();
-
         if ( $image_id ) {
             $thumbnail = wp_get_attachment_image_url( $image_id, 'thumbnail' ) ?: '';
         }
@@ -389,61 +330,50 @@ function hippoo_bi_get_product_highlights( $args = array() ) {
         $item['product_url']  = $product->get_permalink();
         $item['thumbnail']    = $thumbnail;
     }
-
     unset( $item );
 
     set_transient( $cache_key, $highlights, 15 * MINUTE_IN_SECONDS );
     return $highlights;
 }
 
-/** Get product traffic data for a report period. */
-function hippoo_bi_get_product_traffic_stats( $args = array() ) {
-    $date_range = hippoo_bi_get_date_range(
+/** Aggregate product metrics from post_stats for a report period. */
+function hippoo_bi_reports_products_stats( $args = array() ) {
+    $date_range = hippoo_bi_reports_date_range(
         $args['period'] ?? 'this_month',
         $args['date_from'] ?? '',
         $args['date_to'] ?? ''
     );
-
-    $min_views = isset( $args['min_views'] ) ? (int) $args['min_views'] : 30;
-
-    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
-        $all     = hippoo_bi_get_product_stats_from_summary( $date_range['from'], $date_range['to'] );
-        $results = array();
-        foreach ( $all as $pid => $data ) {
-            if ( $min_views > 0 && $data['views'] < $min_views ) {
-                continue;
-            }
-            $results[] = array(
-                'product_id'      => $pid,
-                'views'           => $data['views'],
-                'unique_sessions' => $data['unique_sessions'],
-            );
-        }
-        usort( $results, function ( $a, $b ) {
-            return $b['views'] <=> $a['views'];
-        } );
-        return $results;
-    }
+    
+    $min_views   = isset( $args['min_views'] ) ? (int) $args['min_views'] : 30;
+    $product_ids = isset( $args['product_ids'] ) ? array_map( 'intval', (array) $args['product_ids'] ) : array();
 
     global $wpdb;
 
-    $table = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table = $wpdb->prefix . HIPPOO_BI_TABLE_POST_STATS;
 
-    $sql = "
+    $sql    = "
         SELECT
-            product_id,
-            COUNT(*) as views,
-            COUNT(DISTINCT session_id) as unique_sessions
+            post_id as product_id,
+            SUM(views) as views,
+            SUM(unique_sessions) as unique_sessions,
+            SUM(add_to_cart) as add_to_cart,
+            SUM(atc_sessions) as atc_sessions,
+            SUM(orders) as orders,
+            SUM(revenue) as revenue
         FROM $table
-        WHERE product_id IS NOT NULL
-          AND created_at BETWEEN %s AND %s
-        GROUP BY product_id
+        WHERE date BETWEEN %s AND %s
+          AND post_id IS NOT NULL
+          AND post_id > 0
     ";
+    $params = array( $date_range['from'], $date_range['to'] );
 
-    $params = array(
-        $date_range['from'],
-        $date_range['to'],
-    );
+    if ( ! empty( $product_ids ) ) {
+        $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
+        $sql         .= " AND post_id IN ($placeholders)";
+        $params       = array_merge( $params, $product_ids );
+    }
+
+    $sql .= ' GROUP BY post_id';
 
     if ( $min_views > 0 ) {
         $sql     .= ' HAVING views >= %d';
@@ -452,239 +382,72 @@ function hippoo_bi_get_product_traffic_stats( $args = array() ) {
 
     $sql .= ' ORDER BY views DESC';
 
-    $results = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
+    $rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
+
+    $results = array();
+    foreach ( $rows as $row ) {
+        $results[] = array(
+            'product_id'      => (int) $row['product_id'],
+            'views'           => (int) $row['views'],
+            'unique_sessions' => (int) $row['unique_sessions'],
+            'add_to_cart'     => (int) $row['add_to_cart'],
+            'atc_sessions'    => (int) $row['atc_sessions'],
+            'orders'          => (int) $row['orders'],
+            'revenue'         => (float) $row['revenue'],
+        );
+    }
 
     return $results;
 }
 
-/** Get product sales data for a report period. */
-function hippoo_bi_get_product_sales_stats( $args = array(), $product_ids = array() ) {
-    if ( empty( $product_ids ) ) {
-        return array();
-    }
-
-    $date_range = hippoo_bi_get_date_range(
-        $args['period'] ?? 'this_month',
-        $args['date_from'] ?? '',
-        $args['date_to'] ?? ''
-    );
-
-    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
-        $all   = hippoo_bi_get_product_stats_from_summary( $date_range['from'], $date_range['to'], $product_ids );
-        $sales = array();
-        foreach ( $all as $pid => $data ) {
-            $sales[ $pid ] = array(
-                'orders'  => $data['orders'],
-                'revenue' => $data['revenue'],
-            );
-        }
-        return $sales;
-    }
-
-    global $wpdb;
-
-    $table        = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
-    $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
-
-    $results = $wpdb->get_results( $wpdb->prepare( "
-        SELECT
-            product_id,
-            COUNT(DISTINCT order_id) as orders,
-            SUM(quantity) as total_quantity,
-            SUM(revenue) as revenue
-        FROM $table
-        WHERE product_id IN ($placeholders)
-          AND date_created BETWEEN %s AND %s
-        GROUP BY product_id
-    ", array_merge( $product_ids, array( $date_range['from'], $date_range['to'] ) ) ), ARRAY_A );
-
-    $sales = array();
-
-    foreach ( $results as $row ) {
-        $product_id = (int) $row['product_id'];
-
-        $sales[ $product_id ] = array(
-            'orders'  => (int) $row['orders'],
-            'revenue' => (float) $row['revenue'],
-        );
-    }
-
-    return $sales;
-}
-
-/** Get product add-to-cart data for a report period. */
-function hippoo_bi_get_product_atc_stats( $args = array(), $product_ids = array() ) {
-    if ( empty( $product_ids ) ) {
-        return array();
-    }
-
-    $date_range = hippoo_bi_get_date_range(
-        $args['period'] ?? 'this_month',
-        $args['date_from'] ?? '',
-        $args['date_to'] ?? ''
-    );
-
-    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
-        $all = hippoo_bi_get_product_stats_from_summary( $date_range['from'], $date_range['to'], $product_ids );
-        $atc = array();
-        foreach ( $all as $pid => $data ) {
-            $atc[ $pid ] = array(
-                'add_to_cart'  => $data['add_to_cart'],
-                'atc_sessions' => $data['atc_sessions'],
-            );
-        }
-        return $atc;
-    }
-
-    global $wpdb;
-
-    $table        = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
-    $placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
-
-    $results = $wpdb->get_results( $wpdb->prepare( "
-        SELECT
-            product_id,
-            SUM(quantity) as total_atc,
-            COUNT(DISTINCT session_id) as atc_sessions
-        FROM $table
-        WHERE product_id IN ($placeholders)
-          AND created_at BETWEEN %s AND %s
-        GROUP BY product_id
-    ", array_merge( $product_ids, array( $date_range['from'], $date_range['to'] ) ) ), ARRAY_A );
-
-    $atc = array();
-
-    foreach ( $results as $row ) {
-        $product_id = (int) $row['product_id'];
-
-        $atc[ $product_id ] = array(
-            'add_to_cart'  => (int) $row['total_atc'],
-            'atc_sessions' => (int) $row['atc_sessions'],
-        );
-    }
-
-    return $atc;
-}
-
 /** Get daily chart data for a single product. */
-function hippoo_bi_get_product_chart( $args = array(), $product_id = 0 ) {
+function hippoo_bi_reports_product_chart( $args = array(), $product_id = 0 ) {
     if ( ! $product_id ) {
         return array();
     }
 
-    $date_range = hippoo_bi_get_date_range(
+    $date_range = hippoo_bi_reports_date_range(
         $args['period'] ?? 'this_month',
         $args['date_from'] ?? '',
         $args['date_to'] ?? ''
     );
-
-    if ( hippoo_bi_use_summary( $date_range['from'], $date_range['to'] ) && hippoo_bi_summary_is_ready( $date_range['from'], $date_range['to'] ) ) {
-        $rows  = hippoo_bi_get_product_chart_from_summary( $date_range['from'], $date_range['to'], $product_id );
-        $chart = array();
-        foreach ( $rows as $row ) {
-            $chart[] = array(
-                'date'        => $row->date,
-                'views'       => (int) $row->views,
-                'sessions'    => (int) $row->sessions,
-                'add_to_cart' => (int) $row->add_to_cart,
-                'orders'      => (int) $row->orders,
-                'revenue'     => (float) $row->revenue,
-            );
-        }
-        return $chart;
-    }
-
+    
     global $wpdb;
 
-    $table_pv     = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
-    $table_atc    = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
-    $table_lookup = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
+    $table = $wpdb->prefix . HIPPOO_BI_TABLE_POST_STATS;
 
-    $views = $wpdb->get_results( $wpdb->prepare( "
+    $rows = $wpdb->get_results( $wpdb->prepare( "
         SELECT
-            DATE(created_at) AS date,
-            COUNT(*) AS views,
-            COUNT(DISTINCT session_id) AS sessions
-        FROM $table_pv
-        WHERE product_id = %d
-          AND created_at BETWEEN %s AND %s
-        GROUP BY DATE(created_at)
-        ORDER BY date ASC
-    ", $product_id, $date_range['from'], $date_range['to'] ) );
-
-    $atc = $wpdb->get_results( $wpdb->prepare( "
-        SELECT
-            DATE(created_at) AS date,
-            SUM(quantity) AS add_to_cart
-        FROM $table_atc
-        WHERE product_id = %d
-          AND created_at BETWEEN %s AND %s
-        GROUP BY DATE(created_at)
-        ORDER BY date ASC
-    ", $product_id, $date_range['from'], $date_range['to'] ) );
-
-    $sales = $wpdb->get_results( $wpdb->prepare( "
-        SELECT
-            DATE(date_created) AS date,
-            COUNT(DISTINCT order_id) AS orders,
-            SUM(revenue) AS revenue
-        FROM $table_lookup
-        WHERE product_id = %d
-          AND date_created BETWEEN %s AND %s
-        GROUP BY DATE(date_created)
+            date,
+            SUM(views) as views,
+            SUM(unique_sessions) as sessions,
+            SUM(add_to_cart) as add_to_cart,
+            SUM(orders) as orders,
+            SUM(revenue) as revenue
+        FROM $table
+        WHERE post_id = %d
+          AND date BETWEEN %s AND %s
+        GROUP BY date
         ORDER BY date ASC
     ", $product_id, $date_range['from'], $date_range['to'] ) );
 
     $chart = array();
-
-    foreach ( $views as $row ) {
-        $chart[ $row->date ] = array(
+    foreach ( $rows as $row ) {
+        $chart[] = array(
             'date'        => $row->date,
             'views'       => (int) $row->views,
             'sessions'    => (int) $row->sessions,
-            'add_to_cart' => 0,
-            'orders'      => 0,
-            'revenue'     => 0,
+            'add_to_cart' => (int) $row->add_to_cart,
+            'orders'      => (int) $row->orders,
+            'revenue'     => (float) $row->revenue,
         );
     }
 
-    foreach ( $atc as $row ) {
-        if ( ! isset( $chart[ $row->date ] ) ) {
-            $chart[ $row->date ] = array(
-                'date'        => $row->date,
-                'views'       => 0,
-                'sessions'    => 0,
-                'add_to_cart' => 0,
-                'orders'      => 0,
-                'revenue'     => 0,
-            );
-        }
-
-        $chart[ $row->date ]['add_to_cart'] = (int) $row->add_to_cart;
-    }
-
-    foreach ( $sales as $row ) {
-        if ( ! isset( $chart[ $row->date ] ) ) {
-            $chart[ $row->date ] = array(
-                'date'        => $row->date,
-                'views'       => 0,
-                'sessions'    => 0,
-                'add_to_cart' => 0,
-                'orders'      => 0,
-                'revenue'     => 0,
-            );
-        }
-
-        $chart[ $row->date ]['orders']  = (int) $row->orders;
-        $chart[ $row->date ]['revenue'] = (float) $row->revenue;
-    }
-
-    ksort( $chart );
-    return array_values( $chart );
+    return $chart;
 }
 
 /** Resolve the insight tag and message for a product. */
-function hippoo_bi_get_insight_tag( $views, $orders, $conv_rate, $atc_rate, $checkout_rate ) {
+function hippoo_bi_reports_products_insight_tag( $views, $orders, $conv_rate, $atc_rate, $checkout_rate ) {
     if ( $views < 50 ) {
         return array(
             'tag'     => 'insufficient_data',

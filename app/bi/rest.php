@@ -1,6 +1,6 @@
 <?php
 /**
- * Hippoo AI – REST API routes and callbacks
+ * Hippoo BI – REST API routes and callbacks
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,9 +25,9 @@ function hippoo_bi_rest_use_wc_authentication( $namespaces ) {
 // ---------------------------------------------------------------------------
 
 /** Register Hippoo BI REST API routes. */
-add_action( 'rest_api_init', 'hippoo_bi_register_rest_routes' );
+add_action( 'rest_api_init', 'hippoo_bi_rest_register_routes' );
 
-function hippoo_bi_register_rest_routes() {
+function hippoo_bi_rest_register_routes() {
     register_rest_route( 'hippoo/v1', '/bi/track', array(
         'methods'             => 'POST',
         'callback'            => 'hippoo_bi_rest_track_pageview',
@@ -112,14 +112,14 @@ function hippoo_bi_rest_track_pageview( $request ) {
     }
 
     if ( empty( $params['pid'] ) ) {
-        return new WP_Error( 'missing_pid', __( 'Missing product_id parameter.', 'hippoo' ), array( 'status' => 400 ) );
+        return new WP_Error( 'missing_pid', __( 'Missing post_id parameter.', 'hippoo' ), array( 'status' => 400 ) );
     }
 
     $result = hippoo_bi_track_pageview( array(
         'session_id' => $params['sid'] ?? '',
         'page_url'   => $params['url'] ?? '',
         'referrer'   => $params['ref'] ?? '',
-        'product_id' => $params['pid'],
+        'post_id'    => $params['pid'],
     ) );
 
     if ( ! $result ) {
@@ -131,7 +131,7 @@ function hippoo_bi_rest_track_pageview( $request ) {
 
 /** Return the general BI overview through REST. */
 function hippoo_bi_rest_general_overview( $request ) {
-    $response = hippoo_bi_get_general_overview( $request->get_params() );
+    $response = hippoo_bi_reports_overview( $request->get_params() );
 
     if ( is_wp_error( $response ) ) {
         return $response;
@@ -142,7 +142,7 @@ function hippoo_bi_rest_general_overview( $request ) {
 
 /** Return the traffic overview through REST. */
 function hippoo_bi_rest_traffic_overview( $request ) {
-    $response = hippoo_bi_get_traffic_overview( $request->get_params() );
+    $response = hippoo_bi_reports_traffic_overview( $request->get_params() );
 
     if ( is_wp_error( $response ) ) {
         return $response;
@@ -153,7 +153,7 @@ function hippoo_bi_rest_traffic_overview( $request ) {
 
 /** Return product intelligence through REST. */
 function hippoo_bi_rest_products_intelligence( $request ) {
-    $result = hippoo_bi_get_products_overview( $request->get_params() );
+    $result = hippoo_bi_reports_products_overview( $request->get_params() );
 
     if ( is_wp_error( $result ) ) {
         return $result;
@@ -174,7 +174,7 @@ function hippoo_bi_rest_products_intelligence( $request ) {
 
 /** Return single product intelligence through REST. */
 function hippoo_bi_rest_product_intelligence( $request ) {
-    $response = hippoo_bi_get_product_overview( $request->get_params() );
+    $response = hippoo_bi_reports_product_overview( $request->get_params() );
 
     if ( is_wp_error( $response ) ) {
         return $response;
@@ -185,7 +185,7 @@ function hippoo_bi_rest_product_intelligence( $request ) {
 
 /** Return the sales overview through REST. */
 function hippoo_bi_rest_sales_overview( $request ) {
-    $response = hippoo_bi_get_sales_overview( $request->get_params() );
+    $response = hippoo_bi_reports_sales_overview( $request->get_params() );
 
     if ( is_wp_error( $response ) ) {
         return $response;
@@ -196,7 +196,7 @@ function hippoo_bi_rest_sales_overview( $request ) {
 
 /** Return the churn overview through REST. */
 function hippoo_bi_rest_churn_overview( $request ) {
-    $response = hippoo_bi_get_churn_overview( $request->get_params() );
+    $response = hippoo_bi_reports_churn_overview( $request->get_params() );
 
     if ( is_wp_error( $response ) ) {
         return $response;
@@ -207,7 +207,7 @@ function hippoo_bi_rest_churn_overview( $request ) {
 
 /** Return churn customers through REST. */
 function hippoo_bi_rest_churn_customers( $request ) {
-    $result = hippoo_bi_get_churn_customers( $request->get_params() );
+    $result = hippoo_bi_reports_churn_customers( $request->get_params() );
 
     if ( is_wp_error( $result ) ) {
         return $result;
@@ -228,7 +228,7 @@ function hippoo_bi_rest_churn_customers( $request ) {
 
 /** Export churned customers through REST. */
 function hippoo_bi_rest_churn_export( $request ) {
-    $response = hippoo_bi_export_churn_customers();
+    $response = hippoo_bi_reports_churn_export();
 
     if ( is_wp_error( $response ) ) {
         return $response;
@@ -239,7 +239,7 @@ function hippoo_bi_rest_churn_export( $request ) {
 
 /** Export churn customers by status through REST. */
 function hippoo_bi_rest_churn_export_status( $request ) {
-    $response = hippoo_bi_export_churn_customers_by_status(
+    $response = hippoo_bi_reports_churn_export_by_status(
         array(
             'status' => sanitize_text_field( $request->get_param( 'status' ) ?: '' ),
         )

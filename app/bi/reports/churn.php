@@ -7,18 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-
-/** Number of inactive days used by BI churn scoring. */
-define( 'HIPPOO_BI_CHURN_THRESHOLD', 90 );
-
-
 /** Keep the legacy churn overview function. */
-function hippoo_bi_get_churn_overview() {
-    return hippoo_bi_get_churn_summary();
+function hippoo_bi_reports_churn_overview() {
+    return hippoo_bi_reports_churn_summary();
 }
 
 /** Build the BI churn summary report. */
-function hippoo_bi_get_churn_summary() {
+function hippoo_bi_reports_churn_summary() {
     $cache_key = 'hippoo_bi_churn_summary';
     $cached    = get_transient( $cache_key );
 
@@ -76,7 +71,7 @@ function hippoo_bi_get_churn_summary() {
 }
 
 /** Build the BI churn customers report or customer detail report. */
-function hippoo_bi_get_churn_customers( $args = array() ) {
+function hippoo_bi_reports_churn_customers( $args = array() ) {
     $lookup_email = sanitize_email( $args['email'] ?? '' );
     $lookup_id    = absint( $args['customer_id'] ?? ( $args['id'] ?? 0 ) );
     $status       = $args['status'] ?? '';
@@ -85,7 +80,7 @@ function hippoo_bi_get_churn_customers( $args = array() ) {
     $offset       = ( $page - 1 ) * $per_page;
 
     if ( $lookup_email || $lookup_id ) {
-        $customer = hippoo_bi_get_churn_customer_detail( $lookup_email, $lookup_id );
+        $customer = hippoo_bi_reports_churn_customer_detail( $lookup_email, $lookup_id );
         $response = array(
             'data'        => $customer,
             'total'       => 1,
@@ -113,7 +108,6 @@ function hippoo_bi_get_churn_customers( $args = array() ) {
     }
 
     $total_sql = "SELECT COUNT(*) FROM $table $where";
-
     $total = $params
         ? (int) $wpdb->get_var( $wpdb->prepare( $total_sql, $params ) )
         : (int) $wpdb->get_var( $total_sql );
@@ -186,7 +180,7 @@ function hippoo_bi_get_churn_customers( $args = array() ) {
 }
 
 /** Build the BI detail report for one churn customer. */
-function hippoo_bi_get_churn_customer_detail( $email, $customer_id ) {
+function hippoo_bi_reports_churn_customer_detail( $email, $customer_id ) {
     global $wpdb;
 
     $table_churn  = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
@@ -268,7 +262,6 @@ function hippoo_bi_get_churn_customer_detail( $email, $customer_id ) {
     $favorite_product = null;
     if ( $favorite && $favorite->product_id ) {
         $product = wc_get_product( $favorite->product_id );
-
         $favorite_product = array(
             'product_id' => (int) $favorite->product_id,
             'name'       => $product ? $product->get_name() : '',
@@ -277,12 +270,12 @@ function hippoo_bi_get_churn_customer_detail( $email, $customer_id ) {
     }
 
     // Order status summary
-    $status_rows = $wpdb->get_results("
+    $status_rows = $wpdb->get_results( "
         SELECT order_status, COUNT(*) as cnt
         FROM $table_stats
         WHERE $where_rev
         GROUP BY order_status
-    ");
+    " );
 
     $order_status_summary = array();
     foreach ( $status_rows as $status_row ) {
@@ -319,7 +312,7 @@ function hippoo_bi_get_churn_customer_detail( $email, $customer_id ) {
 }
 
 /** Get churned customers prepared for CSV export. */
-function hippoo_bi_export_churn_customers() {
+function hippoo_bi_reports_churn_export() {
     global $wpdb;
 
     $table = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
@@ -344,7 +337,7 @@ function hippoo_bi_export_churn_customers() {
 }
 
 /** Get customers prepared for CSV export by status. */
-function hippoo_bi_export_churn_customers_by_status( $args = array() ) {
+function hippoo_bi_reports_churn_export_by_status( $args = array() ) {
     global $wpdb;
 
     $table  = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
@@ -371,7 +364,7 @@ function hippoo_bi_export_churn_customers_by_status( $args = array() ) {
         : $wpdb->get_results( $sql );
 
     if ( empty( $customers ) ) {
-        return new WP_Error( 'not_found',  __( 'No customers found for the selected status.', 'hippoo' ) );
+        return new WP_Error( 'not_found', __( 'No customers found for the selected status.', 'hippoo' ) );
     }
 
     return array(
