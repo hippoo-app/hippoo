@@ -131,7 +131,7 @@ msgid "Failed to connect to AI service."
 msgstr "连接 AI 服务失败。"
 
 #: app/ai/rest.php:89
-#: app/bi/rest.php:100
+#: app/bi/rest.php:104
 msgid "Too many requests. Please try again later."
 msgstr "请求过多。请稍后重试。"
 
@@ -887,7 +887,7 @@ msgstr ""
 msgid "Order details"
 msgstr ""
 
-#: app/bi/rest.php:295
+#: app/bi/rest.php:299
 #: app/permissions/admin.php:324
 #: app/permissions/admin.php:477
 msgid "Name"
@@ -965,7 +965,7 @@ msgstr ""
 msgid "Out of stock list"
 msgstr ""
 
-#: app/bi/rest.php:298
+#: app/bi/rest.php:302
 #: app/permissions/admin.php:428
 msgid "Status"
 msgstr ""
@@ -994,7 +994,7 @@ msgstr ""
 msgid "Phone number"
 msgstr ""
 
-#: app/bi/rest.php:296
+#: app/bi/rest.php:300
 #: app/permissions/admin.php:489
 msgid "Email"
 msgstr ""
@@ -1208,31 +1208,31 @@ msgstr ""
 msgid "No churned customers found."
 msgstr ""
 
-#: app/bi/rest.php:294
+#: app/bi/rest.php:298
 msgid "Customer ID"
 msgstr ""
 
-#: app/bi/rest.php:297
+#: app/bi/rest.php:301
 msgid "Churn Score"
 msgstr ""
 
-#: app/bi/rest.php:299
+#: app/bi/rest.php:303
 msgid "Last Order"
 msgstr ""
 
-#: app/bi/rest.php:300
+#: app/bi/rest.php:304
 msgid "Days Since"
 msgstr ""
 
-#: app/bi/rest.php:301
+#: app/bi/rest.php:305
 msgid "Total Orders"
 msgstr ""
 
-#: app/bi/rest.php:302
+#: app/bi/rest.php:306
 msgid "Total Spent"
 msgstr ""
 
-#: app/bi/rest.php:303
+#: app/bi/rest.php:307
 msgid "CLV"
 msgstr ""
 
@@ -1273,11 +1273,11 @@ msgstr ""
 msgid "Customer not found."
 msgstr ""
 
-#: app/bi/rest.php:304
+#: app/bi/rest.php:308
 msgid "Avg Order Value"
 msgstr ""
 
-#: app/bi/rest.php:305
+#: app/bi/rest.php:309
 msgid "Avg Days Between"
 msgstr ""
 
@@ -1285,11 +1285,11 @@ msgstr ""
 msgid "No customers found for the selected status."
 msgstr ""
 
-#: app/bi/rest.php:122
+#: app/bi/rest.php:126
 msgid "Unable to store tracking data."
 msgstr ""
 
-#: app/bi/rest.php:285
+#: app/bi/rest.php:289
 msgid "Unable to generate CSV export."
 msgstr ""
 

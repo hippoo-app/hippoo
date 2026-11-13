@@ -27,11 +27,15 @@ function hippoo_bi_track_enqueue_scripts() {
 add_action( 'woocommerce_add_to_cart', 'hippoo_bi_track_add_to_cart', 10, 6 );
 
 function hippoo_bi_track_add_to_cart( $cart_id, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
+    if ( hippoo_bi_is_automated_request() ) {
+        return false;
+    }
+
     if ( empty( $product_id ) ) {
         return false;
     }
 
-    $session_id = hippoo_bi_get_session_id();
+    $session_id = hippoo_bi_track_session_id();
     if ( ! $session_id ) {
         return false;
     }
@@ -56,12 +60,12 @@ function hippoo_bi_track_pageview( $data ) {
         return false;
     }
 
-    $path_id = hippoo_bi_get_or_create_path_id( $page_url );
+    $path_id = hippoo_bi_track_path_id( $page_url );
     if ( ! $path_id ) {
         return false;
     }
 
-    $referrer_id = hippoo_bi_get_or_create_referrer_id( $data['referrer'] ?? '' );
+    $referrer_id = hippoo_bi_track_referrer_id( $data['referrer'] ?? '' );
     if ( ! $referrer_id ) {
         return false;
     }
@@ -71,19 +75,19 @@ function hippoo_bi_track_pageview( $data ) {
         $post_id = absint( url_to_postid( $page_url ) );
     }
 
-    $session_id = hippoo_bi_get_session_id( $data['session_id'] ?? '' );
+    $session_id = hippoo_bi_track_session_id( $data['session_id'] ?? '' );
     if ( ! $session_id ) {
         return false;
     }
 
     $insert_data = array(
-        'session_id'      => $session_id,
-        'post_id'         => $post_id,
-        'path_id'         => $path_id,
-        'referrer_id'     => $referrer_id,
-        'device_type'     => hippoo_bi_get_device_type(),
-        'country'         => hippoo_bi_get_country_from_ip(),
-        'created_at'      => current_time( 'mysql' ),
+        'session_id'  => $session_id,
+        'post_id'     => $post_id,
+        'path_id'     => $path_id,
+        'referrer_id' => $referrer_id,
+        'device_type' => hippoo_bi_track_device_type(),
+        'country'     => hippoo_bi_track_country_from_ip(),
+        'created_at'  => current_time( 'mysql' ),
     );
 
     global $wpdb;
@@ -97,20 +101,48 @@ function hippoo_bi_track_pageview( $data ) {
 // Tracking helpers
 // ---------------------------------------------------------------------------
 
-/** Normalize a page URL to a compact, query-free path key. */
-function hippoo_bi_normalize_path( $url ) {
+/** Determine whether the current request is automated. */
+function hippoo_bi_is_automated_request() {
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+    if ( empty( $user_agent ) ) {
+        return true;
+    }
+
+    $bot_pattern = '/bot|crawl|spider|seo|lighthouse|facebookexternalhit|google-safety|preview|prerender|headless|phantom|scrapy|python|curl|wget|go-http|okhttp|node-fetch|axios|java\/|libwww|http[-_]?client|monitor|uptime|pingdom|statuscake|validator|scanner/i';
+
+    if ( preg_match( $bot_pattern, $user_agent ) ) {
+        return true;
+    }
+
+    // Ignore prefetch and prerender requests.
+    $sec_purpose = strtolower( $_SERVER['HTTP_SEC_PURPOSE'] ?? '' );
+    $purpose     = strtolower( $_SERVER['HTTP_PURPOSE'] ?? '' );
+
+    if (
+        false !== strpos( $sec_purpose, 'prefetch' ) ||
+        false !== strpos( $sec_purpose, 'prerender' ) ||
+        'prefetch' === $purpose
+    ) {
+        return true;
+    }
+
+    // Ignore direct endpoint navigation.
+    if ( 'navigate' === ( $_SERVER['HTTP_SEC_FETCH_MODE'] ?? '' ) ) {
+        return true;
+    }
+
+    return false;
+}
+
+/** Return the stable lookup ID for a normalized path, inserting it once. */
+function hippoo_bi_track_path_id( $url ) {
+    static $cache = array();
+
     $path = wp_parse_url( (string) $url, PHP_URL_PATH );
     $path = is_string( $path ) ? untrailingslashit( $path ) : '/';
     $path = empty( $path ) ? '/' : substr( $path, 0, 255 );
 
-    return $path;
-}
-
-/** Return the stable lookup ID for a normalized path, inserting it once. */
-function hippoo_bi_get_or_create_path_id( $url ) {
-    static $cache = array();
-
-    $path = hippoo_bi_normalize_path( $url );
     if ( isset( $cache[ $path ] ) ) {
         return $cache[ $path ];
     }
@@ -131,7 +163,7 @@ function hippoo_bi_get_or_create_path_id( $url ) {
 }
 
 /** Return the stable lookup ID for a referrer host or the direct label. */
-function hippoo_bi_get_or_create_referrer_id( $referrer ) {
+function hippoo_bi_track_referrer_id( $referrer ) {
     static $cache = array();
 
     $host = ! empty( $referrer ) ? wp_parse_url( (string) $referrer, PHP_URL_HOST ) : null;
@@ -161,7 +193,7 @@ function hippoo_bi_get_or_create_referrer_id( $referrer ) {
 }
 
 /** Resolve session from client id or existing cookie. */
-function hippoo_bi_get_session_id( $session_id = '' ) {
+function hippoo_bi_track_session_id( $session_id = '' ) {
     $cookie_name = 'hpbi';
     $expire      = time() + ( 2 * YEAR_IN_SECONDS );
     $session_id  = strtolower( sanitize_text_field( (string) $session_id ) );
@@ -189,7 +221,7 @@ function hippoo_bi_get_session_id( $session_id = '' ) {
 }
 
 /** Detect the current visitor device type. */
-function hippoo_bi_get_device_type() {
+function hippoo_bi_track_device_type() {
     try {
         $detect = new \Detection\MobileDetect();
         if ( $detect->isTablet() ) return 't';
@@ -204,7 +236,7 @@ function hippoo_bi_get_device_type() {
 }
 
 /** Resolve the visitor country from the current IP address. */
-function hippoo_bi_get_country_from_ip() {
+function hippoo_bi_track_country_from_ip() {
     $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 
     if ( empty( $ip ) || '127.0.0.1' === $ip || 0 === strpos( $ip, '192.168.' ) || 0 === strpos( $ip, '10.' ) ) {

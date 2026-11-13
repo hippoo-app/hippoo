@@ -15,6 +15,7 @@ define( 'HIPPOO_BI_DB_VERSION', '1.3.0' );
 
 define( 'HIPPOO_BI_TABLE_PATHS', 'hippoo_bi_paths' );
 define( 'HIPPOO_BI_TABLE_REFERRERS', 'hippoo_bi_referrers' );
+define( 'HIPPOO_BI_TABLE_VISITORS', 'hippoo_bi_visitors' );
 
 define( 'HIPPOO_BI_TABLE_PAGEVIEWS', 'hippoo_bi_pageviews' );
 define( 'HIPPOO_BI_TABLE_ADD_TO_CARTS', 'hippoo_bi_add_to_carts' );
@@ -88,6 +89,17 @@ function hippoo_bi_init_database() {
         UNIQUE KEY idx_source (source)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+    $table_visitors = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
+    $sql_visitors = "CREATE TABLE IF NOT EXISTS $table_visitors (
+        id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        visitor_key         VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+        first_seen          DATETIME NOT NULL,
+        last_seen           DATETIME NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY idx_visitor_key (visitor_key),
+        KEY idx_last_first (last_seen, first_seen)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
     $table_pageviews = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
     $sql_pageviews = "CREATE TABLE IF NOT EXISTS $table_pageviews (
         id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -100,8 +112,10 @@ function hippoo_bi_init_database() {
         created_at          DATETIME NOT NULL,
         PRIMARY KEY (id),
         KEY idx_created (created_at),
-        KEY idx_path_created (path_id, created_at),
-        KEY idx_post_created (post_id, created_at)
+        KEY idx_session (session_id),
+        KEY idx_path (path_id),
+        KEY idx_post (post_id),
+        KEY idx_referrer (referrer_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     $table_atc = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
@@ -112,7 +126,8 @@ function hippoo_bi_init_database() {
         created_at          DATETIME NOT NULL,
         PRIMARY KEY (id),
         KEY idx_created (created_at),
-        KEY idx_product (product_id, created_at)
+        KEY idx_session (session_id),
+        KEY idx_product (product_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     $table_churn = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
@@ -145,7 +160,7 @@ function hippoo_bi_init_database() {
         revenue             DECIMAL(13,2) NOT NULL DEFAULT 0.00,
         PRIMARY KEY (id),
         KEY idx_order_id (order_id),
-        KEY idx_product_date (product_id, date_created),
+        KEY idx_product_id (product_id),
         KEY idx_customer_id (customer_id),
         KEY idx_date_created (date_created)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
@@ -203,6 +218,7 @@ function hippoo_bi_init_database() {
 
     dbDelta( $sql_paths );
     dbDelta( $sql_refs );
+    dbDelta( $sql_visitors );
     dbDelta( $sql_pageviews );
     dbDelta( $sql_atc );
     dbDelta( $sql_churn );
@@ -301,19 +317,24 @@ function hippoo_bi_migrate_to_120() {
     // Intentionally empty – kept for consistency with other migrate_* helpers.
 }
 
-/** Consolidate BI path, referrer and daily-summary changes. */
+/** Consolidate BI path, referrer and daily-summary changes + index improvements. */
 function hippoo_bi_migrate_to_130() {
     global $wpdb;
 
     $paths        = $wpdb->prefix . HIPPOO_BI_TABLE_PATHS;
     $refs         = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRERS;
+    $visitors     = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
     $pageviews    = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
     $add_to_carts = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
     $order_lookup = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
     $site_stats   = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
     $post_stats   = $wpdb->prefix . HIPPOO_BI_TABLE_POST_STATS;
 
-    // pageviews: add missing columns and indexes
+    // Reset data
+    $wpdb->query( "TRUNCATE TABLE $site_stats" );
+    $wpdb->query( "TRUNCATE TABLE $post_stats" );
+
+    // pageviews: add missing columns
     $page_columns = $wpdb->get_col( "SHOW COLUMNS FROM $pageviews", 0 );
     if ( null === $page_columns ) {
         throw new RuntimeException( 'Cannot read pageviews columns.' );
@@ -323,27 +344,20 @@ function hippoo_bi_migrate_to_130() {
         'path_id'     => "ADD COLUMN path_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER post_id",
         'referrer_id' => "ADD COLUMN referrer_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER path_id",
     );
-    foreach ( $page_adds as $col => $sql ) {
-        if ( ! in_array( $col, $page_columns, true ) ) {
+    foreach ( $page_adds as $column => $sql ) {
+        if ( ! in_array( $column, $page_columns, true ) ) {
             if ( false === $wpdb->query( "ALTER TABLE $pageviews $sql" ) ) {
-                throw new RuntimeException( "Failed adding pageviews.$col" );
+                throw new RuntimeException( "Failed adding pageviews.$column" );
             }
         }
     }
 
-    $page_columns = $wpdb->get_col( "SHOW COLUMNS FROM $pageviews", 0 );
-    $page_indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
-    if ( null === $page_columns || null === $page_indexes ) {
-        throw new RuntimeException( 'Cannot read pageviews structure.' );
-    }
-    if ( ! in_array( 'idx_path_created', $page_indexes, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $pageviews ADD KEY idx_path_created (path_id, created_at)" ) ) {
-            throw new RuntimeException( 'Failed adding idx_path_created on pageviews.' );
-        }
-    }
-    if ( ! in_array( 'idx_post_created', $page_indexes, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $pageviews ADD KEY idx_post_created (post_id, created_at)" ) ) {
-            throw new RuntimeException( 'Failed adding idx_post_created on pageviews.' );
+    // pageviews: map product_id to post_id
+    if ( in_array( 'product_id', $page_columns, true ) ) {
+        if ( false === $wpdb->query(
+            "UPDATE $pageviews SET post_id = product_id WHERE post_id IS NULL AND product_id IS NOT NULL"
+        ) ) {
+            throw new RuntimeException( 'Failed mapping product_id to post_id on pageviews.' );
         }
     }
 
@@ -388,15 +402,6 @@ function hippoo_bi_migrate_to_130() {
 
     if ( (int) $wpdb->get_var( "SELECT COUNT(*) FROM $pageviews WHERE path_id = 0" ) > 0 ) {
         throw new RuntimeException( 'Some pageviews still have path_id = 0.' );
-    }
-
-    // pageviews: map product_id to post_id
-    if ( in_array( 'product_id', $page_columns, true ) ) {
-        if ( false === $wpdb->query(
-            "UPDATE $pageviews SET post_id = product_id WHERE post_id IS NULL AND product_id IS NOT NULL"
-        ) ) {
-            throw new RuntimeException( 'Failed mapping product_id to post_id on pageviews.' );
-        }
     }
 
     // pageviews: convert referrer_source to referrer_id
@@ -447,69 +452,88 @@ function hippoo_bi_migrate_to_130() {
         throw new RuntimeException( 'Failed setting default direct referrer_id.' );
     }
 
-    // pageviews: drop legacy columns and indexes
+    // pageviews: drop legacy columns
     $page_columns = $wpdb->get_col( "SHOW COLUMNS FROM $pageviews", 0 );
-    $page_indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
-    if ( null === $page_columns || null === $page_indexes ) {
-        throw new RuntimeException( 'Cannot re-read pageviews structure.' );
-    }
-    foreach ( array( 'idx_product', 'idx_session' ) as $index ) {
-        if ( in_array( $index, $page_indexes, true ) ) {
-            if ( false === $wpdb->query( "ALTER TABLE $pageviews DROP INDEX $index" ) ) {
-                throw new RuntimeException( 'Failed dropping legacy pageviews indexes.' );
-            }
-        }
+    if ( null === $page_columns ) {
+        throw new RuntimeException( 'Cannot read pageviews structure.' );
     }
     foreach ( array( 'page_url', 'referrer_source', 'product_id' ) as $column ) {
         if ( in_array( $column, $page_columns, true ) ) {
             if ( false === $wpdb->query( "ALTER TABLE $pageviews DROP COLUMN $column" ) ) {
-                throw new RuntimeException( 'Failed dropping legacy pageviews columns.' );
+                throw new RuntimeException( "Failed dropping pageviews.$column." );
             }
         }
     }
 
-    // add_to_carts: drop quantity and session index, ensure created_at index
+    // pageviews: indexes
+    $page_indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
+    if ( null === $page_indexes ) {
+        throw new RuntimeException( 'Cannot read pageviews indexes.' );
+    }
+    if ( in_array( 'idx_product', $page_indexes, true ) ) {
+        if ( false === $wpdb->query( "ALTER TABLE $pageviews DROP INDEX idx_product" ) ) {
+            throw new RuntimeException( 'Failed dropping idx_product from pageviews.' );
+        }
+    }
+    $page_indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
+    $page_adds = array(
+        'idx_created'  => "ADD KEY idx_created (created_at)",
+        'idx_session'  => "ADD KEY idx_session (session_id)",
+        'idx_path'     => "ADD KEY idx_path (path_id)",
+        'idx_post'     => "ADD KEY idx_post (post_id)",
+        'idx_referrer' => "ADD KEY idx_referrer (referrer_id)",
+    );
+    foreach ( $page_adds as $index => $sql ) {
+        if ( ! in_array( $index, $page_indexes, true ) ) {
+            if ( false === $wpdb->query( "ALTER TABLE $pageviews $sql" ) ) {
+                throw new RuntimeException( "Failed adding pageviews.$index" );
+            }
+        }
+    }
+
+    // add_to_carts: drop legacy columns
     $cart_columns = $wpdb->get_col( "SHOW COLUMNS FROM $add_to_carts", 0 );
-    $cart_indexes = $wpdb->get_col( "SHOW INDEX FROM $add_to_carts", 2 );
-    if ( null === $cart_columns || null === $cart_indexes ) {
-        throw new RuntimeException( 'Cannot read add_to_carts structure.' );
+    if ( null === $cart_columns ) {
+        throw new RuntimeException( 'Cannot read add_to_carts columns.' );
     }
     if ( in_array( 'quantity', $cart_columns, true ) ) {
         if ( false === $wpdb->query( "ALTER TABLE $add_to_carts DROP COLUMN quantity" ) ) {
             throw new RuntimeException( 'Failed dropping quantity from add_to_carts.' );
         }
     }
-    if ( in_array( 'idx_session', $cart_indexes, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $add_to_carts DROP INDEX idx_session" ) ) {
-            throw new RuntimeException( 'Failed dropping idx_session from add_to_carts.' );
+
+    // add_to_carts: indexes
+    $cart_indexes = $wpdb->get_col( "SHOW INDEX FROM $add_to_carts", 2 );
+    if ( null === $cart_indexes ) {
+        throw new RuntimeException( 'Cannot read add_to_carts indexes.' );
+    }
+    if ( in_array( 'idx_product', $cart_indexes, true ) ) {
+        if ( false === $wpdb->query( "ALTER TABLE $add_to_carts DROP INDEX idx_product" ) ) {
+            throw new RuntimeException( 'Failed dropping idx_product from add_to_carts.' );
         }
     }
-    if ( ! in_array( 'idx_created', $cart_indexes, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $add_to_carts ADD KEY idx_created (created_at)" ) ) {
-            throw new RuntimeException( 'Failed adding idx_created on add_to_carts.' );
+    $cart_indexes = $wpdb->get_col( "SHOW INDEX FROM $add_to_carts", 2 );
+    $cart_adds = array(
+        'idx_created' => "ADD KEY idx_created (created_at)",
+        'idx_session' => "ADD KEY idx_session (session_id)",
+        'idx_product' => "ADD KEY idx_product (product_id)",
+    );
+    foreach ( $cart_adds as $index => $sql ) {
+        if ( ! in_array( $index, $cart_indexes, true ) ) {
+            if ( false === $wpdb->query( "ALTER TABLE $add_to_carts $sql" ) ) {
+                throw new RuntimeException( "Failed adding add_to_carts.$index" );
+            }
         }
     }
 
-    // order_product_lookup: drop legacy indexes, add product_date composite
+    // order_product_lookup: drop legacy indexes
     $lookup_indexes = $wpdb->get_col( "SHOW INDEX FROM $order_lookup", 2 );
     if ( null === $lookup_indexes ) {
         throw new RuntimeException( 'Cannot read order_product_lookup indexes.' );
     }
-    if ( is_array( $lookup_indexes ) ) {
-        if ( in_array( 'idx_product_customer', $lookup_indexes, true ) ) {
-            if ( false === $wpdb->query( "ALTER TABLE $order_lookup DROP INDEX idx_product_customer" ) ) {
-                throw new RuntimeException( 'Failed dropping idx_product_customer on order_product_lookup.' );
-            }
-        }
-        if ( in_array( 'idx_product_id', $lookup_indexes, true ) ) {
-            if ( false === $wpdb->query( "ALTER TABLE $order_lookup DROP INDEX idx_product_id" ) ) {
-                throw new RuntimeException( 'Failed dropping idx_product_id on order_product_lookup.' );
-            }
-        }
-        if ( ! in_array( 'idx_product_date', $lookup_indexes, true ) ) {
-            if ( false === $wpdb->query( "ALTER TABLE $order_lookup ADD KEY idx_product_date (product_id, date_created)" ) ) {
-                throw new RuntimeException( 'Failed adding idx_product_date on order_product_lookup.' );
-            }
+    if ( in_array( 'idx_product_customer', $lookup_indexes, true ) ) {
+        if ( false === $wpdb->query( "ALTER TABLE $order_lookup DROP INDEX idx_product_customer" ) ) {
+            throw new RuntimeException( 'Failed dropping idx_product_customer on order_product_lookup.' );
         }
     }
 
@@ -523,10 +547,10 @@ function hippoo_bi_migrate_to_130() {
         'tablet_views'  => "ADD COLUMN tablet_views INT UNSIGNED NOT NULL DEFAULT 0 AFTER mobile_views",
         'desktop_views' => "ADD COLUMN desktop_views INT UNSIGNED NOT NULL DEFAULT 0 AFTER tablet_views",
     );
-    foreach ( $site_adds as $col => $sql ) {
-        if ( ! in_array( $col, $site_columns, true ) ) {
+    foreach ( $site_adds as $column => $sql ) {
+        if ( ! in_array( $column, $site_columns, true ) ) {
             if ( false === $wpdb->query( "ALTER TABLE $site_stats $sql" ) ) {
-                throw new RuntimeException( "Failed adding site_stats.$col" );
+                throw new RuntimeException( "Failed adding site_stats.$column" );
             }
         }
     }
@@ -534,7 +558,7 @@ function hippoo_bi_migrate_to_130() {
     // site_stats: drop calculated_at, new/returning visitors & customers
     $site_columns = $wpdb->get_col( "SHOW COLUMNS FROM $site_stats", 0 );
     if ( null === $site_columns ) {
-        throw new RuntimeException( 'Cannot re-read site_stats columns.' );
+        throw new RuntimeException( 'Cannot read site_stats columns.' );
     }
     foreach ( array( 'calculated_at', 'new_visitors', 'returning_visitors', 'new_customers', 'returning_customers' ) as $column ) {
         if ( in_array( $column, $site_columns, true ) ) {
@@ -553,38 +577,11 @@ function hippoo_bi_migrate_to_130() {
         'post_id' => "ADD COLUMN post_id BIGINT(20) UNSIGNED DEFAULT NULL AFTER date",
         'path_id' => "ADD COLUMN path_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER post_id",
     );
-    foreach ( $post_adds as $col => $sql ) {
-        if ( ! in_array( $col, $post_columns, true ) ) {
+    foreach ( $post_adds as $column => $sql ) {
+        if ( ! in_array( $column, $post_columns, true ) ) {
             if ( false === $wpdb->query( "ALTER TABLE $post_stats $sql" ) ) {
-                throw new RuntimeException( "Failed adding post_stats.$col" );
+                throw new RuntimeException( "Failed adding post_stats.$column" );
             }
-        }
-    }
-
-    // post_stats: map product_id to post_id and path_id
-    if ( in_array( 'product_id', $post_columns, true ) ) {
-        if ( false === $wpdb->query(
-            "UPDATE $post_stats SET post_id = product_id WHERE post_id IS NULL AND product_id IS NOT NULL"
-        ) ) {
-            throw new RuntimeException( 'Failed mapping product_id to post_id on post_stats.' );
-        }
-
-        if ( false === $wpdb->query(
-            "UPDATE $post_stats ps
-             INNER JOIN (
-                 SELECT post_id, MIN(path_id) AS path_id
-                 FROM $pageviews
-                 WHERE post_id IS NOT NULL AND path_id > 0
-                 GROUP BY post_id
-             ) src ON src.post_id = ps.post_id
-             SET ps.path_id = src.path_id
-             WHERE ps.path_id = 0 AND ps.post_id IS NOT NULL"
-        ) ) {
-            throw new RuntimeException( 'Failed mapping path_id from pageviews onto post_stats.' );
-        }
-
-        if ( false === $wpdb->query( "DELETE FROM $post_stats WHERE path_id = 0" ) ) {
-            throw new RuntimeException( 'Failed removing post_stats rows without path_id.' );
         }
     }
 
@@ -613,18 +610,11 @@ function hippoo_bi_migrate_to_130() {
 
     // post_stats: drop product_id and calculated_at
     $post_columns = $wpdb->get_col( "SHOW COLUMNS FROM $post_stats", 0 );
-    if ( in_array( 'product_id', $post_columns, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $post_stats DROP COLUMN product_id" ) ) {
-            throw new RuntimeException( 'Failed dropping product_id from post_stats.' );
+    foreach ( array( 'product_id', 'calculated_at' ) as $column ) {
+        if ( in_array( $column, $post_columns, true ) ) {
+            if ( false === $wpdb->query( "ALTER TABLE $post_stats DROP COLUMN $column" ) ) {
+                throw new RuntimeException( 'Failed dropping legacy columns from post_stats.' );
+            }
         }
     }
-    if ( in_array( 'calculated_at', $post_columns, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $post_stats DROP COLUMN calculated_at" ) ) {
-            throw new RuntimeException( 'Failed dropping calculated_at from post_stats.' );
-        }
-    }
-
-    // Reset data
-    $wpdb->query( "TRUNCATE TABLE $site_stats" );
-    $wpdb->query( "TRUNCATE TABLE $post_stats" );
 }

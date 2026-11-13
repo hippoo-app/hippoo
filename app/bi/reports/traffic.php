@@ -95,22 +95,15 @@ function hippoo_bi_reports_traffic_visitors( $args = array() ) {
     );
 
     global $wpdb;
-    $table = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
 
     $visitors = $wpdb->get_row( $wpdb->prepare( "
         SELECT
-            SUM(CASE WHEN first_seen >= %s THEN 1 ELSE 0 END) as new_visitors,
-            SUM(CASE WHEN first_seen < %s THEN 1 ELSE 0 END) as returning_visitors
-        FROM (
-            SELECT
-                session_id,
-                MIN(created_at) as first_seen
-            FROM $table
-            WHERE created_at <= %s
-            GROUP BY session_id
-            HAVING MAX(created_at) >= %s
-        ) fv
-    ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from'] ) );
+            SUM(CASE WHEN first_seen >= %s THEN 1 ELSE 0 END) AS new_visitors,
+            SUM(CASE WHEN first_seen < %s THEN 1 ELSE 0 END) AS returning_visitors
+        FROM $table
+        WHERE last_seen BETWEEN %s AND %s
+    ", $date_range['from'], $date_range['from'], $date_range['from'], $date_range['to'] ) );
 
     return $visitors;
 }

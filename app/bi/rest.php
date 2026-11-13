@@ -96,6 +96,10 @@ function hippoo_bi_rest_register_routes() {
 
 /** Store a pageview received through REST. */
 function hippoo_bi_rest_track_pageview( $request ) {
+    if ( hippoo_bi_is_automated_request() ) {
+        return new WP_REST_Response( null, 204 );
+    }
+
     if ( ! hippoo_bi_rest_rate_limit() ) {
         return new WP_Error( 'rate_limited', __( 'Too many requests. Please try again later.', 'hippoo' ), array( 'status' => 429 ) );
     }
@@ -115,7 +119,7 @@ function hippoo_bi_rest_track_pageview( $request ) {
         'session_id' => $params['sid'] ?? '',
         'page_url'   => $params['url'] ?? '',
         'referrer'   => $params['ref'] ?? '',
-        'post_id'    => $params['pid'],
+        'post_id'    => $params['pid'] ?? 0,
     ) );
 
     if ( ! $result ) {

@@ -8,14 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /** Backfill incomplete dates in batches and refresh today/yesterday hourly. */
-add_action( 'hippoo_bi_aggregate_stats', 'hippoo_bi_aggregate_stats_run' );
+add_action( 'hippoo_bi_aggregate_stats', 'hippoo_bi_aggregate_stats_handler' );
 
-function hippoo_bi_aggregate_stats_run() {
+function hippoo_bi_aggregate_stats_handler() {
     $chunk = 50;
     $missing = hippoo_bi_aggregate_missing_dates( $chunk );
 
     foreach ( $missing as $day ) {
-        hippoo_bi_aggregate_date( $day );
+        hippoo_bi_aggregate_date_handler( $day );
     }
 
     if ( count( $missing ) >= $chunk ) {
@@ -25,8 +25,21 @@ function hippoo_bi_aggregate_stats_run() {
     }
 
     $tz = wp_timezone();
-    hippoo_bi_aggregate_date( ( new DateTimeImmutable( 'yesterday', $tz ) )->format( 'Y-m-d' ) );
-    hippoo_bi_aggregate_date( ( new DateTimeImmutable( 'today', $tz ) )->format( 'Y-m-d' ) );
+    hippoo_bi_aggregate_date_handler( ( new DateTimeImmutable( 'yesterday', $tz ) )->format( 'Y-m-d' ) );
+    hippoo_bi_aggregate_date_handler( ( new DateTimeImmutable( 'today', $tz ) )->format( 'Y-m-d' ) );
+}
+
+/** Aggregate one calendar day into site_stats + post_stats + visitors. */
+add_action( 'hippoo_bi_aggregate_date', 'hippoo_bi_aggregate_date_handler' );
+
+function hippoo_bi_aggregate_date_handler( $date ) {
+    if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+        return;
+    }
+
+    hippoo_bi_aggregate_site_stats( $date );
+    hippoo_bi_aggregate_post_stats( $date );
+    hippoo_bi_aggregate_visitors( $date );
 }
 
 /** Calendar days that exist in pageviews or order_stats but not yet in site_stats. */
@@ -63,16 +76,6 @@ function hippoo_bi_aggregate_missing_dates( $limit = 50 ) {
     $rows = $wpdb->get_col( $wpdb->prepare( $sql, $params ) );
 
     return is_array( $rows ) ? $rows : array();
-}
-
-/** Aggregate one calendar day into site_stats + post_stats. */
-function hippoo_bi_aggregate_date( $date ) {
-    if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
-        return;
-    }
-
-    hippoo_bi_aggregate_site_stats( $date );
-    hippoo_bi_aggregate_post_stats( $date );
 }
 
 /** Upsert one site_stats row from raw pageviews + order_stats. */
@@ -213,4 +216,30 @@ function hippoo_bi_aggregate_post_stats( $date ) {
             'revenue'         => (float) ( $row['revenue'] ?? 0 ),
         ) );
     }
+}
+
+/** Update visitors table from pageviews of a single day. */
+function hippoo_bi_aggregate_visitors( $date ) {
+    global $wpdb;
+
+    $table_pv = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_v  = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
+
+    $from = $date . ' 00:00:00';
+    $to   = $date . ' 23:59:59';
+
+    $wpdb->query( $wpdb->prepare( "
+        INSERT INTO $table_v (visitor_key, first_seen, last_seen)
+        SELECT
+            session_id,
+            MIN(created_at),
+            MAX(created_at)
+        FROM $table_pv
+        WHERE created_at BETWEEN %s AND %s
+          AND session_id != ''
+        GROUP BY session_id
+        ON DUPLICATE KEY UPDATE
+            first_seen = LEAST(first_seen, VALUES(first_seen)),
+            last_seen  = GREATEST(last_seen, VALUES(last_seen))
+    ", $from, $to ) );
 }

@@ -46,7 +46,7 @@ function hippoo_bi_orders_sync_lookup( $page = 1 ) {
     }
 
     if ( count( $orders ) === $batch_size ) {
-        wp_schedule_single_event( time() + 10, 'hippoo_bi_sync_lookup', array( $page + 1 ) );
+        wp_schedule_single_event( time() + 15, 'hippoo_bi_sync_lookup', array( $page + 1 ) );
     }
 }
 

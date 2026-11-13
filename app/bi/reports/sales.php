@@ -192,8 +192,8 @@ function hippoo_bi_reports_sales_chart( $args = array() ) {
     foreach ( $rows as $row ) {
         $chart[] = (object) array(
             'date'    => $row->date,
-            'revenue' => $row->revenue,
-            'orders'  => $row->orders,
+            'revenue' => (int) $row->revenue,
+            'orders'  => (int) $row->orders,
         );
     }
 
