@@ -26,13 +26,18 @@ function hippoo_bi_reports_traffic_overview( $args = array() ) {
         return $summary;
     }
 
+    $top_pages = hippoo_bi_reports_traffic_top_pages( $args );
+    $traffic_sources = hippoo_bi_reports_traffic_sources( $args );
+    $device_breakdown = hippoo_bi_reports_traffic_device_breakdown( $args );
+    $chart = hippoo_bi_reports_traffic_chart( $args );
+
     $result = array_merge(
         $summary,
         array(
-            'top_pages'        => hippoo_bi_reports_traffic_top_pages( $args ),
-            'traffic_sources'  => hippoo_bi_reports_traffic_sources( $args ),
-            'device_breakdown' => hippoo_bi_reports_traffic_device_breakdown( $args ),
-            'chart'            => hippoo_bi_reports_traffic_chart( $args ),
+            'top_pages'        => $top_pages,
+            'traffic_sources'  => $traffic_sources,
+            'device_breakdown' => $device_breakdown,
+            'chart'            => $chart,
         )
     );
 
@@ -86,7 +91,7 @@ function hippoo_bi_reports_traffic_summary( $args = array() ) {
     return $result;
 }
 
-/** Unique new / returning visitors for a report period (raw pageviews). */
+/** Unique new / returning visitors for a report period. */
 function hippoo_bi_reports_traffic_visitors( $args = array() ) {
     $date_range = hippoo_bi_reports_date_range(
         $args['period'] ?? 'this_month',
@@ -152,23 +157,22 @@ function hippoo_bi_reports_traffic_sources( $args = array() ) {
 
     global $wpdb;
 
-    $table_pv = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_rs = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRER_STATS;
     $table_r  = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRERS;
 
     $sources = $wpdb->get_results( $wpdb->prepare( "
         SELECT
             r.source,
-            COUNT(*) as cnt
-        FROM $table_pv pv
-        INNER JOIN $table_r r ON r.id = pv.referrer_id
-        WHERE pv.created_at BETWEEN %s AND %s
-        GROUP BY pv.referrer_id
+            SUM(rs.views) as cnt
+        FROM $table_rs rs
+        INNER JOIN $table_r r ON r.id = rs.referrer_id
+        WHERE rs.date BETWEEN %s AND %s
+        GROUP BY rs.referrer_id
         ORDER BY cnt DESC
         LIMIT 10
     ", $date_range['from'], $date_range['to'] ) );
 
     $traffic_sources = array();
-
     foreach ( $sources as $source ) {
         $traffic_sources[ $source->source ] = (int) $source->cnt;
     }
@@ -243,14 +247,14 @@ function hippoo_bi_reports_traffic_chart( $args = array() ) {
 /** Get a report page title from its product or WordPress URL. */
 function hippoo_bi_reports_traffic_page_title( $url, $post_id = 0 ) {
     if ( $post_id > 0 ) {
+        $title = get_the_title( $post_id );
+        if ( ! empty( $title ) ) {
+            return $title;
+        }
+
         $product = wc_get_product( $post_id );
         if ( $product ) {
             return $product->get_name();
-        }
-        
-        $title = get_the_title( $post_id );
-        if ( '' !== $title ) {
-            return $title;
         }
     }
 
@@ -258,7 +262,7 @@ function hippoo_bi_reports_traffic_page_title( $url, $post_id = 0 ) {
         $resolved = url_to_postid( home_url( $url ) );
         if ( $resolved ) {
             $title = get_the_title( $resolved );
-            if ( '' !== $title ) {
+            if ( ! empty( $title ) ) {
                 return $title;
             }
         }

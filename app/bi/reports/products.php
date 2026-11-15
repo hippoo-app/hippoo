@@ -54,24 +54,10 @@ function hippoo_bi_reports_products_overview( $args = array() ) {
         $conversion_rate    = $sessions > 0 ? round( ( $orders / $sessions ) * 100, 2 ) : 0;
         $atc_rate           = $sessions > 0 ? round( ( $atc_sessions / $sessions ) * 100, 2 ) : 0;
 
-        $product = wc_get_product( $product_id );
-        if ( ! $product ) {
-            continue;
-        }
-
         $insight = hippoo_bi_reports_products_insight_tag( $views, $orders, $conversion_rate, $atc_rate, $cart_to_order_rate );
-
-        $thumbnail = '';
-        $image_id  = $product->get_image_id();
-        if ( $image_id ) {
-            $thumbnail = wp_get_attachment_image_url( $image_id, 'thumbnail' ) ?: '';
-        }
 
         $products[] = array(
             'product_id'         => $product_id,
-            'product_name'       => $product->get_name(),
-            'product_url'        => $product->get_permalink(),
-            'thumbnail'          => $thumbnail,
             'views'              => $views,
             'unique_sessions'    => $sessions,
             'add_to_cart'        => $add_to_cart,
@@ -127,8 +113,28 @@ function hippoo_bi_reports_products_overview( $args = array() ) {
     $offset      = ( $page - 1 ) * $per_page;
     $paged_products = array_slice( $products, $offset, $per_page );
 
+    $results = array();
+    foreach ( $paged_products as $item ) {
+        $product = wc_get_product( $item['product_id'] );
+        if ( ! $product ) {
+            continue;
+        }
+
+        $thumbnail = '';
+        $image_id  = $product->get_image_id();
+        if ( $image_id ) {
+            $thumbnail = wp_get_attachment_image_url( $image_id, 'thumbnail' ) ?: '';
+        }
+
+        $item['product_name'] = $product->get_name();
+        $item['product_url']  = $product->get_permalink();
+        $item['thumbnail']    = $thumbnail;
+
+        $results[] = $item;
+    }
+
     $response = array(
-        'data'        => $paged_products,
+        'data'        => $results,
         'total'       => $total,
         'total_pages' => $total_pages,
     );

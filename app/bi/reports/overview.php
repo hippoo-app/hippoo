@@ -9,8 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** Build the BI general overview report. */
 function hippoo_bi_reports_overview( $args = array() ) {
-    do_action( 'hippoo_bi_aggregate_date', current_time( 'Y-m-d' ) );
-    
     $traffic_summary = hippoo_bi_reports_traffic_summary( $args );
     if ( is_wp_error( $traffic_summary ) ) {
         return $traffic_summary;

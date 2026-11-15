@@ -46,7 +46,12 @@ function hippoo_bi_orders_sync_lookup( $page = 1 ) {
     }
 
     if ( count( $orders ) === $batch_size ) {
-        wp_schedule_single_event( time() + 15, 'hippoo_bi_sync_lookup', array( $page + 1 ) );
+        $next_page = $page + 1;
+        $next_args = array( $next_page );
+
+        if ( ! wp_next_scheduled( 'hippoo_bi_sync_lookup', $next_args ) ) {
+            wp_schedule_single_event( time() + 15, 'hippoo_bi_sync_lookup', $next_args );
+        }
     }
 }
 

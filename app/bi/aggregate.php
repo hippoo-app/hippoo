@@ -39,6 +39,7 @@ function hippoo_bi_aggregate_date_handler( $date ) {
 
     hippoo_bi_aggregate_site_stats( $date );
     hippoo_bi_aggregate_post_stats( $date );
+    hippoo_bi_aggregate_referrer_stats( $date );
     hippoo_bi_aggregate_visitors( $date );
 }
 
@@ -216,6 +217,32 @@ function hippoo_bi_aggregate_post_stats( $date ) {
             'revenue'         => (float) ( $row['revenue'] ?? 0 ),
         ) );
     }
+}
+
+/** Aggregate daily referrer stats from raw pageviews. */
+function hippoo_bi_aggregate_referrer_stats( $date ) {
+    global $wpdb;
+
+    $table_pv  = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_rs  = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRER_STATS;
+
+    $from = $date . ' 00:00:00';
+    $to   = $date . ' 23:59:59';
+
+    $wpdb->delete( $table_rs, array( 'date' => $date ) );
+
+    $wpdb->query( $wpdb->prepare( "
+        INSERT INTO $table_rs (date, referrer_id, views, unique_sessions)
+        SELECT
+            %s,
+            referrer_id,
+            COUNT(*) as views,
+            COUNT(DISTINCT session_id) as unique_sessions
+        FROM $table_pv
+        WHERE created_at BETWEEN %s AND %s
+          AND referrer_id > 0
+        GROUP BY referrer_id
+    ", $date, $from, $to ) );
 }
 
 /** Update visitors table from pageviews of a single day. */

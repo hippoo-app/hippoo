@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-13T18:22:24+00:00\n"
+"POT-Creation-Date: 2026-11-15T20:41:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: hippoo\n"
@@ -300,36 +300,36 @@ msgstr ""
 msgid "No customers found for the selected status."
 msgstr ""
 
-#: app/bi/reports/products.php:156
+#: app/bi/reports/products.php:162
 msgid "Product not found."
 msgstr ""
 
-#: app/bi/reports/products.php:454
+#: app/bi/reports/products.php:460
 msgid "Not enough data for analysis."
 msgstr ""
 
-#: app/bi/reports/products.php:461
+#: app/bi/reports/products.php:467
 msgid "This product has views but zero sales."
 msgstr ""
 
-#: app/bi/reports/products.php:468
+#: app/bi/reports/products.php:474
 msgid "Users add to cart but don't complete checkout — Check checkout process."
 msgstr ""
 
-#: app/bi/reports/products.php:475
+#: app/bi/reports/products.php:481
 msgid "Excellent conversion with low views — This product needs more promotion."
 msgstr ""
 
-#: app/bi/reports/products.php:483
+#: app/bi/reports/products.php:489
 #, php-format
 msgid "%d views, %d sales — Product page needs improvement."
 msgstr ""
 
-#: app/bi/reports/products.php:493
+#: app/bi/reports/products.php:499
 msgid "Strong performer — Replicate this pattern in other products."
 msgstr ""
 
-#: app/bi/reports/products.php:499
+#: app/bi/reports/products.php:505
 msgid "Normal performance."
 msgstr ""
 

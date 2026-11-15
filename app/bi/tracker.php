@@ -169,7 +169,7 @@ function hippoo_bi_track_referrer_id( $referrer ) {
     $host = ! empty( $referrer ) ? wp_parse_url( (string) $referrer, PHP_URL_HOST ) : null;
     $source = $host ? strtolower( sanitize_text_field( $host ) ) : 'direct';
     $source = substr( $source, 0, 255 );
-    if ( '' === $source ) {
+    if ( empty( $source ) ) {
         $source = 'direct';
     }
 

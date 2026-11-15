@@ -26,10 +26,12 @@ function hippoo_bi_reports_sales_overview( $args = array() ) {
         return $summary;
     }
 
+    $chart = hippoo_bi_reports_sales_chart( $args );
+
     $result = array_merge(
         $summary,
         array(
-            'revenue_chart' => hippoo_bi_reports_sales_chart( $args ),
+            'revenue_chart' => $chart,
         )
     );
 
@@ -110,7 +112,7 @@ function hippoo_bi_reports_sales_summary( $args = array() ) {
     return $response;
 }
 
-/** Unique new / returning customers for a report period (raw order_stats). */
+/** Unique new / returning customers for a report period. */
 function hippoo_bi_reports_sales_customers( $args = array() ) {
     $date_range = hippoo_bi_reports_date_range(
         $args['period'] ?? 'this_month',
@@ -123,24 +125,27 @@ function hippoo_bi_reports_sales_customers( $args = array() ) {
 
     $customers = $wpdb->get_row( $wpdb->prepare( "
         SELECT
-            COUNT(DISTINCT CASE WHEN first_order >= %s THEN identity END) as new_customers,
-            COUNT(DISTINCT CASE WHEN first_order < %s THEN identity END) as returning_customers
+            COUNT(DISTINCT CASE WHEN first_order >= %s THEN identity END) AS new_customers,
+            COUNT(DISTINCT CASE WHEN first_order <  %s THEN identity END) AS returning_customers
         FROM (
             SELECT
-                COALESCE(NULLIF(billing_email, ''), CONCAT('uid_', customer_id)) as identity,
-                MIN(date_created) as first_order
-            FROM $table
-            WHERE date_created <= %s
-              AND ( (billing_email IS NOT NULL AND billing_email != '') OR customer_id IS NOT NULL )
+                identity,
+                MIN(date_created) AS first_order
+            FROM (
+                SELECT
+                    COALESCE(NULLIF(billing_email, ''), CONCAT('uid_', customer_id)) AS identity,
+                    date_created
+                FROM $table
+                WHERE date_created <= %s
+                  AND (
+                        (billing_email IS NOT NULL AND billing_email != '')
+                     OR customer_id IS NOT NULL
+                  )
+            ) raw
             GROUP BY identity
-        ) cf
-        WHERE EXISTS (
-            SELECT 1 FROM $table t
-            WHERE COALESCE(NULLIF(t.billing_email, ''), CONCAT('uid_', t.customer_id)) = cf.identity
-              AND t.date_created BETWEEN %s AND %s
-            LIMIT 1
-        )
-    ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from'], $date_range['to'] ) );
+            HAVING MAX(date_created) >= %s
+        ) t
+    ", $date_range['from'], $date_range['from'], $date_range['to'], $date_range['from'] ) );
 
     return $customers;
 }
@@ -192,8 +197,8 @@ function hippoo_bi_reports_sales_chart( $args = array() ) {
     foreach ( $rows as $row ) {
         $chart[] = (object) array(
             'date'    => $row->date,
-            'revenue' => (int) $row->revenue,
-            'orders'  => (int) $row->orders,
+            'revenue' => $row->revenue,
+            'orders'  => $row->orders,
         );
     }
 

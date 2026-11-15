@@ -15,17 +15,18 @@ define( 'HIPPOO_BI_DB_VERSION', '1.3.0' );
 
 define( 'HIPPOO_BI_TABLE_PATHS', 'hippoo_bi_paths' );
 define( 'HIPPOO_BI_TABLE_REFERRERS', 'hippoo_bi_referrers' );
-define( 'HIPPOO_BI_TABLE_VISITORS', 'hippoo_bi_visitors' );
 
 define( 'HIPPOO_BI_TABLE_PAGEVIEWS', 'hippoo_bi_pageviews' );
 define( 'HIPPOO_BI_TABLE_ADD_TO_CARTS', 'hippoo_bi_add_to_carts' );
 
-define( 'HIPPOO_BI_TABLE_CHURN_SCORES', 'hippoo_bi_churn_scores' );
 define( 'HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP', 'hippoo_bi_order_product_lookup' );
 define( 'HIPPOO_BI_TABLE_ORDER_STATS', 'hippoo_bi_order_stats' );
+define( 'HIPPOO_BI_TABLE_CHURN_SCORES', 'hippoo_bi_churn_scores' );
 
 define( 'HIPPOO_BI_TABLE_SITE_STATS', 'hippoo_bi_site_stats' );
 define( 'HIPPOO_BI_TABLE_POST_STATS', 'hippoo_bi_post_stats' );
+define( 'HIPPOO_BI_TABLE_REFERRER_STATS', 'hippoo_bi_referrer_stats' );
+define( 'HIPPOO_BI_TABLE_VISITORS', 'hippoo_bi_visitors' );
 
 
 // ---------------------------------------------------------------------------
@@ -48,9 +49,9 @@ function hippoo_bi_init_database() {
     $legacy_tables = array(
         'hippoo_pageviews'             => HIPPOO_BI_TABLE_PAGEVIEWS,
         'hippoo_add_to_carts'          => HIPPOO_BI_TABLE_ADD_TO_CARTS,
-        'hippoo_churn_scores'          => HIPPOO_BI_TABLE_CHURN_SCORES,
         'hippoo_order_product_lookup'  => HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP,
         'hippoo_order_stats'           => HIPPOO_BI_TABLE_ORDER_STATS,
+        'hippoo_churn_scores'          => HIPPOO_BI_TABLE_CHURN_SCORES,
         'hippoo_daily_stats'           => HIPPOO_BI_TABLE_SITE_STATS,
         'hippoo_daily_product_stats'   => HIPPOO_BI_TABLE_POST_STATS,
     );
@@ -89,17 +90,6 @@ function hippoo_bi_init_database() {
         UNIQUE KEY idx_source (source)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-    $table_visitors = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
-    $sql_visitors = "CREATE TABLE IF NOT EXISTS $table_visitors (
-        id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        visitor_key         VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-        first_seen          DATETIME NOT NULL,
-        last_seen           DATETIME NOT NULL,
-        PRIMARY KEY (id),
-        UNIQUE KEY idx_visitor_key (visitor_key),
-        KEY idx_last_first (last_seen, first_seen)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-
     $table_pageviews = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
     $sql_pageviews = "CREATE TABLE IF NOT EXISTS $table_pageviews (
         id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -128,25 +118,6 @@ function hippoo_bi_init_database() {
         KEY idx_created (created_at),
         KEY idx_session (session_id),
         KEY idx_product (product_id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-
-    $table_churn = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
-    $sql_churn = "CREATE TABLE IF NOT EXISTS $table_churn (
-        email               VARCHAR(100) NOT NULL,
-        customer_id         BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-        churn_score         TINYINT UNSIGNED NOT NULL DEFAULT 0,
-        status              ENUM('active','at_risk','high_risk','churned') NOT NULL,
-        first_order_date    DATE DEFAULT NULL,
-        last_order_date     DATE DEFAULT NULL,
-        total_orders        SMALLINT UNSIGNED DEFAULT 0,
-        total_spent         DECIMAL(13,2) DEFAULT 0.00,
-        clv DECIMAL(13,2)   DEFAULT 0.00,
-        avg_days_between    DECIMAL(8,1) DEFAULT 0.0,
-        calculated_at       DATETIME NOT NULL,
-        PRIMARY KEY (email),
-        KEY idx_customer_id (customer_id),
-        KEY idx_status (status),
-        KEY idx_score (churn_score DESC)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     $table_order_lookup = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
@@ -184,6 +155,25 @@ function hippoo_bi_init_database() {
         KEY idx_date_created (date_created)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+    $table_churn = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;
+    $sql_churn = "CREATE TABLE IF NOT EXISTS $table_churn (
+        email               VARCHAR(100) NOT NULL,
+        customer_id         BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+        churn_score         TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        status              ENUM('active','at_risk','high_risk','churned') NOT NULL,
+        first_order_date    DATE DEFAULT NULL,
+        last_order_date     DATE DEFAULT NULL,
+        total_orders        SMALLINT UNSIGNED DEFAULT 0,
+        total_spent         DECIMAL(13,2) DEFAULT 0.00,
+        clv DECIMAL(13,2)   DEFAULT 0.00,
+        avg_days_between    DECIMAL(8,1) DEFAULT 0.0,
+        calculated_at       DATETIME NOT NULL,
+        PRIMARY KEY (email),
+        KEY idx_customer_id (customer_id),
+        KEY idx_status (status),
+        KEY idx_score (churn_score DESC)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
     $table_site_stats = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
     $sql_site_stats = "CREATE TABLE IF NOT EXISTS $table_site_stats (
         date                DATE NOT NULL,
@@ -214,18 +204,39 @@ function hippoo_bi_init_database() {
         PRIMARY KEY (date, post_id, path_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+    $table_ref_stats = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRER_STATS;
+    $sql_ref_stats = "CREATE TABLE IF NOT EXISTS $table_ref_stats (
+        date                DATE NOT NULL,
+        referrer_id         INT UNSIGNED NOT NULL,
+        views               INT UNSIGNED NOT NULL DEFAULT 0,
+        unique_sessions     INT UNSIGNED NOT NULL DEFAULT 0,
+        PRIMARY KEY (date, referrer_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+    $table_visitors = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
+    $sql_visitors = "CREATE TABLE IF NOT EXISTS $table_visitors (
+        id                  BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        visitor_key         VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+        first_seen          DATETIME NOT NULL,
+        last_seen           DATETIME NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY idx_visitor_key (visitor_key),
+        KEY idx_last_first_seen (last_seen, first_seen)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
     dbDelta( $sql_paths );
     dbDelta( $sql_refs );
-    dbDelta( $sql_visitors );
     dbDelta( $sql_pageviews );
     dbDelta( $sql_atc );
-    dbDelta( $sql_churn );
     dbDelta( $sql_order_lookup );
     dbDelta( $sql_order_stats );
+    dbDelta( $sql_churn );
     dbDelta( $sql_site_stats );
     dbDelta( $sql_post_stats );
+    dbDelta( $sql_ref_stats );
+    dbDelta( $sql_visitors );
 
     // Migrations
     if ( version_compare( $current_version, '1.1.0', '<' ) ) {
