@@ -47,7 +47,7 @@ function hippoo_weekly_notif_get_sales_data( $start, $end ) {
     $table_stats  = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_STATS;
     $table_lookup = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
 
-    $included_statuses = hippoo_bi_get_report_order_statuses();
+    $included_statuses = hippoo_bi_orders_get_report_statuses();
 
     if ( empty( $included_statuses ) ) {
         return array(
@@ -103,10 +103,6 @@ function hippoo_weekly_notif_get_sales_data( $start, $end ) {
 
 /** Get customers who are approaching the BI churn threshold. */
 function hippoo_weekly_notif_get_churning_soon() {
-    if ( ! function_exists( 'hippoo_bi_get_churn_summary' ) ) {
-        return 0;
-    }
-
     global $wpdb;
 
     $table = $wpdb->prefix . HIPPOO_BI_TABLE_CHURN_SCORES;

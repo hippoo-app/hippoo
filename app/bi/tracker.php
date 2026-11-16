@@ -19,7 +19,7 @@ function hippoo_bi_track_enqueue_scripts() {
 
     wp_localize_script( 'hippoo-bi-tracker', 'hippooBI', [
         'rest_url'   => rest_url('hippoo/v1/bi/track'),
-        'product_id' => is_product() ? get_the_ID() : null,
+        'post_id' => absint( get_queried_object_id() ),
     ] );
 }
 
@@ -27,14 +27,22 @@ function hippoo_bi_track_enqueue_scripts() {
 add_action( 'woocommerce_add_to_cart', 'hippoo_bi_track_add_to_cart', 10, 6 );
 
 function hippoo_bi_track_add_to_cart( $cart_id, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
+    if ( hippoo_bi_is_automated_request() ) {
+        return false;
+    }
+
     if ( empty( $product_id ) ) {
         return false;
     }
 
+    $session_id = hippoo_bi_track_session_id();
+    if ( ! $session_id ) {
+        return false;
+    }
+
     $insert_data = array(
-        'session_id' => hippoo_bi_get_current_session_id(),
+        'session_id' => $session_id,
         'product_id' => absint( $product_id ),
-        'quantity'   => absint( $quantity ),
         'created_at' => current_time( 'mysql' ),
     );
 
@@ -47,20 +55,39 @@ function hippoo_bi_track_add_to_cart( $cart_id, $product_id, $quantity, $variati
 
 /** Store a BI pageview. */
 function hippoo_bi_track_pageview( $data ) {
-    if ( empty( $data['product_id'] ) ) {
+    $page_url = sanitize_url( $data['page_url'] ?? '' );
+    if ( empty( $page_url ) ) {
+        return false;
+    }
+
+    $path_id = hippoo_bi_track_path_id( $page_url );
+    if ( ! $path_id ) {
+        return false;
+    }
+
+    $referrer_id = hippoo_bi_track_referrer_id( $data['referrer'] ?? '' );
+    if ( ! $referrer_id ) {
+        return false;
+    }
+
+    $post_id = absint( $data['post_id'] );
+    if ( ! $post_id ) {
+        $post_id = absint( url_to_postid( $page_url ) );
+    }
+
+    $session_id = hippoo_bi_track_session_id( $data['session_id'] ?? '' );
+    if ( ! $session_id ) {
         return false;
     }
 
     $insert_data = array(
-        'session_id'      => ! empty( $data['session_id'] )
-            ? sanitize_text_field( $data['session_id'] )
-            : hippoo_bi_get_current_session_id(),
-        'page_url'        => sanitize_url( $data['page_url'] ?? '' ),
-        'referrer_source' => hippoo_bi_get_referrer_source( $data['referrer'] ?? '' ),
-        'device_type'     => hippoo_bi_get_device_type(),
-        'country'         => hippoo_bi_get_country_from_ip(),
-        'product_id'      => absint( $data['product_id'] ),
-        'created_at'      => current_time( 'mysql' ),
+        'session_id'  => $session_id,
+        'post_id'     => $post_id,
+        'path_id'     => $path_id,
+        'referrer_id' => $referrer_id,
+        'device_type' => hippoo_bi_track_device_type(),
+        'country'     => hippoo_bi_track_country_from_ip(),
+        'created_at'  => current_time( 'mysql' ),
     );
 
     global $wpdb;
@@ -74,36 +101,127 @@ function hippoo_bi_track_pageview( $data ) {
 // Tracking helpers
 // ---------------------------------------------------------------------------
 
-/** Get or create the current BI tracking session ID. */
-function hippoo_bi_get_current_session_id() {
-    $cookie_name = 'hpbi';
+/** Determine whether the current request is automated. */
+function hippoo_bi_is_automated_request() {
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-    if ( ! empty( $_COOKIE[ $cookie_name ] ) ) {
-        return sanitize_text_field( $_COOKIE[ $cookie_name ] );
+    if ( empty( $user_agent ) ) {
+        return true;
     }
 
-    $sid = substr( str_shuffle( str_repeat( '0123456789abcdefghijklmnopqrstuvwxyz', 8 ) ), 0, 16 );
-    $expire = time() + ( 2 * YEAR_IN_SECONDS );
+    $bot_pattern = '/bot|crawl|spider|seo|lighthouse|facebookexternalhit|google-safety|preview|prerender|headless|phantom|scrapy|python|curl|wget|go-http|okhttp|node-fetch|axios|java\/|libwww|http[-_]?client|monitor|uptime|pingdom|statuscake|validator|scanner/i';
 
-    setcookie( $cookie_name, $sid, $expire, '/', '', is_ssl(), false );
-    $_COOKIE[ $cookie_name ] = $sid;
+    if ( preg_match( $bot_pattern, $user_agent ) ) {
+        return true;
+    }
 
-    return $sid;
+    // Ignore prefetch and prerender requests.
+    $sec_purpose = strtolower( $_SERVER['HTTP_SEC_PURPOSE'] ?? '' );
+    $purpose     = strtolower( $_SERVER['HTTP_PURPOSE'] ?? '' );
+
+    if (
+        false !== strpos( $sec_purpose, 'prefetch' ) ||
+        false !== strpos( $sec_purpose, 'prerender' ) ||
+        'prefetch' === $purpose
+    ) {
+        return true;
+    }
+
+    // Ignore direct endpoint navigation.
+    if ( 'navigate' === ( $_SERVER['HTTP_SEC_FETCH_MODE'] ?? '' ) ) {
+        return true;
+    }
+
+    return false;
 }
 
-/** Extract the hostname from a referrer URL. */
-function hippoo_bi_get_referrer_source( $ref ) {
-    if ( empty( $ref ) ) {
-        return null;
+/** Return the stable lookup ID for a normalized path, inserting it once. */
+function hippoo_bi_track_path_id( $url ) {
+    static $cache = array();
+
+    $path = wp_parse_url( (string) $url, PHP_URL_PATH );
+    $path = is_string( $path ) ? untrailingslashit( $path ) : '/';
+    $path = empty( $path ) ? '/' : substr( $path, 0, 255 );
+
+    if ( isset( $cache[ $path ] ) ) {
+        return $cache[ $path ];
     }
 
-    $host = wp_parse_url( $ref, PHP_URL_HOST );
+    global $wpdb;
 
-    return $host ? $host : null;
+    $table  = $wpdb->prefix . HIPPOO_BI_TABLE_PATHS;
+    $result = $wpdb->query( $wpdb->prepare(
+        "INSERT INTO $table (path) VALUES (%s) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)",
+        $path
+    ) );
+
+    if ( false === $result ) {
+        return 0;
+    }
+
+    return $cache[ $path ] = (int) $wpdb->insert_id;
+}
+
+/** Return the stable lookup ID for a referrer host or the direct label. */
+function hippoo_bi_track_referrer_id( $referrer ) {
+    static $cache = array();
+
+    $host = ! empty( $referrer ) ? wp_parse_url( (string) $referrer, PHP_URL_HOST ) : null;
+    $source = $host ? strtolower( sanitize_text_field( $host ) ) : 'direct';
+    $source = substr( $source, 0, 255 );
+    if ( empty( $source ) ) {
+        $source = 'direct';
+    }
+
+    if ( isset( $cache[ $source ] ) ) {
+        return $cache[ $source ];
+    }
+
+    global $wpdb;
+
+    $table  = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRERS;
+    $result = $wpdb->query( $wpdb->prepare(
+        "INSERT INTO $table (source) VALUES (%s) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)",
+        $source
+    ) );
+
+    if ( false === $result ) {
+        return 0;
+    }
+
+    return $cache[ $source ] = (int) $wpdb->insert_id;
+}
+
+/** Resolve session from client id or existing cookie. */
+function hippoo_bi_track_session_id( $session_id = '' ) {
+    $cookie_name = 'hpbi';
+    $expire      = time() + ( 2 * YEAR_IN_SECONDS );
+    $session_id  = strtolower( sanitize_text_field( (string) $session_id ) );
+
+    // Use and persist a valid id from JS.
+    if ( ! empty( $session_id ) && preg_match( '/^[a-z0-9]+$/', $session_id ) ) {
+        if ( empty( $_COOKIE[ $cookie_name ] ) || $_COOKIE[ $cookie_name ] !== $session_id ) {
+            if ( ! headers_sent() ) {
+                setcookie( $cookie_name, $session_id, $expire, '/', '', is_ssl(), false );
+            }
+            $_COOKIE[ $cookie_name ] = $session_id;
+        }
+        return $session_id;
+    }
+
+    // Fallback to an existing valid cookie.
+    if ( ! empty( $_COOKIE[ $cookie_name ] ) ) {
+        $cookie_id = strtolower( sanitize_text_field( wp_unslash( $_COOKIE[ $cookie_name ] ) ) );
+        if ( preg_match( '/^[a-z0-9]+$/', $cookie_id ) ) {
+            return $cookie_id;
+        }
+    }
+
+    return '';
 }
 
 /** Detect the current visitor device type. */
-function hippoo_bi_get_device_type() {
+function hippoo_bi_track_device_type() {
     try {
         $detect = new \Detection\MobileDetect();
         if ( $detect->isTablet() ) return 't';
@@ -118,7 +236,7 @@ function hippoo_bi_get_device_type() {
 }
 
 /** Resolve the visitor country from the current IP address. */
-function hippoo_bi_get_country_from_ip() {
+function hippoo_bi_track_country_from_ip() {
     $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 
     if ( empty( $ip ) || '127.0.0.1' === $ip || 0 === strpos( $ip, '192.168.' ) || 0 === strpos( $ip, '10.' ) ) {

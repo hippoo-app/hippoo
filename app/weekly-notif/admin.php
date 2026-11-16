@@ -48,12 +48,10 @@ function hippoo_weekly_notif_sanitize_setting( $value ) {
 
 /** Print the weekly notification toggle. */
 function hippoo_weekly_notif_settings_field() {
-    $value = get_option( 'hippoo_weekly_notif', '1' );
-
     printf(
         '<input type="hidden" name="hippoo_weekly_notif" value="0" />' .
         '<input type="checkbox" class="switch" name="hippoo_weekly_notif" value="1" %s />',
-        checked( $value, true, false )
+        checked( hippoo_weekly_notif_is_enabled(), true, false )
     );
 }
 

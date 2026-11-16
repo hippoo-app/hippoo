@@ -7,25 +7,24 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-
 /** Build the BI general overview report. */
-function hippoo_bi_get_general_overview( $args = array() ) {
-    $traffic_summary = hippoo_bi_get_traffic_summary( $args );
+function hippoo_bi_reports_overview( $args = array() ) {
+    $traffic_summary = hippoo_bi_reports_traffic_summary( $args );
     if ( is_wp_error( $traffic_summary ) ) {
         return $traffic_summary;
     }
 
-    $sales_summary = hippoo_bi_get_sales_summary( $args );
+    $sales_summary = hippoo_bi_reports_sales_summary( $args );
     if ( is_wp_error( $sales_summary ) ) {
         return $sales_summary;
     }
 
-    $churn_summary = hippoo_bi_get_churn_summary();
+    $churn_summary = hippoo_bi_reports_churn_summary();
     if ( is_wp_error( $churn_summary ) ) {
         return $churn_summary;
     }
 
-    $product_highlights = hippoo_bi_get_product_highlights( $args );
+    $product_highlights = hippoo_bi_reports_products_highlights( $args );
     if ( is_wp_error( $product_highlights ) ) {
         return $product_highlights;
     }
@@ -47,14 +46,14 @@ function hippoo_bi_get_general_overview( $args = array() ) {
         'new_visitors'        => $traffic_summary['new_visitors'] ?? 0,
         'returning_visitors'  => $traffic_summary['returning_visitors'] ?? 0,
         'bounce_rate'         => $traffic_summary['bounce_rate'] ?? 0,
-        'chart'               => hippoo_bi_get_overview_chart( $args ),
-        'churn_summary' => [
+        'chart'               => hippoo_bi_reports_overview_chart( $args ),
+        'churn_summary'       => array(
             'churn_rate'      => $churn_summary['churn_rate'] ?? 0,
             'active_count'    => $churn_summary['active_customers'] ?? 0,
             'at_risk_count'   => $churn_summary['at_risk_customers'] ?? 0,
             'high_risk_count' => $churn_summary['high_risk_customers'] ?? 0,
             'churned_count'   => $churn_summary['churned_customers'] ?? 0,
-        ],
+        ),
         'product_highlights'  => $product_highlights,
         'comparison'          => $sales_summary['comparison'] ?? array(
             'vs_previous_period' => '+0%',
@@ -64,9 +63,9 @@ function hippoo_bi_get_general_overview( $args = array() ) {
 }
 
 /** Build the combined traffic and revenue chart for the general overview. */
-function hippoo_bi_get_overview_chart( $args = array() ) {
-    $traffic_chart = hippoo_bi_get_traffic_chart( $args );
-    $sales_chart   = hippoo_bi_get_sales_chart( $args );
+function hippoo_bi_reports_overview_chart( $args = array() ) {
+    $traffic_chart = hippoo_bi_reports_traffic_chart( $args );
+    $sales_chart   = hippoo_bi_reports_sales_chart( $args );
 
     $chart = array();
 

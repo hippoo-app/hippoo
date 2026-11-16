@@ -19,7 +19,7 @@ require_once __DIR__ . '/reports/overview.php';
 // ---------------------------------------------------------------------------
 
 /** Get the current BI report date range. */
-function hippoo_bi_get_date_range( $period, $date_from = null, $date_to = null ) {
+function hippoo_bi_reports_date_range( $period, $date_from = null, $date_to = null ) {
     $period = sanitize_text_field( strtolower( $period ) );
     $now    = current_time( 'mysql' );
 
@@ -91,8 +91,8 @@ function hippoo_bi_get_date_range( $period, $date_from = null, $date_to = null )
 }
 
 /** Get the BI report date range immediately before the current range. */
-function hippoo_bi_get_previous_date_range( $period, $date_from = null, $date_to = null ) {
-    $current = hippoo_bi_get_date_range( $period, $date_from, $date_to );
+function hippoo_bi_reports_previous_date_range( $period, $date_from = null, $date_to = null ) {
+    $current = hippoo_bi_reports_date_range( $period, $date_from, $date_to );
 
     $from = strtotime( $current['from'] );
     $to   = strtotime( $current['to'] );
@@ -102,44 +102,4 @@ function hippoo_bi_get_previous_date_range( $period, $date_from = null, $date_to
         'from' => date( 'Y-m-d H:i:s', $from - $diff ),
         'to'   => date( 'Y-m-d H:i:s', $to - $diff ),
     );
-}
-
-/** Get the WooCommerce order statuses included in BI reports. */
-function hippoo_bi_get_report_order_statuses() {
-    $excluded = array();
-    if ( class_exists( '\WC_Admin_Settings' ) ) {
-        $excluded = \WC_Admin_Settings::get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'failed', 'cancelled' ) );
-    } else {
-        $excluded = get_option( 'woocommerce_excluded_report_order_statuses', array( 'pending', 'failed', 'cancelled' ) );
-    }
-
-    $excluded = apply_filters( 'woocommerce_analytics_excluded_order_statuses', $excluded );
-    $excluded = array_map( function ( $status ) {
-        return str_replace( 'wc-', '', $status );
-    }, (array) $excluded );
-
-    $all = array_map( function ( $status ) {
-        return str_replace( 'wc-', '', $status );
-    }, array_keys( wc_get_order_statuses() ) );
-
-    // Always exclude auto-draft/trash
-    $included = array_values( array_diff( $all, $excluded ) );
-    $included = array_diff( $included, array( 'auto-draft', 'trash' ) );
-
-    return $included ?: wc_get_is_paid_statuses();
-}
-
-/** Clear cached BI report data. */
-function hippoo_bi_clear_report_caches() {
-    global $wpdb;
-
-    $wpdb->query( "
-        DELETE FROM {$wpdb->options}
-        WHERE option_name LIKE '_transient_hippoo_bi_%'
-    " );
-
-    $wpdb->query( "
-        DELETE FROM {$wpdb->options}
-        WHERE option_name LIKE '_transient_timeout_hippoo_bi_%'
-    " );
 }
