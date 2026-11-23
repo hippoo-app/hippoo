@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Database constants
 // ---------------------------------------------------------------------------
 
-define( 'HIPPOO_BI_DB_VERSION', '1.3.0' );
+define( 'HIPPOO_BI_DB_VERSION', '1.3.1' );
 
 define( 'HIPPOO_BI_TABLE_PATHS', 'hippoo_bi_paths' );
 define( 'HIPPOO_BI_TABLE_REFERRERS', 'hippoo_bi_referrers' );
@@ -33,16 +33,68 @@ define( 'HIPPOO_BI_TABLE_VISITORS', 'hippoo_bi_visitors' );
 // Database initialization
 // ---------------------------------------------------------------------------
 
-/** Register BI database initialization. */
-add_action( 'plugins_loaded', 'hippoo_bi_init_database' );
+/** Schema migrations, keyed by version. */
+function hippoo_bi_database_schema_migrations() {
+    return array(
+        '1.1.0' => 'hippoo_bi_migrate_to_110',
+        '1.2.0' => 'hippoo_bi_migrate_to_120',
+        '1.3.0' => 'hippoo_bi_migrate_to_130',
+    );
+}
 
-function hippoo_bi_init_database() {
+/** Background data migrations, keyed by version. */
+function hippoo_bi_database_data_migrations() {
+    return array(
+        '1.3.1' => 'hippoo_bi_migrate_to_131',
+    );
+}
+
+/** Register BI database initialization. */
+add_action( 'plugins_loaded', 'hippoo_bi_database_init' );
+
+function hippoo_bi_database_init() {
     $current_version = get_option( 'hippoo_bi_db_version', '0' );
 
     if ( $current_version === HIPPOO_BI_DB_VERSION ) {
         return;
     }
 
+    // Prevent concurrent schema changes.
+    if ( get_transient( 'hippoo_bi_db_lock' ) ) {
+        return;
+    }
+    set_transient( 'hippoo_bi_db_lock', 1, 5 * MINUTE_IN_SECONDS );
+
+    $schema_versions = array_keys( hippoo_bi_database_schema_migrations() );
+    $schema_version  = end( $schema_versions );
+    if ( version_compare( $current_version, $schema_version, '<' )
+        && ! hippoo_bi_database_create_tables() ) {
+        delete_transient( 'hippoo_bi_db_lock' );
+        return;
+    }
+
+    // Schema only; data runs in the background.
+    try {
+        foreach ( hippoo_bi_database_schema_migrations() as $version => $callback ) {
+            if ( version_compare( $current_version, $version, '<' ) ) {
+                $callback();
+            }
+        }
+    } catch ( RuntimeException $e ) {
+        error_log( 'Hippoo BI database migration failed: ' . $e->getMessage() );
+        delete_transient( 'hippoo_bi_db_lock' );
+        return;
+    }
+
+    // Write the version early so no request repeats this.
+    update_option( 'hippoo_bi_db_version', HIPPOO_BI_DB_VERSION );
+    delete_transient( 'hippoo_bi_db_lock' );
+
+    do_action( 'hippoo_bi_database_schema_migrated', HIPPOO_BI_DB_VERSION, $current_version );
+}
+
+/** Create or update the BI tables, preserving rows from legacy table names. */
+function hippoo_bi_database_create_tables() {
     global $wpdb;
 
     // Rename legacy BI tables before dbDelta creates their new names, preserving existing rows.
@@ -66,11 +118,11 @@ function hippoo_bi_init_database() {
         if ( $new_exists ) {
             $new_rows = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $new_table" );
             if ( $new_rows > 0 || false === $wpdb->query( "DROP TABLE $new_table" ) ) {
-                return;
+                return false;
             }
         }
         if ( false === $wpdb->query( "RENAME TABLE $legacy_table TO $new_table" ) ) {
-            return;
+            return false;
         }
     }
 
@@ -193,7 +245,7 @@ function hippoo_bi_init_database() {
     $table_post_stats = $wpdb->prefix . HIPPOO_BI_TABLE_POST_STATS;
     $sql_post_stats = "CREATE TABLE IF NOT EXISTS $table_post_stats (
         date                DATE NOT NULL,
-        post_id             BIGINT(20) UNSIGNED DEFAULT NULL,
+        post_id             BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
         path_id             INT UNSIGNED NOT NULL DEFAULT 0,
         views               INT UNSIGNED NOT NULL DEFAULT 0,
         unique_sessions     INT UNSIGNED NOT NULL DEFAULT 0,
@@ -238,30 +290,12 @@ function hippoo_bi_init_database() {
     dbDelta( $sql_ref_stats );
     dbDelta( $sql_visitors );
 
-    // Migrations
-    if ( version_compare( $current_version, '1.1.0', '<' ) ) {
-        hippoo_bi_migrate_to_110();
-    }
-    if ( version_compare( $current_version, '1.2.0', '<' ) ) {
-        hippoo_bi_migrate_to_120();
-    }
-    if ( version_compare( $current_version, '1.3.0', '<' ) ) {
-        try {
-            hippoo_bi_migrate_to_130();
-        } catch ( RuntimeException $e ) {
-            error_log( 'Hippoo BI migration 1.3.0 failed: ' . $e->getMessage() );
-            return;
-        }
-    }
-
-    update_option( 'hippoo_bi_db_version', HIPPOO_BI_DB_VERSION );
-
-    do_action( 'hippoo_bi_database_migrated', HIPPOO_BI_DB_VERSION, $current_version );
+    return true;
 }
 
 
 // ---------------------------------------------------------------------------
-// Migrations
+// Schema migrations
 // ---------------------------------------------------------------------------
 
 /** Migrate BI database to version 1.1.0. */
@@ -328,13 +362,10 @@ function hippoo_bi_migrate_to_120() {
     // Intentionally empty – kept for consistency with other migrate_* helpers.
 }
 
-/** Consolidate BI path, referrer and daily-summary changes + index improvements. */
+/** Migrate BI database to version 1.3.0 – schema only. */
 function hippoo_bi_migrate_to_130() {
     global $wpdb;
 
-    $paths        = $wpdb->prefix . HIPPOO_BI_TABLE_PATHS;
-    $refs         = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRERS;
-    $visitors     = $wpdb->prefix . HIPPOO_BI_TABLE_VISITORS;
     $pageviews    = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
     $add_to_carts = $wpdb->prefix . HIPPOO_BI_TABLE_ADD_TO_CARTS;
     $order_lookup = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_PRODUCT_LOOKUP;
@@ -363,130 +394,11 @@ function hippoo_bi_migrate_to_130() {
         }
     }
 
-    // pageviews: map product_id to post_id
-    if ( in_array( 'product_id', $page_columns, true ) ) {
-        if ( false === $wpdb->query(
-            "UPDATE $pageviews SET post_id = product_id WHERE post_id IS NULL AND product_id IS NOT NULL"
-        ) ) {
-            throw new RuntimeException( 'Failed mapping product_id to post_id on pageviews.' );
-        }
-    }
-
-    // pageviews: convert page_url to path_id
-    if ( in_array( 'page_url', $page_columns, true ) ) {
-        $path_expr = "CASE
-            WHEN LOCATE('://', page_url) > 0 THEN
-                CASE WHEN LOCATE('/', page_url, LOCATE('://', page_url) + 3) = 0
-                    THEN '/' ELSE SUBSTRING(page_url, LOCATE('/', page_url, LOCATE('://', page_url) + 3)) END
-            ELSE page_url
-        END";
-        $path_expr = "SUBSTRING_INDEX(SUBSTRING_INDEX($path_expr, '?', 1), '#', 1)";
-        $path_expr = "TRIM(TRAILING '/' FROM $path_expr)";
-        $path_expr = "LEFT(CASE WHEN $path_expr = '' THEN '/' ELSE $path_expr END, 255)";
-        $raw_path_expr = str_replace( 'page_url', 'raw.page_url', $path_expr );
-
-        $batch  = 5000;
-        $offset = 0;
-        do {
-            $count = $wpdb->query(
-                "INSERT IGNORE INTO $paths (path)
-                 SELECT DISTINCT $path_expr FROM $pageviews
-                 WHERE path_id = 0
-                 ORDER BY $path_expr
-                 LIMIT $batch OFFSET $offset"
-            );
-            if ( false === $count ) {
-                throw new RuntimeException( 'Failed inserting paths from page_url.' );
-            }
-            $offset += $batch;
-        } while ( $count > 0 );
-
-        if ( false === $wpdb->query(
-            "UPDATE $pageviews raw
-             INNER JOIN $paths p ON p.path = $raw_path_expr
-             SET raw.path_id = p.id
-             WHERE raw.path_id = 0"
-        ) ) {
-            throw new RuntimeException( 'Failed updating path_id on pageviews.' );
-        }
-    }
-
-    if ( (int) $wpdb->get_var( "SELECT COUNT(*) FROM $pageviews WHERE path_id = 0" ) > 0 ) {
-        throw new RuntimeException( 'Some pageviews still have path_id = 0.' );
-    }
-
-    // pageviews: convert referrer_source to referrer_id
-    if ( false === $wpdb->query( $wpdb->prepare(
-        "INSERT IGNORE INTO $refs (source) VALUES (%s)",
-        'direct'
-    ) ) ) {
-        throw new RuntimeException( 'Failed ensuring direct referrer label.' );
-    }
-
-    if ( in_array( 'referrer_source', $page_columns, true ) ) {
-        $source_expr     = "LEFT(COALESCE(NULLIF(LOWER(TRIM(referrer_source)), ''), 'direct'), 255)";
-        $raw_source_expr = str_replace( 'referrer_source', 'raw.referrer_source', $source_expr );
-
-        $batch  = 5000;
-        $offset = 0;
-        do {
-            $count = $wpdb->query(
-                "INSERT IGNORE INTO $refs (source)
-                 SELECT DISTINCT $source_expr FROM $pageviews
-                 ORDER BY $source_expr
-                 LIMIT $batch OFFSET $offset"
-            );
-            if ( false === $count ) {
-                throw new RuntimeException( 'Failed inserting referrer labels.' );
-            }
-            $offset += $batch;
-        } while ( $count > 0 );
-
-        if ( false === $wpdb->query(
-            "UPDATE $pageviews raw
-             INNER JOIN $refs label ON label.source = $raw_source_expr
-             SET raw.referrer_id = label.id
-             WHERE raw.referrer_id = 0"
-        ) ) {
-            throw new RuntimeException( 'Failed updating referrer_id on pageviews.' );
-        }
-    }
-
-    $direct_id = (int) $wpdb->get_var( $wpdb->prepare(
-        "SELECT id FROM $refs WHERE source = %s",
-        'direct'
-    ) );
-    if ( ! $direct_id || false === $wpdb->query( $wpdb->prepare(
-        "UPDATE $pageviews SET referrer_id = %d WHERE referrer_id = 0",
-        $direct_id
-    ) ) ) {
-        throw new RuntimeException( 'Failed setting default direct referrer_id.' );
-    }
-
-    // pageviews: drop legacy columns
-    $page_columns = $wpdb->get_col( "SHOW COLUMNS FROM $pageviews", 0 );
-    if ( null === $page_columns ) {
-        throw new RuntimeException( 'Cannot read pageviews structure.' );
-    }
-    foreach ( array( 'page_url', 'referrer_source', 'product_id' ) as $column ) {
-        if ( in_array( $column, $page_columns, true ) ) {
-            if ( false === $wpdb->query( "ALTER TABLE $pageviews DROP COLUMN $column" ) ) {
-                throw new RuntimeException( "Failed dropping pageviews.$column." );
-            }
-        }
-    }
-
     // pageviews: indexes
     $page_indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
     if ( null === $page_indexes ) {
         throw new RuntimeException( 'Cannot read pageviews indexes.' );
     }
-    if ( in_array( 'idx_product', $page_indexes, true ) ) {
-        if ( false === $wpdb->query( "ALTER TABLE $pageviews DROP INDEX idx_product" ) ) {
-            throw new RuntimeException( 'Failed dropping idx_product from pageviews.' );
-        }
-    }
-    $page_indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
     $page_adds = array(
         'idx_created'  => "ADD KEY idx_created (created_at)",
         'idx_session'  => "ADD KEY idx_session (session_id)",
@@ -585,7 +497,7 @@ function hippoo_bi_migrate_to_130() {
         throw new RuntimeException( 'Cannot read post_stats columns.' );
     }
     $post_adds = array(
-        'post_id' => "ADD COLUMN post_id BIGINT(20) UNSIGNED DEFAULT NULL AFTER date",
+        'post_id' => "ADD COLUMN post_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER date",
         'path_id' => "ADD COLUMN path_id INT UNSIGNED NOT NULL DEFAULT 0 AFTER post_id",
     );
     foreach ( $post_adds as $column => $sql ) {
@@ -594,6 +506,12 @@ function hippoo_bi_migrate_to_130() {
                 throw new RuntimeException( "Failed adding post_stats.$column" );
             }
         }
+    }
+
+    // post_stats: primary key columns cannot be nullable
+    if ( in_array( 'post_id', $post_columns, true )
+        && false === $wpdb->query( "ALTER TABLE $post_stats MODIFY COLUMN post_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0" ) ) {
+        throw new RuntimeException( 'Failed making post_stats.post_id not nullable.' );
     }
 
     // post_stats: switch primary key
@@ -626,6 +544,198 @@ function hippoo_bi_migrate_to_130() {
             if ( false === $wpdb->query( "ALTER TABLE $post_stats DROP COLUMN $column" ) ) {
                 throw new RuntimeException( 'Failed dropping legacy columns from post_stats.' );
             }
+        }
+    }
+}
+
+/** Migrate BI database to version 1.3.1 – background data conversion. */
+function hippoo_bi_migrate_to_131( $progress ) {
+    global $wpdb;
+
+    $pageviews  = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $paths      = $wpdb->prefix . HIPPOO_BI_TABLE_PATHS;
+    $refs       = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRERS;
+    $site_stats = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
+    $post_stats = $wpdb->prefix . HIPPOO_BI_TABLE_POST_STATS;
+
+    $columns = $wpdb->get_col( "SHOW COLUMNS FROM $pageviews", 0 );
+    if ( null === $columns ) {
+        throw new RuntimeException( 'Cannot read pageviews structure.' );
+    }
+
+    $has_product     = in_array( 'product_id', $columns, true );
+    $has_url         = in_array( 'page_url', $columns, true );
+    $has_source      = in_array( 'referrer_source', $columns, true );
+    $has_legacy_data = $has_product || $has_url || $has_source;
+
+    // First call: seed the default labels and reset aggregates once.
+    if ( ! $progress ) {
+        $wpdb->query( "INSERT IGNORE INTO $paths (path) VALUES ('/')" );
+        if ( false === $wpdb->query( $wpdb->prepare(
+            "INSERT IGNORE INTO $refs (source) VALUES (%s)",
+            'direct'
+        ) ) ) {
+            throw new RuntimeException( 'Failed ensuring direct referrer label.' );
+        }
+        if ( $has_legacy_data ) {
+            $wpdb->query( "TRUNCATE TABLE $site_stats" );
+            $wpdb->query( "TRUNCATE TABLE $post_stats" );
+        }
+        $progress = array( 'started' => 1 );
+    }
+
+    $batch = 200;
+    $needs = array( 'path_id = 0', 'referrer_id = 0' );
+    if ( $has_product ) {
+        $needs[] = '(post_id IS NULL AND product_id IS NOT NULL)';
+    }
+
+    $ids = $wpdb->get_col( "SELECT id FROM $pageviews WHERE " . implode( ' OR ', $needs ) . " ORDER BY id LIMIT $batch" );
+    if ( null === $ids ) {
+        throw new RuntimeException( 'Failed reading pageviews batch.' );
+    }
+
+    if ( $ids ) {
+        $ids       = implode( ',', array_map( 'absint', $ids ) );
+        $where     = "id IN ($ids)";
+        $raw_where = "raw.id IN ($ids)";
+
+        $path_id   = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $paths WHERE path = %s", '/' ) );
+        $direct_id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $refs WHERE source = %s", 'direct' ) );
+        if ( ! $path_id || ! $direct_id ) {
+            throw new RuntimeException( 'Failed reading default path or referrer.' );
+        }
+
+        // pageviews: map product_id to post_id
+        if ( $has_product ) {
+            if ( false === $wpdb->query(
+                "UPDATE $pageviews SET post_id = product_id WHERE $where AND post_id IS NULL AND product_id IS NOT NULL"
+            ) ) {
+                throw new RuntimeException( 'Failed mapping product_id to post_id on pageviews.' );
+            }
+        }
+
+        // pageviews: convert page_url to path_id
+        if ( $has_url ) {
+            $path_expr = "CASE
+                WHEN LOCATE('://', page_url) > 0 THEN
+                    CASE WHEN LOCATE('/', page_url, LOCATE('://', page_url) + 3) = 0
+                        THEN '/' ELSE SUBSTRING(page_url, LOCATE('/', page_url, LOCATE('://', page_url) + 3)) END
+                ELSE page_url
+            END";
+            $path_expr = "SUBSTRING_INDEX(SUBSTRING_INDEX($path_expr, '?', 1), '#', 1)";
+            $path_expr = "TRIM(TRAILING '/' FROM $path_expr)";
+            $path_expr = "LEFT(CASE WHEN $path_expr = '' THEN '/' ELSE $path_expr END, 255)";
+            // Legacy and lookup tables may use different charsets/collations.
+            $path_label_expr = 'CONVERT(' . $path_expr . ' USING utf8mb4) COLLATE utf8mb4_unicode_ci';
+            $raw_path_expr   = 'CONVERT(' . str_replace( 'page_url', 'raw.page_url', $path_expr ) . ' USING utf8mb4) COLLATE utf8mb4_unicode_ci';
+
+            if ( false === $wpdb->query(
+                "INSERT IGNORE INTO $paths (path)
+                 SELECT DISTINCT $path_label_expr FROM $pageviews
+                 WHERE path_id = 0 AND $where"
+            ) ) {
+                throw new RuntimeException( 'Failed inserting paths from page_url.' );
+            }
+            if ( false === $wpdb->query(
+                "UPDATE $pageviews raw
+                 INNER JOIN $paths p ON CONVERT(p.path USING utf8mb4) COLLATE utf8mb4_unicode_ci = $raw_path_expr
+                 SET raw.path_id = p.id
+                 WHERE $raw_where AND raw.path_id = 0"
+            ) ) {
+                throw new RuntimeException( 'Failed updating path_id on pageviews.' );
+            }
+        }
+
+        // pageviews: convert referrer_source to referrer_id
+        if ( $has_source ) {
+            $source_expr     = "LEFT(COALESCE(NULLIF(LOWER(TRIM(referrer_source)), ''), 'direct'), 255)";
+            $label_expr      = 'CONVERT(' . $source_expr . ' USING utf8mb4) COLLATE utf8mb4_unicode_ci';
+            $raw_source_expr = 'CONVERT(' . str_replace( 'referrer_source', 'raw.referrer_source', $source_expr ) . ' USING utf8mb4) COLLATE utf8mb4_unicode_ci';
+
+            if ( false === $wpdb->query(
+                "INSERT IGNORE INTO $refs (source)
+                 SELECT DISTINCT $label_expr FROM $pageviews
+                 WHERE referrer_id = 0 AND $where"
+            ) ) {
+                throw new RuntimeException( 'Failed inserting referrer labels.' );
+            }
+            if ( false === $wpdb->query(
+                "UPDATE $pageviews raw
+                 INNER JOIN $refs label ON CONVERT(label.source USING utf8mb4) COLLATE utf8mb4_unicode_ci = $raw_source_expr
+                 SET raw.referrer_id = label.id
+                 WHERE $raw_where AND raw.referrer_id = 0"
+            ) ) {
+                throw new RuntimeException( 'Failed updating referrer_id on pageviews.' );
+            }
+        }
+
+        if ( false === $wpdb->query( "UPDATE $pageviews SET path_id = $path_id WHERE $where AND path_id = 0" )
+            || false === $wpdb->query( "UPDATE $pageviews SET referrer_id = $direct_id WHERE $where AND referrer_id = 0" ) ) {
+            throw new RuntimeException( 'Failed setting default path_id or referrer_id.' );
+        }
+
+        return $progress;
+    }
+
+    if ( (int) $wpdb->get_var( "SELECT COUNT(*) FROM $pageviews WHERE path_id = 0" ) > 0 ) {
+        throw new RuntimeException( 'Some pageviews still have path_id = 0.' );
+    }
+
+    // pageviews: drop legacy columns
+    foreach ( array( 'page_url', 'referrer_source', 'product_id' ) as $column ) {
+        if ( in_array( $column, $columns, true )
+            && false === $wpdb->query( "ALTER TABLE $pageviews DROP COLUMN $column" ) ) {
+            throw new RuntimeException( "Failed dropping pageviews.$column." );
+        }
+    }
+
+    $indexes = $wpdb->get_col( "SHOW INDEX FROM $pageviews", 2 );
+    if ( null === $indexes ) {
+        throw new RuntimeException( 'Cannot read pageviews indexes.' );
+    }
+    if ( in_array( 'idx_product', $indexes, true )
+        && false === $wpdb->query( "ALTER TABLE $pageviews DROP INDEX idx_product" ) ) {
+        throw new RuntimeException( 'Failed dropping idx_product from pageviews.' );
+    }
+
+    $progress['done'] = 1;
+    return $progress;
+}
+
+
+// ---------------------------------------------------------------------------
+// Background data migrations
+// ---------------------------------------------------------------------------
+
+/** Process one batch of the next pending data migration. */
+add_action( 'hippoo_bi_database_migrate', 'hippoo_bi_database_migrate' );
+
+function hippoo_bi_database_migrate() {
+    $progress = get_option( 'hippoo_bi_db_migrations' );
+    if ( ! is_array( $progress ) ) {
+        $progress = array();
+    }
+
+    foreach ( hippoo_bi_database_data_migrations() as $version => $callback ) {
+        if ( ! empty( $progress[ $version ]['done'] ) ) {
+            continue;
+        }
+
+        $current = isset( $progress[ $version ] ) ? $progress[ $version ] : array();
+        try {
+            $progress[ $version ] = call_user_func( $callback, $current );
+        } catch ( RuntimeException $e ) {
+            error_log( 'Hippoo BI data migration ' . $version . ' failed: ' . $e->getMessage() );
+            $progress[ $version ] = $current;
+        }
+
+        update_option( 'hippoo_bi_db_migrations', $progress );
+
+        // Move to the next migration once this one is done; otherwise continue its batches.
+        if ( empty( $progress[ $version ]['done'] ) ) {
+            wp_schedule_single_event( time() + 1, 'hippoo_bi_database_migrate' );
+            return;
         }
     }
 }
