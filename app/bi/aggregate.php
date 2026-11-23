@@ -47,9 +47,9 @@ function hippoo_bi_aggregate_date_handler( $date ) {
 function hippoo_bi_aggregate_missing_dates( $limit = 50 ) {
     global $wpdb;
 
-    $table_pv   = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_pv = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
     $table_os = $wpdb->prefix . HIPPOO_BI_TABLE_ORDER_STATS;
-    $table_ss  = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
+    $table_ss = $wpdb->prefix . HIPPOO_BI_TABLE_SITE_STATS;
 
     $yesterday = ( new DateTimeImmutable( 'yesterday', wp_timezone() ) )->format( 'Y-m-d' );
 
@@ -223,8 +223,8 @@ function hippoo_bi_aggregate_post_stats( $date ) {
 function hippoo_bi_aggregate_referrer_stats( $date ) {
     global $wpdb;
 
-    $table_pv  = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
-    $table_rs  = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRER_STATS;
+    $table_pv = $wpdb->prefix . HIPPOO_BI_TABLE_PAGEVIEWS;
+    $table_rs = $wpdb->prefix . HIPPOO_BI_TABLE_REFERRER_STATS;
 
     $from = $date . ' 00:00:00';
     $to   = $date . ' 23:59:59';

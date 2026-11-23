@@ -560,8 +560,14 @@ function hippoo_permissions_filter_system_info_response( $plugins_info, $request
     return array_values( $filtered );
 }
 
-/** Override extension permission callbacks according to the current role. */
+/** Override WordPress plugin-management permission callbacks according to the current role. */
 function hippoo_permissions_override_extension_permission_callback( $default_callback, $route, $handler ) {
+    // Only core plugin routes are governed by this setting.
+    $route = (string) $route;
+    if ( 0 !== strpos( $route, '/wp/v' ) || false === strpos( $route, '/plugins' ) ) {
+        return $default_callback;
+    }
+
     $access = hippoo_permissions_has_role_access( 'app_features', 'access_extensions' );
 
     if ( null === $access ) {
@@ -572,21 +578,18 @@ function hippoo_permissions_override_extension_permission_callback( $default_cal
         return '__return_false';
     }
 
-    $parts = explode( '/', trim( $route, '/' ) );
-    $extension_slug = $parts[0] ?? '';
-
     $perms = hippoo_permissions_get_user_permissions();
-    $allowed_slugs = $perms['app_features']['extensions'] ?? array();
+    $allowed_slugs = is_array( $perms ) ? (array) ( $perms['app_features']['extensions'] ?? array() ) : array();
 
     if ( empty( $allowed_slugs ) ) {
-        return '__return_true';
+        return $default_callback;
     }
 
-    if ( in_array( $extension_slug, $allowed_slugs, true ) ) {
-        return '__return_true';
-    }
+    return function ( $request ) use ( $allowed_slugs ) {
+        $slug = sanitize_text_field( $request['slug'] ?? '' );
 
-    return $default_callback;
+        return '' === $slug || in_array( $slug, $allowed_slugs, true );
+    };
 }
 
 
