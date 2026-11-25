@@ -560,7 +560,7 @@ function hippoo_permissions_filter_system_info_response( $plugins_info, $request
     return array_values( $filtered );
 }
 
-/** Override WordPress plugin-management permission callbacks according to the current role. */
+/** Override extension permission callbacks according to the current role. */
 function hippoo_permissions_override_extension_permission_callback( $default_callback, $route, $handler ) {
     // Only core plugin routes are governed by this setting.
     $route = (string) $route;
@@ -586,9 +586,11 @@ function hippoo_permissions_override_extension_permission_callback( $default_cal
     }
 
     return function ( $request ) use ( $allowed_slugs ) {
-        $slug = sanitize_text_field( $request['slug'] ?? '' );
+        $slug = sanitize_text_field( $request['plugin'] ?? '' );
+        $parts = explode( '/', trim( $slug, '/' ) );
+        $extension_slug = $parts[0] ?? '';
 
-        return '' === $slug || in_array( $slug, $allowed_slugs, true );
+        return in_array( $extension_slug, $allowed_slugs, true );
     };
 }
 
